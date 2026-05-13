@@ -1,0 +1,270 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HomeTaste.API</name>
+    </assembly>
+    <members>
+        <member name="T:HomeTaste.API.Controllers.AddressController">
+            <summary>
+            Manages delivery addresses for the authenticated customer.
+            </summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AddressController.GetMyAddresses">
+            <summary>Gets all addresses belonging to the current user.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AddressController.GetById(System.Guid)">
+            <summary>Gets a single address by ID.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AddressController.Create(HomeTaste.Application.DTOs.Address.AddressRequest)">
+            <summary>Creates a new address for the current user.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AddressController.Update(System.Guid,HomeTaste.Application.DTOs.Address.AddressRequest)">
+            <summary>Updates an existing address.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AddressController.Delete(System.Guid)">
+            <summary>Deletes an address.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AddressController.SetDefault(System.Guid)">
+            <summary>Sets an address as the default delivery address.</summary>
+        </member>
+        <member name="T:HomeTaste.API.Controllers.AdminUsersController">
+            <summary>Admin: user management — list, ban/unban, role assignment.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AdminUsersController.GetAllUsers(System.Int32,System.Int32,System.String)">
+            <summary>Returns a paginated list of all users. Supports search by email, first name, or last name.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AdminUsersController.GetUserById(System.String)">
+            <summary>Returns a single user by their identity ID.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AdminUsersController.BanUser(System.String,HomeTaste.Application.DTOs.UserProfile.BanUserRequest)">
+            <summary>Bans a user (locks their account indefinitely).</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AdminUsersController.UnbanUser(System.String)">
+            <summary>Lifts a ban from a user (unlocks their account).</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AdminUsersController.AssignRole(HomeTaste.Application.DTOs.Admin.AssignRoleRequest)">
+            <summary>Assigns a role to a user.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AdminUsersController.RemoveRole(HomeTaste.Application.DTOs.Admin.RemoveRoleRequest)">
+            <summary>Removes a role from a user.</summary>
+        </member>
+        <member name="T:HomeTaste.API.Controllers.AnalyticsController">
+            <summary>Admin analytics dashboard endpoints.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AnalyticsController.GetDashboard">
+            <summary>Returns the full dashboard: KPI cards, status breakdown, top meals/customers, daily revenue chart, support/loyalty/inventory summaries.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AnalyticsController.GetDailyRevenue(System.Int32)">
+            <summary>Returns daily revenue and order count for the last N days (default 30).</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AnalyticsController.GetTopMeals(System.Int32)">
+            <summary>Returns the top N meals by quantity ordered (default top 10).</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.AnalyticsController.GetTopCustomers(System.Int32)">
+            <summary>Returns the top N customers by total spend on delivered orders (default top 10).</summary>
+        </member>
+        <member name="T:HomeTaste.API.Controllers.CouponController">
+            <summary>
+            Manages discount coupons. Admin CRUD, public validation endpoint.
+            </summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.CouponController.GetAll(System.Int32,System.Int32,System.String)">
+            <summary>Gets all coupons with optional search and pagination. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.CouponController.GetById(System.Guid)">
+            <summary>Gets a coupon by ID. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.CouponController.Create(HomeTaste.Application.DTOs.Coupon.CouponRequest)">
+            <summary>Creates a new coupon. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.CouponController.Update(System.Guid,HomeTaste.Application.DTOs.Coupon.CouponRequest)">
+            <summary>Updates an existing coupon. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.CouponController.Delete(System.Guid)">
+            <summary>Deletes a coupon. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.CouponController.Toggle(System.Guid)">
+            <summary>Toggles a coupon active/inactive. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.CouponController.Validate(HomeTaste.Application.DTOs.Coupon.ValidateCouponRequest)">
+            <summary>Validates a coupon code against a given order amount. Public.</summary>
+        </member>
+        <member name="T:HomeTaste.API.Controllers.DeliveryController">
+            <summary>
+            Manages delivery personnel, assignments, real-time location updates, and status tracking.
+            </summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.GetAllPersonnel(System.Int32,System.Int32)">
+            <summary>Gets all delivery personnel with pagination. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.GetPersonnelById(System.Guid)">
+            <summary>Gets a delivery personnel profile by ID. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.CreatePersonnel(HomeTaste.Application.DTOs.Delivery.CreateDeliveryPersonnelRequest)">
+            <summary>Creates a new delivery personnel profile. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.UpdatePersonnel(System.Guid,HomeTaste.Application.DTOs.Delivery.UpdateDeliveryPersonnelRequest)">
+            <summary>Updates a delivery personnel profile. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.DeletePersonnel(System.Guid)">
+            <summary>Deletes a delivery personnel profile. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.ToggleAvailability(System.Guid)">
+            <summary>Toggles a delivery personnel's availability. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.UpdateLocation(System.Guid,HomeTaste.Application.DTOs.Delivery.UpdateLocationRequest)">
+            <summary>Updates the real-time GPS location of a delivery personnel.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.Assign(HomeTaste.Application.DTOs.Delivery.AssignDeliveryRequest)">
+            <summary>Assigns a delivery personnel to an order. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.UpdateDeliveryStatus(System.Guid,HomeTaste.Application.DTOs.Delivery.UpdateDeliveryStatusRequest)">
+            <summary>Advances a delivery assignment through its status workflow (PickedUp → Delivered).</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.GetByOrder(System.Guid)">
+            <summary>Gets the delivery assignment for a specific order.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.GetMyDeliveries">
+            <summary>Gets all assignments for the currently authenticated delivery personnel.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.IngredientsController.GetAllIngredients(System.Int32,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            Get all ingredients
+            </summary>
+            <param name="pageNumber"></param>
+            <param name="pageSize"></param>
+            <param name="searchTerm"></param>
+            <param name="sortBy">Valid values: "Id", "Name", "CreatedAt"</param>
+            <param name="sortOrder"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.LoyaltyController.GetMyAccount">
+            <summary>Returns the loyalty account (points balance, tier, next-tier progress) for the current user.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.LoyaltyController.GetMyTransactions(System.Int32,System.Int32)">
+            <summary>Returns paginated loyalty point transaction history for the current user.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.LoyaltyController.PreviewRedemption(System.Int32)">
+            <summary>Previews how much discount redeeming a given number of points would yield.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.LoyaltyController.GetAccountByUserId(System.String)">
+            <summary>Returns the loyalty account for a specific user. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.LoyaltyController.AdjustPoints(HomeTaste.Application.DTOs.Loyalty.AdjustPointsRequest)">
+            <summary>Admin: manually add or deduct points from a user's loyalty account.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.MealCategoriesController.GetAllMealCategories(System.Int32,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            Get all meal categories
+            </summary>
+            <param name="pageNumber"></param>
+            <param name="pageSize"></param>
+            <param name="searchTerm"></param>
+            <param name="sortBy">Valid values: "Id", "Name", "CreatedDate"."</param>
+            <param name="sortOrder"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HomeTaste.API.Controllers.MealCustomizationController">
+            <summary>
+            Manages customization options (add-ons, removals, substitutions) for meals.
+            </summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.MealCustomizationController.GetByMeal(System.Guid)">
+            <summary>Gets all customization options for a specific meal.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.MealCustomizationController.GetById(System.Guid)">
+            <summary>Gets a single customization option by ID.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.MealCustomizationController.Create(HomeTaste.Application.DTOs.MealManagement.MealCustomizationOptionRequest)">
+            <summary>Creates a new customization option for a meal. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.MealCustomizationController.Update(System.Guid,HomeTaste.Application.DTOs.MealManagement.MealCustomizationOptionRequest)">
+            <summary>Updates an existing customization option. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.MealCustomizationController.Delete(System.Guid)">
+            <summary>Deletes a customization option. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.MealCustomizationController.ToggleAvailability(System.Guid)">
+            <summary>Toggles the availability of a customization option. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.NotificationController.GetMyNotifications(System.Int32,System.Int32)">
+            <summary>Returns paginated list of the current user's notifications.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.NotificationController.GetUnreadCount">
+            <summary>Returns the unread notification count for the current user.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.NotificationController.MarkAsRead(System.Guid)">
+            <summary>Marks a single notification as read.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.NotificationController.MarkAllAsRead">
+            <summary>Marks all of the current user's notifications as read.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.NotificationController.DeleteNotification(System.Guid)">
+            <summary>Deletes a notification owned by the current user.</summary>
+        </member>
+        <member name="T:HomeTaste.API.Controllers.OrderController">
+            <summary>
+            Handles order placement, status tracking, and admin order management.
+            </summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.OrderController.GetMyOrders(System.Int32,System.Int32)">
+            <summary>Gets the authenticated customer's orders with pagination.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.OrderController.GetById(System.Guid)">
+            <summary>Gets a single order by ID. Customers see only their own orders.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.OrderController.GetAll(System.Int32,System.Int32,System.Nullable{HomeTaste.Domain.Enums.OrderStatus})">
+            <summary>Gets all orders with optional status filter and pagination. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.OrderController.PlaceOrder(HomeTaste.Application.DTOs.Order.CreateOrderRequest)">
+            <summary>Places a new order for the authenticated customer.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.OrderController.UpdateStatus(System.Guid,HomeTaste.Application.DTOs.Order.UpdateOrderStatusRequest)">
+            <summary>Advances an order through its status workflow. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.OrderController.Cancel(System.Guid,HomeTaste.Application.DTOs.Order.CancelOrderRequest)">
+            <summary>Cancels an order. Customers can cancel Pending/Confirmed orders; Admins can cancel any.</summary>
+        </member>
+        <member name="T:HomeTaste.API.Controllers.PaymentController">
+            <summary>
+            Handles payment initiation, confirmation, refunds, and history.
+            </summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.PaymentController.Initiate(HomeTaste.Application.DTOs.Payment.InitiatePaymentRequest)">
+            <summary>Initiates a payment for an order. Returns a pending transaction.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.PaymentController.Confirm(System.Guid,HomeTaste.Application.DTOs.Payment.ConfirmPaymentRequest)">
+            <summary>Confirms a pending payment transaction (e.g. after gateway callback).</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.PaymentController.Refund(System.Guid,HomeTaste.Application.DTOs.Payment.RefundPaymentRequest)">
+            <summary>Refunds a successful payment. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.PaymentController.GetByOrder(System.Guid)">
+            <summary>Gets the payment transaction for a specific order.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.PaymentController.GetById(System.Guid)">
+            <summary>Gets a payment transaction by its ID.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.PaymentController.GetAll(System.Int32,System.Int32,System.Nullable{HomeTaste.Domain.Enums.PaymentStatus})">
+            <summary>Gets all payment transactions with optional status filter. Admin only.</summary>
+        </member>
+        <member name="T:HomeTaste.API.Controllers.UserProfileController">
+            <summary>Current user's own profile management.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.UserProfileController.GetProfile">
+            <summary>Returns the current user's profile (name, email, phone, avatar, roles).</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.UserProfileController.UpdateProfile(HomeTaste.Application.DTOs.UserProfile.UpdateProfileRequest)">
+            <summary>Updates editable profile fields (first/last name, date of birth, phone number).</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.UserProfileController.ChangePassword(HomeTaste.Application.DTOs.UserProfile.ChangePasswordRequest)">
+            <summary>Changes the current user's password. Requires the existing password for verification.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.UserProfileController.UploadAvatar(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>Uploads or replaces the current user's avatar image. Send as multipart/form-data with field name "file".</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.UserProfileController.GetOrderHistory(System.Int32,System.Int32)">
+            <summary>Returns the current user's paginated order history.</summary>
+        </member>
+    </members>
+</doc>

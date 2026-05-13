@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<!--<DocumentationFile>bin\Debug\net8.0\HomeTaste.xml</DocumentationFile>-->
+	<DocumentationFile>$(ProjectDir)HomeTaste.xml</DocumentationFile>
+	<NoWarn>1591</NoWarn> <!-- Optional: suppresses warnings for missing XML comments -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.23">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HomeTaste.Infrastructure\HomeTaste.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

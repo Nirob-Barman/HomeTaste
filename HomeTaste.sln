@@ -1,0 +1,63 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36623.8
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTaste.Domain", "HomeTaste.Domain\HomeTaste.Domain.csproj", "{1467E602-6A0E-4CB0-8D73-A7E408ABF157}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTaste.Application", "HomeTaste.Application\HomeTaste.Application.csproj", "{0A373DF6-73EC-44E3-B4E0-69687919AB40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTaste.Infrastructure", "HomeTaste.Infrastructure\HomeTaste.Infrastructure.csproj", "{2D9A4A91-C01C-4796-9062-E24CD5BA68A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTaste.API", "HomeTaste.API\HomeTaste.API.csproj", "{05536996-7840-40AD-9B1D-891095EE9341}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5E49AF89-0C3F-4A61-9650-0AAD07A29257}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{C708DDAC-E63A-4114-BAB7-11E8B559B618}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeTaste.UnitTests", "HomeTaste.UnitTests\HomeTaste.UnitTests.csproj", "{C074F790-2178-4D6C-9C01-89561102E3D2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1467E602-6A0E-4CB0-8D73-A7E408ABF157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1467E602-6A0E-4CB0-8D73-A7E408ABF157}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1467E602-6A0E-4CB0-8D73-A7E408ABF157}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1467E602-6A0E-4CB0-8D73-A7E408ABF157}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A373DF6-73EC-44E3-B4E0-69687919AB40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A373DF6-73EC-44E3-B4E0-69687919AB40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A373DF6-73EC-44E3-B4E0-69687919AB40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A373DF6-73EC-44E3-B4E0-69687919AB40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D9A4A91-C01C-4796-9062-E24CD5BA68A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D9A4A91-C01C-4796-9062-E24CD5BA68A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D9A4A91-C01C-4796-9062-E24CD5BA68A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D9A4A91-C01C-4796-9062-E24CD5BA68A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05536996-7840-40AD-9B1D-891095EE9341}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05536996-7840-40AD-9B1D-891095EE9341}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05536996-7840-40AD-9B1D-891095EE9341}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05536996-7840-40AD-9B1D-891095EE9341}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C074F790-2178-4D6C-9C01-89561102E3D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C074F790-2178-4D6C-9C01-89561102E3D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C074F790-2178-4D6C-9C01-89561102E3D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C074F790-2178-4D6C-9C01-89561102E3D2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1467E602-6A0E-4CB0-8D73-A7E408ABF157} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{0A373DF6-73EC-44E3-B4E0-69687919AB40} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{2D9A4A91-C01C-4796-9062-E24CD5BA68A7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{05536996-7840-40AD-9B1D-891095EE9341} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{C708DDAC-E63A-4114-BAB7-11E8B559B618} = {5E49AF89-0C3F-4A61-9650-0AAD07A29257}
+		{C074F790-2178-4D6C-9C01-89561102E3D2} = {C708DDAC-E63A-4114-BAB7-11E8B559B618}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {69B1C3C7-0D93-458A-81E1-C0E737F08578}
+	EndGlobalSection
+EndGlobal

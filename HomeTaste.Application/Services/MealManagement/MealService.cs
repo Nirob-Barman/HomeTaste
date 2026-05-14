@@ -44,9 +44,6 @@ namespace HomeTaste.Application.Services.MealManagement
         {
             var query = _mealRepository.WithIncludesAsQueryable(meal => meal.MealCategory!);
 
-            var totalCount = await _mealRepository.CountAsync(query);
-
-            // Apply search filter if searchTerm is provided
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 query = query.Where(meal =>
@@ -56,7 +53,9 @@ namespace HomeTaste.Application.Services.MealManagement
                 );
             }
 
-            var meals = await _mealRepository.PaginateAsQueryable(query, pageNumber, pageSize,
+            var totalCount = await _mealRepository.CountAsync(query);
+
+            var meals = (await _mealRepository.PaginateAsQueryable(query, pageNumber, pageSize,
                 meal => new MealResponseWithMealCategory
                 {
                     Id = meal.Id,
@@ -66,32 +65,10 @@ namespace HomeTaste.Application.Services.MealManagement
                     ImageUrl = meal.ImageUrl,
                     CategoryId = meal.CategoryId,
                     CategoryName = meal.MealCategory != null ? meal.MealCategory.Name : null
-                });
+                })).ToList();
 
-            //var paginatedQuery = _mealRepository.PaginateAsQueryable(query, pageNumber, pageSize);
-            
-            ////var mealss = _mealRepository.ToListAsync(paginatedQuery);
-            //var mealss = _mealRepository.ToListAsync(paginatedQuery, meal => new MealResponseWithMealCategory
-            //{
-            //    Id = meal.Id,
-            //    Name = meal.Name,
-            //    Description = meal.Description,
-            //    Price = meal.Price,
-            //    ImageUrl = meal.ImageUrl,
-            //    CategoryId = meal.CategoryId,
-            //    CategoryName = meal.MealCategory != null ? meal.MealCategory.Name : null
-            //});
-
-            
-
-            // Get pagination metadata
             var paginationMeta = PaginationHelper.GetPaginationMetadata(pageNumber, pageSize, totalCount);
-
-            // Calculate the current page count
-            var currentPageCount = meals.Count();
-
-            // Update pagination metadata to include current page count
-            paginationMeta.CurrentPageCount = currentPageCount;
+            paginationMeta.CurrentPageCount = meals.Count;
 
             var response = new PaginatedResponse<IEnumerable<MealResponseWithMealCategory>>
             {

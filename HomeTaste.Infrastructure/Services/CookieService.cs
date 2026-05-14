@@ -21,7 +21,7 @@ namespace HomeTaste.Infrastructure.Services
                 HttpOnly = true,  // Make cookie accessible only to HTTP requests (not JavaScript)
                 Secure = true,    // Ensure cookie is sent over HTTPS only
                 //SameSite = SameSiteMode.Strict, // Prevent CSRF attacks
-                SameSite = SameSiteMode.Lax,
+                SameSite = SameSiteMode.None,
                 Expires = expiresAt // Set expiration time for the cookie
             };
 

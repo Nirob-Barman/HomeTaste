@@ -23,6 +23,18 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(Policies.AdminOrCustomer,       p => p.RequireRole("Admin", "Customer"));
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ClientPolicy", policy =>
+    {
+        policy
+            .SetIsOriginAllowed(origin => true)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -78,6 +90,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("ClientPolicy");
 
 app.UseAuthorization();
 

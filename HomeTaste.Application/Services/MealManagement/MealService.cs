@@ -40,7 +40,7 @@ namespace HomeTaste.Application.Services.MealManagement
             return Result<IEnumerable<MealResponse>>.Ok(mealResponses, "Meals retrieved successfully", ResultType.Success);
         }
 
-        public async Task<Result<PaginatedResponse<IEnumerable<MealResponseWithMealCategory>>>> GetAllMealsAsync(int pageNumber, int pageSize, string searchTerm = null!)
+        public async Task<Result<PaginatedResponse<IEnumerable<MealResponseWithMealCategory>>>> GetAllMealsAsync(int pageNumber, int pageSize, string searchTerm = null!, Guid? categoryId = null)
         {
             var query = _mealRepository.WithIncludesAsQueryable(meal => meal.MealCategory!);
 
@@ -51,6 +51,11 @@ namespace HomeTaste.Application.Services.MealManagement
                     meal.Description!.Contains(searchTerm) ||
                     (meal.MealCategory != null && meal.MealCategory.Name!.Contains(searchTerm))
                 );
+            }
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(meal => meal.CategoryId == categoryId.Value);
             }
 
             var totalCount = await _mealRepository.CountAsync(query);

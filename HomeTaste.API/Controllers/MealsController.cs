@@ -19,9 +19,9 @@ namespace HomeTaste.API.Controllers
 
         // Get all meals
         [HttpGet]
-        public async Task<IActionResult> GetAllMeals([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!)
+        public async Task<IActionResult> GetAllMeals([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!, [FromQuery] Guid? categoryId = null)
         {
-            var result = await _mealService.GetAllMealsAsync(pageNumber,pageSize, searchTerm);
+            var result = await _mealService.GetAllMealsAsync(pageNumber, pageSize, searchTerm, categoryId);
             return ApiResponseMapper.FromResult(this, result);
         }
 

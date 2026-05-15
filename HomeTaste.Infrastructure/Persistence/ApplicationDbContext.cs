@@ -43,6 +43,7 @@ namespace HomeTaste.Infrastructure.Persistence
         public DbSet<PaymentGateway> PaymentGateways { get; set; }
         public DbSet<DeliveryPersonnel> DeliveryPersonnel { get; set; }
         public DbSet<DeliveryAssignment> DeliveryAssignments { get; set; }
+        public DbSet<DeliveryZone> DeliveryZones { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<LoyaltyAccount> LoyaltyAccounts { get; set; }
         public DbSet<LoyaltyTransaction> LoyaltyTransactions { get; set; }

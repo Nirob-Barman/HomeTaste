@@ -11,6 +11,7 @@ namespace HomeTaste.Infrastructure.Persistence.Configuration
             builder.HasKey(o => o.Id);
 
             builder.Property(o => o.SubTotal).HasColumnType("decimal(18,2)").IsRequired();
+            builder.Property(o => o.DeliveryFee).HasColumnType("decimal(18,2)").IsRequired();
             builder.Property(o => o.DiscountAmount).HasColumnType("decimal(18,2)").IsRequired();
             builder.Property(o => o.TaxAmount).HasColumnType("decimal(18,2)").IsRequired();
             builder.Property(o => o.TotalAmount).HasColumnType("decimal(18,2)").IsRequired();

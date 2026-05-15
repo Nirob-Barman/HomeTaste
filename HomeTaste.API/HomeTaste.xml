@@ -127,6 +127,29 @@
         <member name="M:HomeTaste.API.Controllers.DeliveryController.GetMyDeliveries">
             <summary>Gets all assignments for the currently authenticated delivery personnel.</summary>
         </member>
+        <member name="T:HomeTaste.API.Controllers.DeliveryZoneController">
+            <summary>
+            Manages delivery zones and checks address serviceability.
+            </summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryZoneController.GetAll">
+            <summary>Returns all delivery zones. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryZoneController.GetById(System.Guid)">
+            <summary>Returns a single delivery zone by ID. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryZoneController.CheckServiceability(System.Guid)">
+            <summary>Checks whether an address falls within a serviceable delivery zone.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryZoneController.Create(HomeTaste.Application.DTOs.Delivery.CreateDeliveryZoneRequest)">
+            <summary>Creates a new delivery zone. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryZoneController.Update(System.Guid,HomeTaste.Application.DTOs.Delivery.UpdateDeliveryZoneRequest)">
+            <summary>Updates an existing delivery zone. Admin only.</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.DeliveryZoneController.Delete(System.Guid)">
+            <summary>Deletes a delivery zone. Admin only.</summary>
+        </member>
         <member name="M:HomeTaste.API.Controllers.IngredientsController.GetAllIngredients(System.Int32,System.Int32,System.String,System.String,System.String)">
             <summary>
             Get all ingredients
@@ -206,6 +229,9 @@
             <summary>
             Handles order placement, status tracking, and admin order management.
             </summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.OrderController.GetDeliveryFee(System.Decimal)">
+            <summary>Returns the delivery fee for a given subtotal before placing an order.</summary>
         </member>
         <member name="M:HomeTaste.API.Controllers.OrderController.GetMyOrders(System.Int32,System.Int32)">
             <summary>Gets the authenticated customer's orders with pagination.</summary>

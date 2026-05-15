@@ -31,6 +31,8 @@ logs/
 # Environment / secrets
 appsettings.Development.json
 appsettings.Local.json
+appsettings.json
+**/appsettings.json
 appsettings.*.json
 *.env
 .env

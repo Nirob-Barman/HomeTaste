@@ -14,10 +14,6 @@
     "ApiKey": "your-cloudinary-api-key",
     "ApiSecret": "your-cloudinary-api-secret"
   },
-  "Supabase": {
-    "Url": "https://your-project.supabase.co",
-    "Key": "your-supabase-anon-key"
-  },
   "JwtSettings": {
     "AccessToken": {
       "Key": "your-access-token-secret-key-min-32-chars",
@@ -35,12 +31,6 @@
       "Issuer": "your-refresh-token-issuer",
       "Audience": "your-refresh-token-audience",
       "ExpiryMinutes": 60
-    }
-  },
-  "Authentication": {
-    "Google": {
-      "ClientId": "your-google-client-id",
-      "ClientSecret": "your-google-client-secret"
     }
   },
   "FrontendBaseUrl": "http://localhost:5173",

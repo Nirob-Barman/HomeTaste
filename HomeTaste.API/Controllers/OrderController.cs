@@ -19,11 +19,13 @@ namespace HomeTaste.API.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IDeliveryFeeService _deliveryFeeService;
+        private readonly IPdfInvoiceService _pdfInvoiceService;
 
-        public OrderController(IOrderService orderService, IDeliveryFeeService deliveryFeeService)
+        public OrderController(IOrderService orderService, IDeliveryFeeService deliveryFeeService, IPdfInvoiceService pdfInvoiceService)
         {
             _orderService = orderService;
             _deliveryFeeService = deliveryFeeService;
+            _pdfInvoiceService = pdfInvoiceService;
         }
 
         /// <summary>Returns the delivery fee for a given subtotal before placing an order.</summary>
@@ -89,6 +91,19 @@ namespace HomeTaste.API.Controllers
         {
             var result = await _orderService.CancelOrderAsync(id, request);
             return ApiResponseMapper.FromResult(this, result);
+        }
+
+        /// <summary>Downloads a PDF invoice for the given order.</summary>
+        [HttpGet("{id:guid}/invoice")]
+        public async Task<IActionResult> GetInvoice(Guid id)
+        {
+            var result = await _orderService.GetOrderByIdAsync(id);
+            if (!result.Success || result.Data == null)
+                return ApiResponseMapper.FromResult(this, result);
+
+            var pdf = _pdfInvoiceService.Generate(result.Data);
+            var fileName = $"invoice-{id.ToString()[..8].ToUpper()}.pdf";
+            return File(pdf, "application/pdf", fileName);
         }
     }
 }

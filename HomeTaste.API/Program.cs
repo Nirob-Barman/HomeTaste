@@ -93,6 +93,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("ClientPolicy");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

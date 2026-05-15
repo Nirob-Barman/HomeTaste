@@ -44,10 +44,9 @@ namespace HomeTaste.API.Controllers
 
 
         [HttpPost("refresh-token")]
-        //public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
-        public async Task<IActionResult> RefreshToken()
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest? request = null)
         {
-            var result = await _authService.RefreshTokenAsync();
+            var result = await _authService.RefreshTokenAsync(request?.RefreshToken);
             return ApiResponseMapper.FromResult(this, result);
         }
 

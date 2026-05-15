@@ -223,16 +223,12 @@ namespace HomeTaste.Application.Services
         }
 
 
-        //public async Task<Result<AuthResponse>> RefreshTokenAsync(RefreshTokenRequest request)
-        public async Task<Result<AuthResponse>> RefreshTokenAsync()
+        public async Task<Result<AuthResponse>> RefreshTokenAsync(string? bodyRefreshToken = null)
         {
-            //var validationErrors = IdentityRequestValidator.ValidateRefreshTokenRequest(request);
-            //if (validationErrors.Any())
-            //{
-            //    return Result<AuthResponse>.Fail(validationErrors, "Validation failed", ResultType.ValidationError);
-            //}
-
-            var refreshToken = await _cookieService.GetCookieAsync<string>("refresh_token");
+            // Cookie is preferred (HttpOnly, secure); body token is a fallback for
+            // development where cross-scheme cookie delivery can be unreliable.
+            var refreshToken = await _cookieService.GetCookieAsync<string>("refresh_token")
+                               ?? bodyRefreshToken;
 
             if (refreshToken == null)
                 return Result<AuthResponse>.Fail("Refresh token not found", "Refresh token not found", ResultType.Unauthorized);

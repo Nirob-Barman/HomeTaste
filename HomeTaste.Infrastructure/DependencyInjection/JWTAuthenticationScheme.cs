@@ -52,45 +52,28 @@ namespace HomeTaste.Infrastructure.DependencyInjection
                         return Task.CompletedTask;
                     },
 
-                    // 1. Handles missing or invalid tokens (triggered before controller)
+                    // Writes the 401 JSON response. Runs after UseAuthorization decides auth is
+                    // required — writing here (not in OnAuthenticationFailed) avoids the
+                    // HTTP/2 stream reset caused by writing during the UseAuthentication phase.
                     OnChallenge = context =>
                     {
-                        if (!context.Response.HasStarted)
-                        {
-                            context.HandleResponse();
-                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                            context.Response.ContentType = "application/json";
+                        if (context.Response.HasStarted) return Task.CompletedTask;
 
-                            var errorDescription = context.ErrorDescription ?? "Authentication failed or token is missing.";
-
-                            var result = System.Text.Json.JsonSerializer.Serialize(new
-                            {
-                                statusCode = 401,
-                                message = "Unauthorized. Please provide a valid token.",
-                                success = false,
-                                data = (object)null!,
-                                errors = new[] { errorDescription }
-                            });
-
-                            return context.Response.WriteAsync(result);
-                        }
-
-                        return Task.CompletedTask;
-                    },
-
-                    // 2. Handles other JWT failures (e.g., token is malformed or invalid)
-                    OnAuthenticationFailed = context =>
-                    {
+                        context.HandleResponse();
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         context.Response.ContentType = "application/json";
+
+                        var error = context.AuthenticateFailure?.Message
+                                    ?? context.ErrorDescription
+                                    ?? "Authentication failed or token is missing.";
 
                         var result = System.Text.Json.JsonSerializer.Serialize(new
                         {
                             statusCode = 401,
-                            message = "Token validation failed.",
+                            message = "Unauthorized. Please provide a valid token.",
                             success = false,
                             data = (object)null!,
-                            errors = new[] { context.Exception.Message }
+                            errors = new[] { error }
                         });
 
                         return context.Response.WriteAsync(result);

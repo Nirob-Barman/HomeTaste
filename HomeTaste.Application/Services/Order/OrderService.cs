@@ -25,6 +25,7 @@ namespace HomeTaste.Application.Services.Order
         private readonly ILoyaltyService _loyaltyService;
         private readonly IEmailService _emailService;
         private readonly IUserManager _userManager;
+        private readonly IDeliveryFeeService _deliveryFeeService;
 
         private const decimal TaxRate = 0.10m;
         private const int PointsRedemptionRate = 100; // 100 points = $1
@@ -35,7 +36,8 @@ namespace HomeTaste.Application.Services.Order
             INotificationService notificationService,
             ILoyaltyService loyaltyService,
             IEmailService emailService,
-            IUserManager userManager)
+            IUserManager userManager,
+            IDeliveryFeeService deliveryFeeService)
         {
             _unitOfWork = unitOfWork;
             _userContextService = userContextService;
@@ -43,6 +45,7 @@ namespace HomeTaste.Application.Services.Order
             _loyaltyService = loyaltyService;
             _emailService = emailService;
             _userManager = userManager;
+            _deliveryFeeService = deliveryFeeService;
         }
 
         public async Task<Result<PaginatedResponse<IEnumerable<OrderResponse>>>> GetMyOrdersAsync(int pageNumber = 1, int pageSize = 10)
@@ -243,10 +246,11 @@ namespace HomeTaste.Application.Services.Order
                 _unitOfWork.Repository<Domain.Entities.Coupon.Coupon>().Update(coupon);
             }
 
+            var deliveryFee = _deliveryFeeService.Calculate(subTotal);
             var totalDiscountAmount = loyaltyDiscountAmount + couponDiscountAmount;
             var taxableAmount = subTotal - totalDiscountAmount;
             var taxAmount = Math.Round(taxableAmount * TaxRate, 2);
-            var totalAmount = taxableAmount + taxAmount;
+            var totalAmount = taxableAmount + taxAmount + deliveryFee;
 
             var order = new Domain.Entities.Order.Order
             {
@@ -255,6 +259,7 @@ namespace HomeTaste.Application.Services.Order
                 AddressId = request.AddressId,
                 Status = OrderStatus.Pending,
                 SubTotal = Math.Round(subTotal, 2),
+                DeliveryFee = deliveryFee,
                 DiscountAmount = Math.Round(couponDiscountAmount, 2),
                 LoyaltyPointsUsed = loyaltyPointsUsed,
                 LoyaltyDiscountAmount = loyaltyDiscountAmount,
@@ -507,6 +512,7 @@ namespace HomeTaste.Application.Services.Order
                 Status = order.Status,
                 StatusLabel = order.Status.ToString(),
                 SubTotal = order.SubTotal,
+                DeliveryFee = order.DeliveryFee,
                 DiscountAmount = order.DiscountAmount,
                 LoyaltyPointsUsed = order.LoyaltyPointsUsed,
                 LoyaltyDiscountAmount = order.LoyaltyDiscountAmount,

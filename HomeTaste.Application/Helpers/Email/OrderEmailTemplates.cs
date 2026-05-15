@@ -106,6 +106,9 @@ namespace HomeTaste.Application.Helpers.Email
         {
             var rows = new System.Text.StringBuilder();
             rows.Append(TotalRow("Subtotal", order.SubTotal));
+            rows.Append(order.DeliveryFee == 0
+                ? TotalRow("Delivery", 0, "#16a34a", label: "Delivery", freeLabel: "Free")
+                : TotalRow("Delivery", order.DeliveryFee));
             if (order.LoyaltyDiscountAmount > 0)
                 rows.Append(TotalRow($"Loyalty Points ({order.LoyaltyPointsUsed} pts)", -order.LoyaltyDiscountAmount, "#16a34a"));
             if (order.DiscountAmount > 0)
@@ -120,12 +123,12 @@ namespace HomeTaste.Application.Helpers.Email
             """;
         }
 
-        private static string TotalRow(string label, decimal amount, string color = "#374151", bool bold = false) =>
+        private static string TotalRow(string label, decimal amount, string color = "#374151", bool bold = false, string? freeLabel = null) =>
             $"""
             <tr>
                 <td style="padding:4px 0;font-size:13px;color:#6b7280">{label}</td>
                 <td style="padding:4px 0;font-size:13px;text-align:right;color:{color};{(bold ? "font-weight:700;font-size:15px" : "")}">
-                    {(amount < 0 ? $"-${Math.Abs(amount):F2}" : $"${amount:F2}")}
+                    {(freeLabel != null && amount == 0 ? freeLabel : amount < 0 ? $"-${Math.Abs(amount):F2}" : $"${amount:F2}")}
                 </td>
             </tr>
             """;

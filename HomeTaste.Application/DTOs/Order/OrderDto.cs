@@ -30,6 +30,14 @@ namespace HomeTaste.Application.DTOs.Order
         public string? Reason { get; set; }
     }
 
+    public class DeliveryFeeResponse
+    {
+        public decimal Fee { get; set; }
+        public bool IsFree => Fee == 0;
+        public string Label => Fee == 0 ? "Free" : $"${Fee:F2}";
+        public decimal FreeThreshold { get; set; } = 50m;
+    }
+
     public class OrderResponse
     {
         public Guid Id { get; set; }
@@ -39,6 +47,7 @@ namespace HomeTaste.Application.DTOs.Order
         public OrderStatus Status { get; set; }
         public string? StatusLabel { get; set; }
         public decimal SubTotal { get; set; }
+        public decimal DeliveryFee { get; set; }
         public decimal DiscountAmount { get; set; }
         public decimal TaxAmount { get; set; }
         public decimal TotalAmount { get; set; }

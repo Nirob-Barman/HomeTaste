@@ -2,6 +2,7 @@ using HomeTaste.API.Wrappers;
 using HomeTaste.Application.Authorization;
 using HomeTaste.Application.DTOs.Order;
 using HomeTaste.Application.Interfaces.Order;
+using HomeTaste.Application.Wrappers;
 using HomeTaste.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +18,24 @@ namespace HomeTaste.API.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly IDeliveryFeeService _deliveryFeeService;
 
-        public OrderController(IOrderService orderService)
+        public OrderController(IOrderService orderService, IDeliveryFeeService deliveryFeeService)
         {
             _orderService = orderService;
+            _deliveryFeeService = deliveryFeeService;
+        }
+
+        /// <summary>Returns the delivery fee for a given subtotal before placing an order.</summary>
+        [HttpGet("delivery-fee")]
+        public IActionResult GetDeliveryFee([FromQuery] decimal subTotal)
+        {
+            var fee = _deliveryFeeService.Calculate(subTotal);
+            var result = Result<DeliveryFeeResponse>.Ok(
+                new DeliveryFeeResponse { Fee = fee },
+                "Delivery fee calculated.",
+                ResultType.Success);
+            return ApiResponseMapper.FromResult(this, result);
         }
 
         /// <summary>Gets the authenticated customer's orders with pagination.</summary>

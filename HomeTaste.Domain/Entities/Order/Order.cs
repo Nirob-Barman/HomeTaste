@@ -11,6 +11,7 @@ namespace HomeTaste.Domain.Entities.Order
         public Guid AddressId { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public decimal SubTotal { get; set; }
+        public decimal DeliveryFee { get; set; }
         public decimal DiscountAmount { get; set; }
         public decimal TaxAmount { get; set; }
         public decimal TotalAmount { get; set; }

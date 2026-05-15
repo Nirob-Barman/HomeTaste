@@ -6,7 +6,7 @@ namespace HomeTaste.Application.Interfaces.Payment
 {
     public interface IPaymentService
     {
-        Task<Result<PaymentTransactionResponse>> InitiatePaymentAsync(InitiatePaymentRequest request);
+        Task<Result<PaymentTransactionResponse>> InitiatePaymentAsync(InitiatePaymentRequest request, string callbackBaseUrl);
         Task<Result<PaymentTransactionResponse>> ConfirmPaymentAsync(Guid transactionId, ConfirmPaymentRequest request);
         Task<Result<PaymentTransactionResponse>> RefundPaymentAsync(Guid transactionId, RefundPaymentRequest request);
         Task<Result<PaymentTransactionResponse>> GetPaymentByOrderIdAsync(Guid orderId);

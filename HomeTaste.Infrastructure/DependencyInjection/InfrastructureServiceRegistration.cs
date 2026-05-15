@@ -2,6 +2,7 @@
 using CloudinaryDotNet;
 using HomeTaste.Application.Interfaces;
 using HomeTaste.Application.Interfaces.Auth;
+using HomeTaste.Application.Interfaces.Payment;
 using HomeTaste.Application.Interfaces.Realtime;
 using HomeTaste.Application.Interfaces.Email;
 using HomeTaste.Application.Interfaces.FileStorage;
@@ -10,6 +11,7 @@ using HomeTaste.Application.Settings;
 using HomeTaste.Infrastructure.Hubs;
 using HomeTaste.Infrastructure.Identity;
 using HomeTaste.Infrastructure.Identity.Entity;
+using HomeTaste.Infrastructure.Payments;
 using HomeTaste.Infrastructure.Persistence;
 using HomeTaste.Infrastructure.Persistence.Repositories;
 using HomeTaste.Infrastructure.Services;
@@ -48,6 +50,14 @@ namespace HomeTaste.Infrastructure.DependencyInjection
             services.AddScoped<ISignInManager, IdentitySignInManager>();
             services.AddScoped<ICookieService, CookieService>();
             services.AddScoped<IUserContextService, UserContextService>();
+
+            services.AddScoped<IStripeService, StripeService>();
+
+            // Payment processor strategy pattern
+            services.AddScoped<IPaymentProcessor, StripePaymentProcessor>();
+            services.AddScoped<IPaymentProcessor, BKashManualPaymentProcessor>();
+            services.AddScoped<IPaymentProcessor, BKashCheckoutPaymentProcessor>();
+            services.AddScoped<IPaymentProcessorFactory, PaymentProcessorFactory>();
 
             services.Configure<EmailSettings>(config.GetSection("EmailSettings"));
             services.AddScoped<IEmailService, EmailService>();

@@ -8,9 +8,6 @@ namespace HomeTaste.Application.Validators.Payment
         {
             var errors = new List<string>();
 
-            if (string.IsNullOrWhiteSpace(request.TransactionRef))
-                errors.Add("Transaction reference is required.");
-
             if (request.TransactionRef?.Length > 200)
                 errors.Add("Transaction reference cannot exceed 200 characters.");
 

@@ -17,17 +17,20 @@ namespace HomeTaste.API.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
+        private readonly IConfiguration _config;
 
-        public PaymentController(IPaymentService paymentService)
+        public PaymentController(IPaymentService paymentService, IConfiguration config)
         {
             _paymentService = paymentService;
+            _config = config;
         }
 
         /// <summary>Initiates a payment for an order. Returns a pending transaction.</summary>
         [HttpPost("initiate")]
         public async Task<IActionResult> Initiate([FromBody] InitiatePaymentRequest request)
         {
-            var result = await _paymentService.InitiatePaymentAsync(request);
+            var callbackBaseUrl = $"{Request.Scheme}://{Request.Host}";
+            var result = await _paymentService.InitiatePaymentAsync(request, callbackBaseUrl);
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -74,6 +77,36 @@ namespace HomeTaste.API.Controllers
         {
             var result = await _paymentService.GetAllPaymentsAsync(pageNumber, pageSize, status);
             return ApiResponseMapper.FromResult(this, result);
+        }
+
+        // ─── Redirect callbacks (called by payment providers after redirect-based flow) ──
+
+        /// <summary>
+        /// Provider redirects here on successful payment (e.g. bKash Checkout).
+        /// Verifies with the provider then redirects the browser to the frontend success page.
+        /// </summary>
+        [HttpGet("callback/success")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CallbackSuccess([FromQuery] Guid txId, [FromQuery] string gateway)
+        {
+            var frontendBase = _config["FrontendBaseUrl"] ?? "http://localhost:5173";
+            var confirmResult = await _paymentService.ConfirmPaymentAsync(txId, new ConfirmPaymentRequest());
+            if (!confirmResult.Success)
+                return Redirect($"{frontendBase}/payment/cancel?txId={txId}&reason=verification_failed");
+
+            return Redirect($"{frontendBase}/payment/success?txId={txId}");
+        }
+
+        /// <summary>
+        /// Provider redirects here when the user cancels (e.g. bKash Checkout cancel).
+        /// Redirects the browser to the frontend cancel page.
+        /// </summary>
+        [HttpGet("callback/cancel")]
+        [AllowAnonymous]
+        public IActionResult CallbackCancel([FromQuery] Guid txId)
+        {
+            var frontendBase = _config["FrontendBaseUrl"] ?? "http://localhost:5173";
+            return Redirect($"{frontendBase}/payment/cancel?txId={txId}");
         }
     }
 }

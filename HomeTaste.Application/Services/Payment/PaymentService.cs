@@ -1,3 +1,4 @@
+using System.Text.Json;
 using HomeTaste.Application.DTOs.Payment;
 using HomeTaste.Application.Helpers.Pagination;
 using HomeTaste.Application.Validators.Payment;
@@ -19,20 +20,23 @@ namespace HomeTaste.Application.Services.Payment
         private readonly IUserContextService _userContextService;
         private readonly ILoyaltyService _loyaltyService;
         private readonly INotificationService _notificationService;
+        private readonly IPaymentProcessorFactory _processorFactory;
 
         public PaymentService(
             IUnitOfWork unitOfWork,
             IUserContextService userContextService,
             ILoyaltyService loyaltyService,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IPaymentProcessorFactory processorFactory)
         {
             _unitOfWork = unitOfWork;
             _userContextService = userContextService;
             _loyaltyService = loyaltyService;
             _notificationService = notificationService;
+            _processorFactory = processorFactory;
         }
 
-        public async Task<Result<PaymentTransactionResponse>> InitiatePaymentAsync(InitiatePaymentRequest request)
+        public async Task<Result<PaymentTransactionResponse>> InitiatePaymentAsync(InitiatePaymentRequest request, string callbackBaseUrl)
         {
             var errors = InitiatePaymentRequestValidator.Validate(request);
             if (errors.Count > 0)
@@ -56,13 +60,30 @@ namespace HomeTaste.Application.Services.Payment
             if (existing != null)
                 return Result<PaymentTransactionResponse>.Fail("This order has already been paid.", "Conflict", ResultType.Conflict);
 
+            if (string.IsNullOrWhiteSpace(request.Gateway))
+                return Result<PaymentTransactionResponse>.Fail("A payment gateway must be selected.", "Bad request", ResultType.BadRequest);
+
+            var gatewaySlug = request.Gateway.Trim().ToLowerInvariant();
+            var gateway = await _unitOfWork.Repository<Domain.Entities.Payment.PaymentGateway>()
+                .FirstOrDefaultAsync(g => g.Slug == gatewaySlug && g.IsActive);
+            if (gateway == null)
+                return Result<PaymentTransactionResponse>.Fail(
+                    $"No active '{gatewaySlug}' gateway configured. Please contact admin.",
+                    "Service Unavailable", ResultType.Failure);
+
+            var processor = _processorFactory.GetProcessor(gateway.Slug);
+            if (processor == null)
+                return Result<PaymentTransactionResponse>.Fail(
+                    $"No payment processor registered for gateway '{gateway.Slug}'.",
+                    "Service Unavailable", ResultType.Failure);
+
             var transaction = new PaymentTransaction
             {
                 Id = Guid.NewGuid(),
                 OrderId = request.OrderId,
                 Amount = order.TotalAmount,
                 Status = PaymentStatus.Pending,
-                Gateway = request.Gateway?.Trim().ToLowerInvariant() ?? "cash",
+                Gateway = gateway.Slug,
                 Notes = request.Notes,
                 CreatedAt = DateTime.UtcNow
             };
@@ -70,7 +91,45 @@ namespace HomeTaste.Application.Services.Payment
             await _unitOfWork.Repository<PaymentTransaction>().AddAsync(transaction);
             await _unitOfWork.SaveChangesAsync();
 
-            return Result<PaymentTransactionResponse>.Ok(MapToResponse(transaction), "Payment initiated. Awaiting confirmation.", ResultType.Created);
+            var config = ParseConfig(gateway.Config);
+            var successUrl = $"{callbackBaseUrl}/api/payment/callback/success?txId={transaction.Id}&gateway={gateway.Slug}";
+            var cancelUrl  = $"{callbackBaseUrl}/api/payment/callback/cancel?txId={transaction.Id}";
+            var result = await processor.InitiateAsync(config, order.TotalAmount, request.OrderId, transaction.Id, successUrl, cancelUrl);
+
+            if (!result.Success)
+            {
+                // Mark transaction failed so it doesn't block future attempts
+                transaction.Status = PaymentStatus.Failed;
+                transaction.UpdatedAt = DateTime.UtcNow;
+                _unitOfWork.Repository<PaymentTransaction>().Update(transaction);
+                await _unitOfWork.SaveChangesAsync();
+
+                return Result<PaymentTransactionResponse>.Fail(
+                    result.Error ?? "Payment initiation failed. Please contact admin.",
+                    "Service Unavailable", ResultType.Failure);
+            }
+
+            // Persist the provider's reference (e.g. Stripe PaymentIntentId)
+            if (!string.IsNullOrEmpty(result.ProviderRef))
+            {
+                transaction.TransactionRef = result.ProviderRef;
+                transaction.UpdatedAt = DateTime.UtcNow;
+                _unitOfWork.Repository<PaymentTransaction>().Update(transaction);
+                await _unitOfWork.SaveChangesAsync();
+            }
+
+            var response = MapToResponse(transaction);
+            response.ClientSecret    = result.ClientSecret;
+            response.PublishableKey  = result.PublishableKey;
+            response.MerchantNumber  = result.MerchantNumber;
+
+            var message = result.MerchantNumber != null
+                ? "Payment initiated. Please complete the manual transfer."
+                : result.RedirectUrl != null
+                    ? "Payment initiated. Redirect to complete payment."
+                    : "Payment initiated. Complete card payment.";
+
+            return Result<PaymentTransactionResponse>.Ok(response, message, ResultType.Created);
         }
 
         public async Task<Result<PaymentTransactionResponse>> ConfirmPaymentAsync(Guid transactionId, ConfirmPaymentRequest request)
@@ -93,17 +152,38 @@ namespace HomeTaste.Application.Services.Payment
             if (order == null)
                 return Result<PaymentTransactionResponse>.Fail("Associated order not found.", "Not found", ResultType.NotFound);
 
+            var gateway = await _unitOfWork.Repository<Domain.Entities.Payment.PaymentGateway>()
+                .FirstOrDefaultAsync(g => g.Slug == transaction.Gateway);
+            if (gateway == null)
+                return Result<PaymentTransactionResponse>.Fail("Payment gateway not found.", "Not found", ResultType.NotFound);
+
+            var processor = _processorFactory.GetProcessor(gateway.Slug);
+            if (processor == null)
+                return Result<PaymentTransactionResponse>.Fail(
+                    $"No payment processor registered for gateway '{gateway.Slug}'.",
+                    "Service Unavailable", ResultType.Failure);
+
+            var config = ParseConfig(gateway.Config);
+            var verifyResult = await processor.VerifyAsync(config, transaction.TransactionRef, request.TransactionRef);
+
+            if (!verifyResult.Success)
+                return Result<PaymentTransactionResponse>.Fail(
+                    verifyResult.Error ?? "Payment not yet completed. Please finish the payment.",
+                    "Payment Required", ResultType.BadRequest);
+
+            // Let the processor dictate which ref gets stored (manual sets customer's TXN ID; card keeps PaymentIntentId)
+            if (verifyResult.TransactionRef != null)
+                transaction.TransactionRef = verifyResult.TransactionRef;
+
             await _unitOfWork.BeginTransaction();
             try
             {
                 transaction.Status = PaymentStatus.Success;
-                transaction.TransactionRef = request.TransactionRef;
                 transaction.Notes = request.Notes ?? transaction.Notes;
                 transaction.PaidAt = DateTime.UtcNow;
                 transaction.UpdatedAt = DateTime.UtcNow;
                 _unitOfWork.Repository<PaymentTransaction>().Update(transaction);
 
-                // Advance order to Confirmed if still Pending
                 if (order.Status == OrderStatus.Pending)
                 {
                     order.Status = OrderStatus.Confirmed;
@@ -120,7 +200,6 @@ namespace HomeTaste.Application.Services.Payment
                 return Result<PaymentTransactionResponse>.Fail("Failed to confirm payment. Please try again.", "Error", ResultType.Failure);
             }
 
-            // Earn loyalty points and notify — fire-and-forget; non-critical
             _ = _loyaltyService.EarnPointsAsync(order.UserId.ToString(), order.Id, order.TotalAmount);
             _ = _notificationService.CreateNotificationAsync(
                 order.UserId.ToString(),
@@ -199,7 +278,6 @@ namespace HomeTaste.Application.Services.Payment
                 query = query.Where(t => t.Status == status.Value);
 
             var totalCount = await _unitOfWork.Repository<PaymentTransaction>().CountAsync(query);
-
             var paged = _unitOfWork.Repository<PaymentTransaction>().PaginateAsQueryable(query, pageNumber, pageSize);
             var transactions = await _unitOfWork.Repository<PaymentTransaction>().ToEnumerableAsync(paged, t => MapToResponse(t));
 
@@ -208,6 +286,11 @@ namespace HomeTaste.Application.Services.Payment
                 new PaginatedResponse<IEnumerable<PaymentTransactionResponse>> { Data = transactions, MetaData = meta },
                 "Transactions retrieved successfully.", ResultType.Success);
         }
+
+        // ─── Helpers ────────────────────────────────────────────────────────────
+
+        private static Dictionary<string, string> ParseConfig(string? json) =>
+            JsonSerializer.Deserialize<Dictionary<string, string>>(json ?? "{}") ?? new();
 
         private static PaymentTransactionResponse MapToResponse(PaymentTransaction t) => new()
         {

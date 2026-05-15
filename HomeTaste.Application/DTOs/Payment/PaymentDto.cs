@@ -33,5 +33,8 @@ namespace HomeTaste.Application.DTOs.Payment
         public DateTime? PaidAt { get; set; }
         public DateTime? RefundedAt { get; set; }
         public DateTime? CreatedAt { get; set; }
+        public string? ClientSecret { get; set; }
+        public string? PublishableKey { get; set; }
+        public string? MerchantNumber { get; set; }
     }
 }

@@ -248,6 +248,18 @@
         <member name="M:HomeTaste.API.Controllers.PaymentController.GetAll(System.Int32,System.Int32,System.Nullable{HomeTaste.Domain.Enums.PaymentStatus})">
             <summary>Gets all payment transactions with optional status filter. Admin only.</summary>
         </member>
+        <member name="M:HomeTaste.API.Controllers.PaymentController.CallbackSuccess(System.Guid,System.String)">
+            <summary>
+            Provider redirects here on successful payment (e.g. bKash Checkout).
+            Verifies with the provider then redirects the browser to the frontend success page.
+            </summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.PaymentController.CallbackCancel(System.Guid)">
+            <summary>
+            Provider redirects here when the user cancels (e.g. bKash Checkout cancel).
+            Redirects the browser to the frontend cancel page.
+            </summary>
+        </member>
         <member name="T:HomeTaste.API.Controllers.UserProfileController">
             <summary>Current user's own profile management.</summary>
         </member>

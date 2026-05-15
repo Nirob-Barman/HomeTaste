@@ -40,6 +40,7 @@ namespace HomeTaste.Infrastructure.Persistence
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<OrderItemCustomization> OrderItemCustomizations { get; set; }
         public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
+        public DbSet<PaymentGateway> PaymentGateways { get; set; }
         public DbSet<DeliveryPersonnel> DeliveryPersonnel { get; set; }
         public DbSet<DeliveryAssignment> DeliveryAssignments { get; set; }
         public DbSet<Notification> Notifications { get; set; }

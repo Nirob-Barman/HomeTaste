@@ -1,0 +1,56 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=YOUR_SERVER\\SQLEXPRESS;Database=HomeTaste;Trusted_Connection=true;TrustServerCertificate=True;"
+  },
+  "CloudinarySettings": {
+    "CloudName": "your-cloudinary-cloud-name",
+    "ApiKey": "your-cloudinary-api-key",
+    "ApiSecret": "your-cloudinary-api-secret"
+  },
+  "Supabase": {
+    "Url": "https://your-project.supabase.co",
+    "Key": "your-supabase-anon-key"
+  },
+  "JwtSettings": {
+    "AccessToken": {
+      "Key": "your-access-token-secret-key-min-32-chars",
+      "Issuer": "your-access-token-issuer",
+      "Audience": "your-access-token-audience",
+      "ExpiryMinutes": 15,
+      "SigningAlgorithm": "HS256",
+      "AdditionalClaims": {
+        "role": "admin",
+        "customClaim": "value"
+      }
+    },
+    "RefreshToken": {
+      "Key": "your-refresh-token-secret-key-min-32-chars",
+      "Issuer": "your-refresh-token-issuer",
+      "Audience": "your-refresh-token-audience",
+      "ExpiryMinutes": 60
+    }
+  },
+  "Authentication": {
+    "Google": {
+      "ClientId": "your-google-client-id",
+      "ClientSecret": "your-google-client-secret"
+    }
+  },
+  "FrontendBaseUrl": "http://localhost:5173",
+  "EmailSettings": {
+    "SmtpServer": "smtp.gmail.com",
+    "Port": 587,
+    "SenderEmail": "your-email@gmail.com",
+    "SenderName": "Home Taste",
+    "Username": "your-email@gmail.com",
+    "Password": "your-app-password",
+    "EnableSsl": true
+  }
+}

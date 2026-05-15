@@ -1,6 +1,9 @@
 using HomeTaste.Application.DTOs.Order;
+using HomeTaste.Application.Helpers.Email;
 using HomeTaste.Application.Helpers.Pagination;
 using HomeTaste.Application.Interfaces;
+using HomeTaste.Application.Interfaces.Auth;
+using HomeTaste.Application.Interfaces.Email;
 using HomeTaste.Application.Interfaces.Loyalty;
 using HomeTaste.Application.Interfaces.Notification;
 using HomeTaste.Application.Interfaces.Order;
@@ -20,6 +23,8 @@ namespace HomeTaste.Application.Services.Order
         private readonly IUserContextService _userContextService;
         private readonly INotificationService _notificationService;
         private readonly ILoyaltyService _loyaltyService;
+        private readonly IEmailService _emailService;
+        private readonly IUserManager _userManager;
 
         private const decimal TaxRate = 0.10m;
         private const int PointsRedemptionRate = 100; // 100 points = $1
@@ -28,12 +33,16 @@ namespace HomeTaste.Application.Services.Order
             IUnitOfWork unitOfWork,
             IUserContextService userContextService,
             INotificationService notificationService,
-            ILoyaltyService loyaltyService)
+            ILoyaltyService loyaltyService,
+            IEmailService emailService,
+            IUserManager userManager)
         {
             _unitOfWork = unitOfWork;
             _userContextService = userContextService;
             _notificationService = notificationService;
             _loyaltyService = loyaltyService;
+            _emailService = emailService;
+            _userManager = userManager;
         }
 
         public async Task<Result<PaginatedResponse<IEnumerable<OrderResponse>>>> GetMyOrdersAsync(int pageNumber = 1, int pageSize = 10)
@@ -301,7 +310,7 @@ namespace HomeTaste.Application.Services.Order
                 return Result<OrderResponse>.Fail("Failed to place order. Please try again.", "Error", ResultType.Failure);
             }
 
-            // Notify customer (fire-and-forget style — non-critical)
+            // Notify customer (fire-and-forget — non-critical)
             _ = _notificationService.CreateNotificationAsync(
                 userId.ToString(),
                 "Order Placed",
@@ -311,6 +320,14 @@ namespace HomeTaste.Application.Services.Order
                 "Order");
 
             var response = await BuildOrderResponseAsync(order);
+
+            var userEmail = _userContextService.Email;
+            if (!string.IsNullOrWhiteSpace(userEmail))
+                _ = _emailService.SendEmailAsync(
+                    $"Order Confirmed — #{order.Id.ToString()[..8].ToUpperInvariant()}",
+                    OrderEmailTemplates.OrderConfirmation(response),
+                    [userEmail]);
+
             return Result<OrderResponse>.Ok(response, "Order placed successfully.", ResultType.Created);
         }
 
@@ -352,6 +369,8 @@ namespace HomeTaste.Application.Services.Order
                 order.Id,
                 "Order");
 
+            _ = SendStatusEmailAsync(order.UserId, order.Id, request.Status);
+
             var response = await BuildOrderResponseAsync(order);
             return Result<OrderResponse>.Ok(response, "Order status updated successfully.", ResultType.Success);
         }
@@ -387,7 +406,29 @@ namespace HomeTaste.Application.Services.Order
                 order.Id,
                 "Order");
 
+            _ = SendCancelEmailAsync(order.UserId, order.Id, request.Reason);
+
             return Result<bool>.Ok(true, "Order cancelled successfully.", ResultType.Success);
+        }
+
+        private async Task SendStatusEmailAsync(Guid userId, Guid orderId, OrderStatus status)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (string.IsNullOrWhiteSpace(user?.Email)) return;
+            await _emailService.SendEmailAsync(
+                $"Order Update — #{orderId.ToString()[..8].ToUpperInvariant()}",
+                OrderEmailTemplates.StatusChanged(orderId, status),
+                [user.Email]);
+        }
+
+        private async Task SendCancelEmailAsync(Guid userId, Guid orderId, string? reason)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (string.IsNullOrWhiteSpace(user?.Email)) return;
+            await _emailService.SendEmailAsync(
+                $"Order Cancelled — #{orderId.ToString()[..8].ToUpperInvariant()}",
+                OrderEmailTemplates.OrderCancelled(orderId, reason),
+                [user.Email]);
         }
 
         private static string? ValidateStatusTransition(OrderStatus current, OrderStatus next)

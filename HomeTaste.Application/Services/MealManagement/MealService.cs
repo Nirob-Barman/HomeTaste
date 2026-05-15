@@ -69,7 +69,11 @@ namespace HomeTaste.Application.Services.MealManagement
                     Price = meal.Price,
                     ImageUrl = meal.ImageUrl,
                     CategoryId = meal.CategoryId,
-                    CategoryName = meal.MealCategory != null ? meal.MealCategory.Name : null
+                    CategoryName = meal.MealCategory != null ? meal.MealCategory.Name : null,
+                    IsAvailable = meal.IsAvailable,
+                    PreparationTime = meal.PreparationTime,
+                    DiscountPrice = meal.DiscountPrice,
+                    Calories = meal.Calories
                 })).ToList();
 
             var paginationMeta = PaginationHelper.GetPaginationMetadata(pageNumber, pageSize, totalCount);
@@ -98,7 +102,11 @@ namespace HomeTaste.Application.Services.MealManagement
                 Description = meal.Description,
                 Price = meal.Price,
                 ImageUrl = meal.ImageUrl,
-                CategoryId = meal.CategoryId
+                CategoryId = meal.CategoryId,
+                IsAvailable = meal.IsAvailable,
+                PreparationTime = meal.PreparationTime,
+                DiscountPrice = meal.DiscountPrice,
+                Calories = meal.Calories
             };
             return Result<MealResponse>.Ok(response, "Meal retrieved successfully", ResultType.Success);
         }
@@ -143,7 +151,11 @@ namespace HomeTaste.Application.Services.MealManagement
                 Description = mealRequest.Description,
                 Price = mealRequest.Price,
                 CategoryId = mealRequest.CategoryId,
-                ImageUrl = mealRequest.ImageUrl
+                ImageUrl = mealRequest.ImageUrl,
+                IsAvailable = mealRequest.IsAvailable,
+                PreparationTime = mealRequest.PreparationTime,
+                DiscountPrice = mealRequest.DiscountPrice,
+                Calories = mealRequest.Calories
             };
 
             await _mealRepository.AddAsync(meal);
@@ -156,7 +168,11 @@ namespace HomeTaste.Application.Services.MealManagement
                 Description = meal.Description,
                 Price = meal.Price,
                 ImageUrl = meal.ImageUrl,
-                CategoryId = meal.CategoryId
+                CategoryId = meal.CategoryId,
+                IsAvailable = meal.IsAvailable,
+                PreparationTime = meal.PreparationTime,
+                DiscountPrice = meal.DiscountPrice,
+                Calories = meal.Calories
             };
 
             return Result<MealResponse>.Ok(response, "Meal created successfully", ResultType.Success);
@@ -344,6 +360,10 @@ namespace HomeTaste.Application.Services.MealManagement
             meal.Price = mealRequest.Price;
             meal.CategoryId = mealRequest.CategoryId;
             meal.ImageUrl = mealRequest.ImageUrl ?? meal.ImageUrl;
+            meal.IsAvailable = mealRequest.IsAvailable;
+            meal.PreparationTime = mealRequest.PreparationTime;
+            meal.DiscountPrice = mealRequest.DiscountPrice;
+            meal.Calories = mealRequest.Calories;
 
             _mealRepository.Update(meal);
             await _unitOfWork.SaveChangesAsync();
@@ -355,7 +375,11 @@ namespace HomeTaste.Application.Services.MealManagement
                 Description = meal.Description,
                 Price = meal.Price,
                 ImageUrl = meal.ImageUrl,
-                CategoryId = meal.CategoryId
+                CategoryId = meal.CategoryId,
+                IsAvailable = meal.IsAvailable,
+                PreparationTime = meal.PreparationTime,
+                DiscountPrice = meal.DiscountPrice,
+                Calories = meal.Calories
             };
 
             return Result<MealResponse>.Ok(response, "Meal updated successfully", ResultType.Success);

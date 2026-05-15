@@ -17,6 +17,9 @@ namespace HomeTaste.Infrastructure.Persistence.Configuration
                 .IsRequired()
                 .HasColumnType("decimal(18,2)");
 
+            builder.Property(m => m.DiscountPrice)
+                .HasColumnType("decimal(18,2)");
+
             // Add any additional configurations or indexes as necessary
 
             //builder.HasData(

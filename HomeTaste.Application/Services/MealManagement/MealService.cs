@@ -256,34 +256,40 @@ namespace HomeTaste.Application.Services.MealManagement
                     new MealRequestWithCategoryName { Name = "Kalonji Mishti", Description = "A Bengali sweet made from sugar syrup, cardamom, and a special kind of poppy seed called Kalonji.", Price = 160, CategoryName = "Bengali Sweets", ImageUrl = "https://example.com/images/kalonji_mishti.jpg" }
                 };
 
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var uniqueMeals = meals.Where(m => seen.Add(m.Name!)).ToList();
+
+                var existingNames = (await _mealRepository.GetAllAsync())
+                    .Select(m => m.Name!.ToLower())
+                    .ToHashSet();
+
+                var mealsToInsert = uniqueMeals
+                    .Where(m => !existingNames.Contains(m.Name!.ToLower()))
+                    .ToList();
+
+                if (mealsToInsert.Count == 0)
+                    return Result<int>.Fail("No new meals to insert.", "All predefined meals already exist", ResultType.Conflict);
+
                 var newMeals = new List<Meal>();
 
-                foreach (var mealRequest in meals)
+                foreach (var mealRequest in mealsToInsert)
                 {
                     var category = await _unitOfWork.Repository<MealCategory>()
-                    .FirstOrDefaultAsync(c => c.Name == mealRequest.CategoryName);
+                        .FirstOrDefaultAsync(c => c.Name == mealRequest.CategoryName);
 
                     if (category != null)
                     {
-                        var meal = new Meal
+                        newMeals.Add(new Meal
                         {
                             Name = mealRequest.Name,
                             Description = mealRequest.Description,
                             Price = mealRequest.Price,
                             CategoryId = category.Id,
                             ImageUrl = mealRequest.ImageUrl
-                        };
-
-                        newMeals.Add(meal);
-                    }
-                    else
-                    {
-                        // If the category doesn't exist, you can skip the meal, create the category, or handle it as needed
-                        continue;
+                        });
                     }
                 }
 
-                // Check if we have valid meals to insert
                 if (newMeals.Count == 0)
                 {
                     return Result<int>.Fail("No valid meals to insert.", "All meals have invalid categories", ResultType.Conflict);

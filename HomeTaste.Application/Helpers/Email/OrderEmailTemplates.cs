@@ -107,7 +107,7 @@ namespace HomeTaste.Application.Helpers.Email
             var rows = new System.Text.StringBuilder();
             rows.Append(TotalRow("Subtotal", order.SubTotal));
             rows.Append(order.DeliveryFee == 0
-                ? TotalRow("Delivery", 0, "#16a34a", label: "Delivery", freeLabel: "Free")
+                ? TotalRow("Delivery", 0, "#16a34a", freeLabel: "Free")
                 : TotalRow("Delivery", order.DeliveryFee));
             if (order.LoyaltyDiscountAmount > 0)
                 rows.Append(TotalRow($"Loyalty Points ({order.LoyaltyPointsUsed} pts)", -order.LoyaltyDiscountAmount, "#16a34a"));

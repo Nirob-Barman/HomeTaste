@@ -92,6 +92,7 @@ namespace HomeTaste.Application.Services.MealManagement
             {
                 Id = r.Id,
                 MealId = r.MealId,
+                MealName = r.Meal != null ? r.Meal.Name : null,
                 UserId = r.UserId,
                 Rating = r.Rating,
                 Feedback = r.Feedback,
@@ -170,6 +171,7 @@ namespace HomeTaste.Application.Services.MealManagement
             {
                 Id = r.Id,
                 MealId = r.MealId,
+                MealName = r.Meal != null ? r.Meal.Name : null,
                 UserId = r.UserId,
                 Rating = r.Rating,
                 Feedback = r.Feedback,

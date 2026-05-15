@@ -3,6 +3,9 @@ using HomeTaste.Application.DependencyInjection;
 using HomeTaste.Infrastructure.DependencyInjection;
 using HomeTaste.Infrastructure.Identity.Seed;
 using HomeTaste.Infrastructure.Middleware;
+using QuestPDF.Infrastructure;
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 

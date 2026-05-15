@@ -2,6 +2,7 @@
 using CloudinaryDotNet;
 using HomeTaste.Application.Interfaces;
 using HomeTaste.Application.Interfaces.Auth;
+using HomeTaste.Application.Interfaces.Order;
 using HomeTaste.Application.Interfaces.Payment;
 using HomeTaste.Application.Interfaces.Realtime;
 using HomeTaste.Application.Interfaces.Email;
@@ -72,6 +73,7 @@ namespace HomeTaste.Infrastructure.DependencyInjection
             services.AddSingleton(new Cloudinary(account));
 
             services.AddScoped<IFileStorage, CloudinaryFileStorage>();
+            services.AddScoped<IPdfInvoiceService, PdfInvoiceService>();
 
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();

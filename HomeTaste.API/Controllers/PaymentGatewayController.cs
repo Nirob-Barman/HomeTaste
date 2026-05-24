@@ -18,6 +18,14 @@ namespace HomeTaste.API.Controllers
             _gatewayService = gatewayService;
         }
 
+        [HttpGet("schema")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetSchema()
+        {
+            var result = await _gatewayService.GetSchemaAsync();
+            return ApiResponseMapper.FromResult(this, result);
+        }
+
         // Customer-accessible: returns only active gateways (no secret keys exposed)
         [HttpGet("active")]
         [Authorize(Policy = Policies.AdminOrCustomer)]
@@ -51,7 +59,7 @@ namespace HomeTaste.API.Controllers
             return ApiResponseMapper.FromResult(this, result);
         }
 
-        [HttpPut("{id:guid}")]
+        [HttpPatch("{id:guid}")]
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdatePaymentGatewayRequest request)
         {

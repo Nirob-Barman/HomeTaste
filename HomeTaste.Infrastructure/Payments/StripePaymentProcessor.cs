@@ -1,4 +1,5 @@
 using HomeTaste.Application.Interfaces.Payment;
+using Stripe;
 
 namespace HomeTaste.Infrastructure.Payments
 {
@@ -9,7 +10,7 @@ namespace HomeTaste.Infrastructure.Payments
 
         public StripePaymentProcessor(IStripeService stripe) => _stripe = stripe;
 
-        public string Slug => "stripe";
+        public string Slug => "stripe_payment_intents";
 
         public async Task<PaymentInitiateResult> InitiateAsync(
             Dictionary<string, string> config,
@@ -19,7 +20,7 @@ namespace HomeTaste.Infrastructure.Payments
             string successUrl,
             string cancelUrl)
         {
-            config.TryGetValue("SecretKey", out var secretKey);
+            config.TryGetValue("secret_key", out var secretKey);
             if (string.IsNullOrEmpty(secretKey))
                 return new PaymentInitiateResult { Success = false, Error = "Stripe secret key is not configured." };
 
@@ -28,7 +29,7 @@ namespace HomeTaste.Infrastructure.Payments
                 var (paymentIntentId, clientSecret) = await _stripe.CreatePaymentIntentAsync(
                     secretKey, amount, orderId, transactionId);
 
-                config.TryGetValue("PublishableKey", out var publishableKey);
+                config.TryGetValue("publishable_key", out var publishableKey);
 
                 return new PaymentInitiateResult
                 {
@@ -38,9 +39,13 @@ namespace HomeTaste.Infrastructure.Payments
                     PublishableKey = publishableKey,
                 };
             }
-            catch
+            catch (StripeException ex)
             {
-                return new PaymentInitiateResult { Success = false, Error = "Failed to create Stripe payment intent." };
+                return new PaymentInitiateResult { Success = false, Error = $"Stripe error: {ex.StripeError?.Message ?? ex.Message}" };
+            }
+            catch (Exception ex)
+            {
+                return new PaymentInitiateResult { Success = false, Error = $"Failed to create Stripe payment intent: {ex.Message}" };
             }
         }
 
@@ -52,7 +57,7 @@ namespace HomeTaste.Infrastructure.Payments
             if (string.IsNullOrEmpty(storedRef))
                 return new PaymentVerifyResult { Success = false, Error = "No payment intent reference found." };
 
-            config.TryGetValue("SecretKey", out var secretKey);
+            config.TryGetValue("secret_key", out var secretKey);
             if (string.IsNullOrEmpty(secretKey))
                 return new PaymentVerifyResult { Success = false, Error = "Stripe secret key is not configured." };
 
@@ -61,9 +66,13 @@ namespace HomeTaste.Infrastructure.Payments
                 var verified = await _stripe.VerifyPaymentIntentAsync(secretKey, storedRef);
                 return new PaymentVerifyResult { Success = verified, TransactionRef = storedRef };
             }
-            catch
+            catch (StripeException ex)
             {
-                return new PaymentVerifyResult { Success = false, Error = "Stripe verification failed." };
+                return new PaymentVerifyResult { Success = false, Error = $"Stripe error: {ex.StripeError?.Message ?? ex.Message}" };
+            }
+            catch (Exception ex)
+            {
+                return new PaymentVerifyResult { Success = false, Error = $"Stripe verification failed: {ex.Message}" };
             }
         }
     }

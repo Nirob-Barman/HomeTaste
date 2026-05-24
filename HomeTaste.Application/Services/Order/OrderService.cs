@@ -325,7 +325,9 @@ namespace HomeTaste.Application.Services.Order
                 return Result<OrderResponse>.Fail("Failed to place order. Please try again.", "Error", ResultType.Failure);
             }
 
-            // Notify customer (fire-and-forget — non-critical)
+            var response = await BuildOrderResponseAsync(order);
+
+            // Fire-and-forget after all DB work is done
             _ = _notificationService.CreateNotificationAsync(
                 userId.ToString(),
                 "Order Placed",
@@ -333,8 +335,6 @@ namespace HomeTaste.Application.Services.Order
                 NotificationType.OrderStatus,
                 order.Id,
                 "Order");
-
-            var response = await BuildOrderResponseAsync(order);
 
             var userEmail = _userContextService.Email;
             if (!string.IsNullOrWhiteSpace(userEmail))
@@ -375,7 +375,8 @@ namespace HomeTaste.Application.Services.Order
             _unitOfWork.Repository<Domain.Entities.Order.Order>().Update(order);
             await _unitOfWork.SaveChangesAsync();
 
-            // Notify customer
+            var response = await BuildOrderResponseAsync(order);
+
             _ = _notificationService.CreateNotificationAsync(
                 order.UserId.ToString(),
                 "Order Update",
@@ -386,7 +387,6 @@ namespace HomeTaste.Application.Services.Order
 
             _ = SendStatusEmailAsync(order.UserId, order.Id, request.Status);
 
-            var response = await BuildOrderResponseAsync(order);
             return Result<OrderResponse>.Ok(response, "Order status updated successfully.", ResultType.Success);
         }
 

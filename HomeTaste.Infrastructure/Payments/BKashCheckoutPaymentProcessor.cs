@@ -8,7 +8,7 @@ namespace HomeTaste.Infrastructure.Payments
     /// </summary>
     public class BKashCheckoutPaymentProcessor : IPaymentProcessor
     {
-        public string Slug => "bkash-checkout";
+        public string Slug => "bkash_checkout";
 
         public Task<PaymentInitiateResult> InitiateAsync(
             Dictionary<string, string> config,

@@ -8,6 +8,8 @@ namespace HomeTaste.Application.Interfaces.Payment
     {
         Task<Result<PaymentTransactionResponse>> InitiatePaymentAsync(InitiatePaymentRequest request, string callbackBaseUrl);
         Task<Result<PaymentTransactionResponse>> ConfirmPaymentAsync(Guid transactionId, ConfirmPaymentRequest request);
+        Task<Result<PaymentTransactionResponse>> ConfirmDirectPaymentAsync(ConfirmDirectPaymentRequest request);
+        Task<Result<PaymentTransactionResponse>> CancelPendingPaymentAsync(Guid transactionId);
         Task<Result<PaymentTransactionResponse>> RefundPaymentAsync(Guid transactionId, RefundPaymentRequest request);
         Task<Result<PaymentTransactionResponse>> GetPaymentByOrderIdAsync(Guid orderId);
         Task<Result<PaymentTransactionResponse>> GetPaymentByIdAsync(Guid id);

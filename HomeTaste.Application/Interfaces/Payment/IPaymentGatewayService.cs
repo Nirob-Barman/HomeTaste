@@ -5,6 +5,7 @@ namespace HomeTaste.Application.Interfaces.Payment
 {
     public interface IPaymentGatewayService
     {
+        Task<Result<List<GatewayFamilyResponse>>> GetSchemaAsync();
         Task<Result<List<PaymentGatewayResponse>>> GetAllAsync();
         Task<Result<List<PaymentGatewayResponse>>> GetActiveAsync();
         Task<Result<PaymentGatewayResponse>> GetByIdAsync(Guid id);

@@ -52,6 +52,9 @@ namespace HomeTaste.Infrastructure.DependencyInjection
             services.AddScoped<ICookieService, CookieService>();
             services.AddScoped<IUserContextService, UserContextService>();
 
+            services.AddDataProtection();
+            services.AddScoped<IConfigEncryptor, ConfigEncryptor>();
+
             services.AddScoped<IStripeService, StripeService>();
 
             // Payment processor strategy pattern

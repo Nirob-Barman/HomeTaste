@@ -251,6 +251,9 @@
         <member name="M:HomeTaste.API.Controllers.OrderController.Cancel(System.Guid,HomeTaste.Application.DTOs.Order.CancelOrderRequest)">
             <summary>Cancels an order. Customers can cancel Pending/Confirmed orders; Admins can cancel any.</summary>
         </member>
+        <member name="M:HomeTaste.API.Controllers.OrderController.GetInvoice(System.Guid)">
+            <summary>Downloads a PDF invoice for the given order.</summary>
+        </member>
         <member name="T:HomeTaste.API.Controllers.PaymentController">
             <summary>
             Handles payment initiation, confirmation, refunds, and history.
@@ -261,6 +264,9 @@
         </member>
         <member name="M:HomeTaste.API.Controllers.PaymentController.Confirm(System.Guid,HomeTaste.Application.DTOs.Payment.ConfirmPaymentRequest)">
             <summary>Confirms a pending payment transaction (e.g. after gateway callback).</summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.PaymentController.ConfirmDirect(HomeTaste.Application.DTOs.Payment.ConfirmDirectPaymentRequest)">
+            <summary>Confirms a direct payment (Stripe/manual) and creates the transaction as Success.</summary>
         </member>
         <member name="M:HomeTaste.API.Controllers.PaymentController.Refund(System.Guid,HomeTaste.Application.DTOs.Payment.RefundPaymentRequest)">
             <summary>Refunds a successful payment. Admin only.</summary>
@@ -280,11 +286,14 @@
             Verifies with the provider then redirects the browser to the frontend success page.
             </summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.PaymentController.CallbackCancel(System.Guid)">
+        <member name="M:HomeTaste.API.Controllers.PaymentController.CallbackCancel(System.Guid,System.Nullable{System.Guid})">
             <summary>
             Provider redirects here when the user cancels (e.g. bKash Checkout cancel).
-            Redirects the browser to the frontend cancel page.
+            Marks the transaction as Failed then redirects to the frontend cancel page.
             </summary>
+        </member>
+        <member name="M:HomeTaste.API.Controllers.PaymentController.Cancel(System.Guid)">
+            <summary>Cancels a pending transaction (user chose a different payment method).</summary>
         </member>
         <member name="T:HomeTaste.API.Controllers.UserProfileController">
             <summary>Current user's own profile management.</summary>

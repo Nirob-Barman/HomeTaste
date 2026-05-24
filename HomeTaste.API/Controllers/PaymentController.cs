@@ -42,6 +42,14 @@ namespace HomeTaste.API.Controllers
             return ApiResponseMapper.FromResult(this, result);
         }
 
+        /// <summary>Confirms a direct payment (Stripe/manual) and creates the transaction as Success.</summary>
+        [HttpPost("confirm-direct")]
+        public async Task<IActionResult> ConfirmDirect([FromBody] ConfirmDirectPaymentRequest request)
+        {
+            var result = await _paymentService.ConfirmDirectPaymentAsync(request);
+            return ApiResponseMapper.FromResult(this, result);
+        }
+
         /// <summary>Refunds a successful payment. Admin only.</summary>
         [HttpPatch("{id:guid}/refund")]
         [Authorize(Policy = Policies.AdminOnly)]
@@ -99,14 +107,26 @@ namespace HomeTaste.API.Controllers
 
         /// <summary>
         /// Provider redirects here when the user cancels (e.g. bKash Checkout cancel).
-        /// Redirects the browser to the frontend cancel page.
+        /// Marks the transaction as Failed then redirects to the frontend cancel page.
         /// </summary>
         [HttpGet("callback/cancel")]
         [AllowAnonymous]
-        public IActionResult CallbackCancel([FromQuery] Guid txId)
+        public async Task<IActionResult> CallbackCancel([FromQuery] Guid txId, [FromQuery] Guid? orderId)
         {
+            await _paymentService.CancelPendingPaymentAsync(txId);
             var frontendBase = _config["FrontendBaseUrl"] ?? "http://localhost:5173";
-            return Redirect($"{frontendBase}/payment/cancel?txId={txId}");
+            var url = orderId.HasValue
+                ? $"{frontendBase}/payment/cancel?txId={txId}&orderId={orderId}"
+                : $"{frontendBase}/payment/cancel?txId={txId}";
+            return Redirect(url);
+        }
+
+        /// <summary>Cancels a pending transaction (user chose a different payment method).</summary>
+        [HttpPatch("{id:guid}/cancel")]
+        public async Task<IActionResult> Cancel(Guid id)
+        {
+            var result = await _paymentService.CancelPendingPaymentAsync(id);
+            return ApiResponseMapper.FromResult(this, result);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace HomeTaste.Infrastructure.Payments
     /// </summary>
     public class BKashManualPaymentProcessor : IPaymentProcessor
     {
-        public string Slug => "bkash";
+        public string Slug => "bkash_manual";
 
         public Task<PaymentInitiateResult> InitiateAsync(
             Dictionary<string, string> config,
@@ -18,7 +18,7 @@ namespace HomeTaste.Infrastructure.Payments
             string successUrl,
             string cancelUrl)
         {
-            config.TryGetValue("MerchantNumber", out var merchantNumber);
+            config.TryGetValue("merchant_number", out var merchantNumber);
 
             return Task.FromResult(new PaymentInitiateResult
             {

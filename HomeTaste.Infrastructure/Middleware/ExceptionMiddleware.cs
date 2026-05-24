@@ -34,16 +34,17 @@ namespace HomeTaste.Infrastructure.Middleware
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            var statusCode = GetStatusCode(exception);
+            context.Response.StatusCode = statusCode;
             context.Response.ContentType = "application/json";
-           
+
             var response = new
             {
-                //StatusCode = context.Response.StatusCode,
-                statusCode = GetStatusCode(exception),
-                Message = "An unexpected error occurred.",
+                statusCode,
+                message = "An unexpected error occurred.",
                 success = false,
-                data = (object)null!,
-                errors = exception.Message // Optional: hide in production                
+                data = (object?)null,
+                errors = exception.Message
             };
 
             return context.Response.WriteAsJsonAsync(response);

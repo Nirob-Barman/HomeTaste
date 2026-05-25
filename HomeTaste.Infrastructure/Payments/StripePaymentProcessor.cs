@@ -54,7 +54,8 @@ namespace HomeTaste.Infrastructure.Payments
             string? storedRef,
             string? requestRef)
         {
-            if (string.IsNullOrEmpty(storedRef))
+            var intentId = storedRef ?? requestRef;
+            if (string.IsNullOrEmpty(intentId))
                 return new PaymentVerifyResult { Success = false, Error = "No payment intent reference found." };
 
             config.TryGetValue("secret_key", out var secretKey);
@@ -63,8 +64,8 @@ namespace HomeTaste.Infrastructure.Payments
 
             try
             {
-                var verified = await _stripe.VerifyPaymentIntentAsync(secretKey, storedRef);
-                return new PaymentVerifyResult { Success = verified, TransactionRef = storedRef };
+                var verified = await _stripe.VerifyPaymentIntentAsync(secretKey, intentId);
+                return new PaymentVerifyResult { Success = verified, TransactionRef = intentId };
             }
             catch (StripeException ex)
             {

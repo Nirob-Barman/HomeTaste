@@ -436,6 +436,8 @@ namespace HomeTaste.Application.Services.Payment
             if (status.HasValue)
                 query = query.Where(t => t.Status == status.Value);
 
+            query = query.OrderByDescending(t => t.UpdatedAt ?? t.CreatedAt);
+
             var totalCount = await _unitOfWork.Repository<PaymentTransaction>().CountAsync(query);
             var paged = _unitOfWork.Repository<PaymentTransaction>().PaginateAsQueryable(query, pageNumber, pageSize);
             var transactions = await _unitOfWork.Repository<PaymentTransaction>().ToEnumerableAsync(paged, t => MapToResponse(t));

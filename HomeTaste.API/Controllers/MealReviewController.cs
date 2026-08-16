@@ -1,7 +1,13 @@
-﻿using HomeTaste.API.Wrappers;
 using HomeTaste.Application.Authorization;
-using HomeTaste.Application.DTOs.MealManagement;
-using HomeTaste.Application.Interfaces.MealManagement;
+using HomeTaste.Application.Features.MealReviews;
+using HomeTaste.Application.Features.MealReviews.Commands.DeleteReview;
+using HomeTaste.Application.Features.MealReviews.Commands.SubmitReview;
+using HomeTaste.Application.Features.MealReviews.Commands.UpdateReview;
+using HomeTaste.Application.Features.MealReviews.Queries.GetAverageMealRating;
+using HomeTaste.Application.Features.MealReviews.Queries.GetMealReviews;
+using HomeTaste.Application.Features.MealReviews.Queries.GetMyReviews;
+using HomeTaste.Application.Features.MealReviews.Queries.GetReviewById;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,32 +17,32 @@ namespace HomeTaste.API.Controllers
     [ApiController]
     public class MealReviewController : ControllerBase
     {
-        private readonly IMealReviewService _mealReviewService;
-        public MealReviewController(IMealReviewService mealReviewService)
+        private readonly IMediator _mediator;
+        public MealReviewController(IMediator mediator)
         {
-            _mealReviewService = mealReviewService;
+            _mediator = mediator;
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetReviewById(Guid id)
         {
-            var result = await _mealReviewService.GetReviewByIdAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetReviewByIdQuery(id));
+            return Ok(result);
         }
 
         [Authorize(Policy = Policies.CustomerOnly)]
         [HttpPost]
         public async Task<IActionResult> SubmitReview([FromBody] SubmitReviewRequest request)
         {
-            var result = await _mealReviewService.SubmitReviewAsync(request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new SubmitReviewCommand(request));
+            return Ok(result);
         }
 
         [HttpGet("meal/{id}")]
         public async Task<IActionResult> GetMealReviews(Guid id)
         {
-            var result = await _mealReviewService.GetMealReviewsAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetMealReviewsQuery(id));
+            return Ok(result);
         }
 
 
@@ -44,30 +50,30 @@ namespace HomeTaste.API.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateReview(Guid id, [FromBody] UpdateReviewRequest request)
         {
-            var result = await _mealReviewService.UpdateReviewAsync(id, request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new UpdateReviewCommand(id, request));
+            return Ok(result);
         }
         [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReview(Guid id)
         {
-            var result = await _mealReviewService.DeleteReviewAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new DeleteReviewCommand(id));
+            return Ok(result);
         }
 
         [Authorize]
         [HttpGet("my-reviews")]
         public async Task<IActionResult> GetMyReviews()
         {
-            var result = await _mealReviewService.GetMyReviewsAsync();
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetMyReviewsQuery());
+            return Ok(result);
         }
 
         [HttpGet("{id}/average-rating")]
         public async Task<IActionResult> GetAverageMealRating(Guid id)
         {
-            var result = await _mealReviewService.GetAverageMealRatingAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetAverageMealRatingQuery(id));
+            return Ok(result);
         }
     }
 }

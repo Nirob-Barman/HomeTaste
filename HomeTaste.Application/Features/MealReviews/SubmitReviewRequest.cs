@@ -1,8 +1,6 @@
-﻿
-
-namespace HomeTaste.Application.DTOs.MealManagement
+namespace HomeTaste.Application.Features.MealReviews
 {
-    public class SubmitReviewRequest
+    public record SubmitReviewRequest
     {
         public Guid MealId { get; set; }
         public Guid UserId { get; set; }

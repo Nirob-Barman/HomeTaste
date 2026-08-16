@@ -1,7 +1,6 @@
-﻿
-namespace HomeTaste.Application.DTOs.MealManagement
+namespace HomeTaste.Application.Features.MealReviews
 {
-    public class UpdateReviewRequest
+    public record UpdateReviewRequest
     {
         public int? Rating { get; set; }
         public string? Feedback { get; set; }

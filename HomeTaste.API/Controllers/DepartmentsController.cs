@@ -1,6 +1,11 @@
 ﻿using HomeTaste.API.Wrappers;
 using HomeTaste.Application.DTOs.OrganizationDepartment;
-using HomeTaste.Application.Interfaces.OrganizationDepartment;
+using HomeTaste.Application.Features.Departments.Commands.CreateDepartment;
+using HomeTaste.Application.Features.Departments.Commands.DeleteDepartment;
+using HomeTaste.Application.Features.Departments.Commands.UpdateDepartment;
+using HomeTaste.Application.Features.Departments.Queries.GetAllDepartments;
+using HomeTaste.Application.Features.Departments.Queries.GetDepartmentById;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeTaste.API.Controllers
@@ -9,45 +14,45 @@ namespace HomeTaste.API.Controllers
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
-        private readonly IDepartmentService _departmentService;
+        private readonly IMediator _mediator;
 
-        public DepartmentsController(IDepartmentService departmentService)
+        public DepartmentsController(IMediator mediator)
         {
-            _departmentService = departmentService;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllDepartments([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!)
         {
-            var result = await _departmentService.GetAllDepartmentsAsync(pageNumber, pageSize, searchTerm);
+            var result = await _mediator.Send(new GetAllDepartmentsQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
             return ApiResponseMapper.FromResult(this, result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDepartmentById(Guid id)
         {
-            var result = await _departmentService.GetDepartmentByIdAsync(id);
+            var result = await _mediator.Send(new GetDepartmentByIdQuery(id));
             return ApiResponseMapper.FromResult(this, result);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateDepartment([FromBody] DepartmentRequest departmentRequest)
         {
-            var result = await _departmentService.CreateDepartmentAsync(departmentRequest);
+            var result = await _mediator.Send(new CreateDepartmentCommand(departmentRequest));
             return ApiResponseMapper.FromResult(this, result);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateDepartment(Guid id, [FromBody] DepartmentRequest departmentRequest)
         {
-            var result = await _departmentService.UpdateDepartmentAsync(id, departmentRequest);
+            var result = await _mediator.Send(new UpdateDepartmentCommand(id, departmentRequest));
             return ApiResponseMapper.FromResult(this, result);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(Guid id)
         {
-            var result = await _departmentService.DeleteDepartmentAsync(id);
+            var result = await _mediator.Send(new DeleteDepartmentCommand(id));
             return ApiResponseMapper.FromResult(this, result);
         }
     }

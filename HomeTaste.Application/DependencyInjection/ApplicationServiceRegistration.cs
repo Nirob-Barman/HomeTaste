@@ -8,6 +8,9 @@
 //using HomeTaste.Application.Services.TaskManagement;
 //using HomeTaste.Application.Services.Test;
 //using HomeTaste.Application.Services.Measurements;
+using FluentValidation;
+using HomeTaste.Application.Behaviors;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -29,6 +32,10 @@ namespace HomeTaste.Application.DependencyInjection
 
             // Get the current assembly
             var assembly = Assembly.GetExecutingAssembly();
+
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+            services.AddValidatorsFromAssembly(assembly);
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             // Find all classes that implement interfaces ending in "Service"
             //var serviceTypes = assembly.GetTypes()

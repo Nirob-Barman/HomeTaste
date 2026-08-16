@@ -4,17 +4,17 @@
     {
         public Guid Id { get; set; }
 
-        public string? UserId { get; set; }
+        public string? UserId { get; private set; }
 
-        public DateTime LoginTime { get; set; }
+        public DateTime LoginTime { get; private set; }
 
-        public string? IPAddress { get; set; }
+        public string? IPAddress { get; private set; }
 
         public string? DeviceInfo { get; set; }
 
-        public string? UserAgent { get; set; }
+        public string? UserAgent { get; private set; }
 
-        public bool IsSuccessful { get; set; }
+        public bool IsSuccessful { get; private set; }
 
         public string? Location { get; set; }  // Optional: Geolocation of the user (could use IP-based geolocation)
 
@@ -24,5 +24,19 @@
 
         // Derived properties, if needed
         public string? LoginStatus { get; set; }
+
+        private LoginAudit() { } // EF Core
+
+        public static LoginAudit Create(string? userId, bool isSuccessful, string? ipAddress, string? userAgent)
+        {
+            return new LoginAudit
+            {
+                UserId = userId,
+                LoginTime = DateTime.UtcNow,
+                IsSuccessful = isSuccessful,
+                IPAddress = ipAddress,
+                UserAgent = userAgent
+            };
+        }
     }
 }

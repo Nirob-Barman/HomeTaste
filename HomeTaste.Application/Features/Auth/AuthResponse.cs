@@ -1,7 +1,6 @@
-﻿
-namespace HomeTaste.Application.DTOs.Auth
+namespace HomeTaste.Application.Features.Auth
 {
-    public class AuthResponse
+    public record AuthResponse
     {
         public string? AccessToken { get; set; }
         public string? RefreshToken { get; set; }

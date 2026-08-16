@@ -1,7 +1,6 @@
-﻿
-namespace HomeTaste.Application.DTOs.Auth
+namespace HomeTaste.Application.Features.Auth
 {
-    public class RegisterRequest
+    public record RegisterRequest
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }

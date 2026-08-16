@@ -1,6 +1,10 @@
-﻿using HomeTaste.API.Wrappers;
-using HomeTaste.Application.DTOs.Auth;
-using HomeTaste.Application.Interfaces.Auth;
+using HomeTaste.Application.Features.Auth;
+using HomeTaste.Application.Features.Auth.Commands.Login;
+using HomeTaste.Application.Features.Auth.Commands.Logout;
+using HomeTaste.Application.Features.Auth.Commands.RefreshToken;
+using HomeTaste.Application.Features.Auth.Commands.Register;
+using HomeTaste.Application.Features.Auth.Queries.GetCurrentUser;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,27 +14,26 @@ namespace HomeTaste.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
+        private readonly IMediator _mediator;
+        public AuthController(IMediator mediator)
         {
-            _authService = authService;
+            _mediator = mediator;
         }
 
         //[Authorize]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            var result = await _authService.RegisterAsync(request);
-            return ApiResponseMapper.FromResult(this, result);
-
+            var result = await _mediator.Send(new RegisterCommand(request));
+            return Ok(result);
         }
 
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var result = await _authService.LoginAsync(request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new LoginCommand(request));
+            return Ok(result);
         }
 
         [Authorize]
@@ -38,24 +41,24 @@ namespace HomeTaste.API.Controllers
         [HttpGet("me")]
         public async Task<IActionResult> Me()
         {
-            var result = await _authService.GetCurrentUserAsync();
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetCurrentUserQuery());
+            return Ok(result);
         }
 
 
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest? request = null)
         {
-            var result = await _authService.RefreshTokenAsync(request?.RefreshToken);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new RefreshTokenCommand(request?.RefreshToken));
+            return Ok(result);
         }
 
         [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            var restult = await _authService.LogoutAsync();
-            return ApiResponseMapper.FromResult(this, restult);
+            var result = await _mediator.Send(new LogoutCommand());
+            return Ok(result);
         }
     }
 }

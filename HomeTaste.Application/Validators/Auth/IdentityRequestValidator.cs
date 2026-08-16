@@ -1,5 +1,6 @@
 ﻿using HomeTaste.Application.DTOs.Admin;
 using HomeTaste.Application.DTOs.Auth;
+using HomeTaste.Application.Features.Auth;
 using HomeTaste.Application.Features.Users.Admin;
 using HomeTaste.Application.Validators.Common;
 

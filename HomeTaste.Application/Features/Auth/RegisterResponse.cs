@@ -1,7 +1,7 @@
-﻿namespace HomeTaste.Application.DTOs.Auth
+namespace HomeTaste.Application.Features.Auth
 {
-    public class RegisterResponse
-    {        
+    public record RegisterResponse
+    {
         public string Id { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string? Role { get; set; }

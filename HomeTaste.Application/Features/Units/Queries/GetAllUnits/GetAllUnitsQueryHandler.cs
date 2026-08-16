@@ -1,4 +1,3 @@
-using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Helpers.Pagination;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
@@ -18,8 +17,20 @@ namespace HomeTaste.Application.Features.Units.Queries.GetAllUnits
 
         public async Task<Result<PaginatedResponse<IEnumerable<UnitResponse>>>> Handle(GetAllUnitsQuery request, CancellationToken cancellationToken)
         {
-            var unitResponses = await _context.Units
-                .Where(unit => unit.DeletedAt == null)
+            var query = _context.Units.Where(unit => unit.DeletedAt == null);
+
+            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+            {
+                query = query.Where(unit =>
+                    unit.Name!.Contains(request.SearchTerm) ||
+                    unit.Abbreviation!.Contains(request.SearchTerm));
+            }
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var unitResponses = await query
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
                 .Select(unit => new UnitResponse
                 {
                     Id = unit.Id,
@@ -28,37 +39,14 @@ namespace HomeTaste.Application.Features.Units.Queries.GetAllUnits
                 })
                 .ToListAsync(cancellationToken);
 
-            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
-            {
-                unitResponses = unitResponses.Where(unit =>
-                    unit.Name!.Contains(request.SearchTerm, StringComparison.OrdinalIgnoreCase) ||
-                    unit.Abbreviation!.Contains(request.SearchTerm, StringComparison.OrdinalIgnoreCase)
-                ).ToList();
-            }
-
-            var totalCount = unitResponses.Count();
-
-            var pagedUnits = unitResponses
-                .Skip((request.PageNumber - 1) * request.PageSize)
-                .Take(request.PageSize)
-                .ToList();
-
             var paginationMeta = PaginationHelper.GetPaginationMetadata(request.PageNumber, request.PageSize, totalCount);
-
-            var currentPageCount = pagedUnits.Count();
-
-            paginationMeta.CurrentPageCount = currentPageCount;
+            paginationMeta.CurrentPageCount = unitResponses.Count;
 
             var response = new PaginatedResponse<IEnumerable<UnitResponse>>
             {
-                Data = pagedUnits,
+                Data = unitResponses,
                 MetaData = paginationMeta
             };
-
-            if (!pagedUnits.Any())
-            {
-                throw new NotFoundException("No units found");
-            }
 
             return Result<PaginatedResponse<IEnumerable<UnitResponse>>>.Ok(response, "Units retrieved successfully");
         }

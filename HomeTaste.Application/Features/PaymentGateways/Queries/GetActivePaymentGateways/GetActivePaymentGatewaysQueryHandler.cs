@@ -19,8 +19,8 @@ namespace HomeTaste.Application.Features.PaymentGateways.Queries.GetActivePaymen
 
         public async Task<Result<List<PaymentGatewayResponse>>> Handle(GetActivePaymentGatewaysQuery request, CancellationToken cancellationToken)
         {
-            var all = await _context.PaymentGateways.ToListAsync(cancellationToken);
-            var result = all.Where(g => g.IsActive).Select(g => PaymentGatewayConfigHelper.ToResponse(_encryptor, g)).ToList();
+            var activeGateways = await _context.PaymentGateways.Where(g => g.IsActive).ToListAsync(cancellationToken);
+            var result = activeGateways.Select(g => PaymentGatewayConfigHelper.ToResponse(_encryptor, g)).ToList();
             return Result<List<PaymentGatewayResponse>>.Ok(result, "Active gateways retrieved.");
         }
     }

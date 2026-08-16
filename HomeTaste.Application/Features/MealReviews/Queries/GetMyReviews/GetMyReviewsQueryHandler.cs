@@ -38,9 +38,6 @@ namespace HomeTaste.Application.Features.MealReviews.Queries.GetMyReviews
                 })
                 .ToListAsync(cancellationToken);
 
-            if (!reviews.Any())
-                throw new NotFoundException("No reviews found for this user.");
-
             return Result<IEnumerable<ReviewResponse>>.Ok(reviews, "Reviews fetched successfully");
         }
     }

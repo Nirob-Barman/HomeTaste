@@ -1,4 +1,3 @@
-using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Helpers.Pagination;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
@@ -18,7 +17,18 @@ namespace HomeTaste.Application.Features.Inventory.Queries.GetAllInventoryItems
 
         public async Task<Result<PaginatedResponse<IEnumerable<InventoryItemResponse>>>> Handle(GetAllInventoryItemsQuery request, CancellationToken cancellationToken)
         {
-            var items = await _context.InventoryItems
+            var query = _context.InventoryItems.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+            {
+                query = query.Where(item => item.Name!.Contains(request.SearchTerm));
+            }
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
                 .Select(item => new InventoryItemResponse
                 {
                     Id = item.Id,
@@ -28,31 +38,14 @@ namespace HomeTaste.Application.Features.Inventory.Queries.GetAllInventoryItems
                 })
                 .ToListAsync(cancellationToken);
 
-            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
-            {
-                items = items.Where(item =>
-                    item.Name!.Contains(request.SearchTerm, StringComparison.OrdinalIgnoreCase)
-                ).ToList();
-            }
-
-            var totalCount = items.Count();
-
-            var pagedItems = items.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
-
             var paginationMeta = PaginationHelper.GetPaginationMetadata(request.PageNumber, request.PageSize, totalCount);
-
-            paginationMeta.CurrentPageCount = pagedItems.Count();
+            paginationMeta.CurrentPageCount = items.Count;
 
             var response = new PaginatedResponse<IEnumerable<InventoryItemResponse>>
             {
-                Data = pagedItems,
+                Data = items,
                 MetaData = paginationMeta
             };
-
-            if (!pagedItems.Any())
-            {
-                throw new NotFoundException("No inventory items found");
-            }
 
             return Result<PaginatedResponse<IEnumerable<InventoryItemResponse>>>.Ok(response, "Inventory retrieved successfully");
         }

@@ -1,4 +1,3 @@
-using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -17,15 +16,13 @@ namespace HomeTaste.Application.Features.MealReviews.Queries.GetAverageMealRatin
 
         public async Task<Result<decimal>> Handle(GetAverageMealRatingQuery request, CancellationToken cancellationToken)
         {
-            var reviews = await _context.MealReviews
-                .Where(r => r.MealId == request.MealId)
-                .Select(r => r.Rating)
-                .ToListAsync(cancellationToken);
+            var query = _context.MealReviews.Where(r => r.MealId == request.MealId);
 
-            if (!reviews.Any())
-                throw new NotFoundException("No reviews found for this meal.");
+            var hasReviews = await query.AnyAsync(cancellationToken);
+            if (!hasReviews)
+                return Result<decimal>.Ok(0m, "No reviews yet for this meal.");
 
-            var averageRating = (decimal)reviews.Average();
+            var averageRating = await query.AverageAsync(r => (decimal)r.Rating, cancellationToken);
 
             return Result<decimal>.Ok(averageRating, "Average rating fetched successfully");
         }

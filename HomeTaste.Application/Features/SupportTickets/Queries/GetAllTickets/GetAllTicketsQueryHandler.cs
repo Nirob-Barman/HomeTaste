@@ -1,4 +1,3 @@
-using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -18,9 +17,6 @@ namespace HomeTaste.Application.Features.SupportTickets.Queries.GetAllTickets
         public async Task<Result<IEnumerable<SupportTicketResponse>>> Handle(GetAllTicketsQuery request, CancellationToken cancellationToken)
         {
             var tickets = await _context.SupportTickets.ToListAsync(cancellationToken);
-
-            if (!tickets.Any())
-                throw new NotFoundException("No tickets found.");
 
             var response = tickets.Select(SupportTicketMapper.ToResponse).ToList();
             return Result<IEnumerable<SupportTicketResponse>>.Ok(response, "Tickets retrieved successfully");

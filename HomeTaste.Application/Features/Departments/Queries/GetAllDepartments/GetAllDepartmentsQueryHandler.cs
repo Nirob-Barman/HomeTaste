@@ -1,4 +1,3 @@
-using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Helpers.Pagination;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
@@ -18,7 +17,20 @@ namespace HomeTaste.Application.Features.Departments.Queries.GetAllDepartments
 
         public async Task<Result<PaginatedResponse<IEnumerable<DepartmentResponse>>>> Handle(GetAllDepartmentsQuery request, CancellationToken cancellationToken)
         {
-            var departmentResponses = await _context.Departments
+            var query = _context.Departments.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+            {
+                query = query.Where(department =>
+                    department.Name!.Contains(request.SearchTerm) ||
+                    department.Description!.Contains(request.SearchTerm));
+            }
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var departmentResponses = await query
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
                 .Select(department => new DepartmentResponse
                 {
                     Id = department.Id,
@@ -27,37 +39,14 @@ namespace HomeTaste.Application.Features.Departments.Queries.GetAllDepartments
                 })
                 .ToListAsync(cancellationToken);
 
-            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
-            {
-                departmentResponses = departmentResponses.Where(department =>
-                    department.Name!.Contains(request.SearchTerm, StringComparison.OrdinalIgnoreCase) ||
-                    department.Description!.Contains(request.SearchTerm, StringComparison.OrdinalIgnoreCase)
-                ).ToList();
-            }
-
-            var totalCount = departmentResponses.Count();
-
-            var pagedDepartments = departmentResponses
-                .Skip((request.PageNumber - 1) * request.PageSize)
-                .Take(request.PageSize)
-                .ToList();
-
             var paginationMeta = PaginationHelper.GetPaginationMetadata(request.PageNumber, request.PageSize, totalCount);
-
-            var currentPageCount = pagedDepartments.Count();
-
-            paginationMeta.CurrentPageCount = currentPageCount;
+            paginationMeta.CurrentPageCount = departmentResponses.Count;
 
             var response = new PaginatedResponse<IEnumerable<DepartmentResponse>>
             {
-                Data = pagedDepartments,
+                Data = departmentResponses,
                 MetaData = paginationMeta
             };
-
-            if (!pagedDepartments.Any())
-            {
-                throw new NotFoundException("No departments found");
-            }
 
             return Result<PaginatedResponse<IEnumerable<DepartmentResponse>>>.Ok(response, "Departments retrieved successfully");
         }

@@ -14,7 +14,6 @@ using HomeTaste.Infrastructure.Identity;
 using HomeTaste.Infrastructure.Identity.Entity;
 using HomeTaste.Infrastructure.Payments;
 using HomeTaste.Infrastructure.Persistence;
-using HomeTaste.Infrastructure.Persistence.Repositories;
 using HomeTaste.Infrastructure.Services;
 using HomeTaste.Infrastructure.Services.FileStorage;
 using Microsoft.AspNetCore.Identity;
@@ -78,10 +77,6 @@ namespace HomeTaste.Infrastructure.DependencyInjection
 
             services.AddScoped<IFileStorage, CloudinaryFileStorage>();
             services.AddScoped<IPdfInvoiceService, PdfInvoiceService>();
-
-
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
 
             services.AddSignalR();
             services.AddScoped<IRealtimeNotificationService, RealtimeNotificationService>();

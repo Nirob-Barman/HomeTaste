@@ -1,6 +1,6 @@
-namespace HomeTaste.Application.DTOs.Analytics
+namespace HomeTaste.Application.Features.Analytics
 {
-    public class DashboardStatsResponse
+    public record DashboardStatsResponse
     {
         public OrderStatsDto Orders { get; set; } = new();
         public RevenueStatsDto Revenue { get; set; } = new();
@@ -13,7 +13,7 @@ namespace HomeTaste.Application.DTOs.Analytics
         public InventorySummaryDto InventorySummary { get; set; } = new();
     }
 
-    public class OrderStatsDto
+    public record OrderStatsDto
     {
         public int TotalAllTime { get; set; }
         public int TodayCount { get; set; }
@@ -22,7 +22,7 @@ namespace HomeTaste.Application.DTOs.Analytics
         public decimal AverageOrderValue { get; set; }
     }
 
-    public class RevenueStatsDto
+    public record RevenueStatsDto
     {
         public decimal TotalAllTime { get; set; }
         public decimal Today { get; set; }
@@ -30,13 +30,13 @@ namespace HomeTaste.Application.DTOs.Analytics
         public decimal ThisMonth { get; set; }
     }
 
-    public class OrderStatusBreakdownItem
+    public record OrderStatusBreakdownItem
     {
         public string Status { get; set; } = string.Empty;
         public int Count { get; set; }
     }
 
-    public class TopMealItem
+    public record TopMealItem
     {
         public Guid MealId { get; set; }
         public string? MealName { get; set; }
@@ -44,7 +44,7 @@ namespace HomeTaste.Application.DTOs.Analytics
         public decimal TotalRevenue { get; set; }
     }
 
-    public class TopCustomerItem
+    public record TopCustomerItem
     {
         public string UserId { get; set; } = string.Empty;
         public string? FullName { get; set; }
@@ -53,14 +53,14 @@ namespace HomeTaste.Application.DTOs.Analytics
         public decimal TotalSpent { get; set; }
     }
 
-    public class DailyRevenuePoint
+    public record DailyRevenuePoint
     {
         public DateTime Date { get; set; }
         public decimal Revenue { get; set; }
         public int OrderCount { get; set; }
     }
 
-    public class SupportTicketSummaryDto
+    public record SupportTicketSummaryDto
     {
         public int Total { get; set; }
         public int Open { get; set; }
@@ -69,14 +69,14 @@ namespace HomeTaste.Application.DTOs.Analytics
         public int Closed { get; set; }
     }
 
-    public class LoyaltySummaryDto
+    public record LoyaltySummaryDto
     {
         public int TotalActiveAccounts { get; set; }
         public int TotalPointsIssued { get; set; }
         public int TotalPointsRedeemed { get; set; }
     }
 
-    public class InventorySummaryDto
+    public record InventorySummaryDto
     {
         public int TotalItems { get; set; }
         public int LowStockCount { get; set; }

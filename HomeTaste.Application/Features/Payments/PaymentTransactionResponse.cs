@@ -1,34 +1,8 @@
 using HomeTaste.Domain.Enums;
 
-namespace HomeTaste.Application.DTOs.Payment
+namespace HomeTaste.Application.Features.Payments
 {
-    public class InitiatePaymentRequest
-    {
-        public Guid OrderId { get; set; }
-        public string? Gateway { get; set; }
-        public string? Notes { get; set; }
-    }
-
-    public class ConfirmPaymentRequest
-    {
-        public string? TransactionRef { get; set; }
-        public string? Notes { get; set; }
-    }
-
-    public class ConfirmDirectPaymentRequest
-    {
-        public Guid OrderId { get; set; }
-        public string? Gateway { get; set; }
-        public string? TransactionRef { get; set; }
-        public string? Notes { get; set; }
-    }
-
-    public class RefundPaymentRequest
-    {
-        public string? Notes { get; set; }
-    }
-
-    public class PaymentTransactionResponse
+    public record PaymentTransactionResponse
     {
         public Guid Id { get; set; }
         public Guid OrderId { get; set; }

@@ -141,10 +141,10 @@
         <member name="M:HomeTaste.API.Controllers.DeliveryZoneController.CheckServiceability(System.Guid)">
             <summary>Checks whether an address falls within a serviceable delivery zone.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.DeliveryZoneController.Create(HomeTaste.Application.DTOs.Delivery.CreateDeliveryZoneRequest)">
+        <member name="M:HomeTaste.API.Controllers.DeliveryZoneController.Create(HomeTaste.Application.Features.DeliveryZones.CreateDeliveryZoneRequest)">
             <summary>Creates a new delivery zone. Admin only.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.DeliveryZoneController.Update(System.Guid,HomeTaste.Application.DTOs.Delivery.UpdateDeliveryZoneRequest)">
+        <member name="M:HomeTaste.API.Controllers.DeliveryZoneController.Update(System.Guid,HomeTaste.Application.Features.DeliveryZones.UpdateDeliveryZoneRequest)">
             <summary>Updates an existing delivery zone. Admin only.</summary>
         </member>
         <member name="M:HomeTaste.API.Controllers.DeliveryZoneController.Delete(System.Guid)">

@@ -3,7 +3,6 @@ using HomeTaste.Application.Helpers.Email;
 using HomeTaste.Application.Helpers.Pagination;
 using HomeTaste.Application.Interfaces;
 using HomeTaste.Application.Interfaces.Auth;
-using HomeTaste.Application.Interfaces.Delivery;
 using HomeTaste.Application.Interfaces.Email;
 using HomeTaste.Application.Interfaces.Loyalty;
 using HomeTaste.Application.Interfaces.Notification;
@@ -27,7 +26,6 @@ namespace HomeTaste.Application.Services.Order
         private readonly IEmailService _emailService;
         private readonly IUserManager _userManager;
         private readonly IDeliveryFeeService _deliveryFeeService;
-        private readonly IDeliveryZoneService _deliveryZoneService;
 
         private const decimal TaxRate = 0.10m;
         private const int PointsRedemptionRate = 100; // 100 points = $1
@@ -39,8 +37,7 @@ namespace HomeTaste.Application.Services.Order
             ILoyaltyService loyaltyService,
             IEmailService emailService,
             IUserManager userManager,
-            IDeliveryFeeService deliveryFeeService,
-            IDeliveryZoneService deliveryZoneService)
+            IDeliveryFeeService deliveryFeeService)
         {
             _unitOfWork = unitOfWork;
             _userContextService = userContextService;
@@ -49,7 +46,6 @@ namespace HomeTaste.Application.Services.Order
             _emailService = emailService;
             _userManager = userManager;
             _deliveryFeeService = deliveryFeeService;
-            _deliveryZoneService = deliveryZoneService;
         }
 
         public async Task<Result<PaginatedResponse<IEnumerable<OrderResponse>>>> GetMyOrdersAsync(int pageNumber = 1, int pageSize = 10)
@@ -134,11 +130,21 @@ namespace HomeTaste.Application.Services.Order
             if (address.UserId != userId)
                 return Result<OrderResponse>.Fail("Address does not belong to this user.", "Forbidden", ResultType.Forbidden);
 
-            var serviceability = await _deliveryZoneService.CheckServiceabilityAsync(request.AddressId);
-            if (serviceability.Success && serviceability.Data != null && !serviceability.Data.IsServiceable)
-                return Result<OrderResponse>.Fail(
-                    serviceability.Data.Message ?? "We don't deliver to this address yet.",
-                    "Bad request", ResultType.BadRequest);
+            var activeZones = await _unitOfWork.Repository<Domain.Entities.Delivery.DeliveryZone>().Where(z => z.IsActive);
+            if (activeZones.Any())
+            {
+                var city = address.City?.Trim().ToLowerInvariant() ?? "";
+                var postal = address.PostalCode?.Trim().ToLowerInvariant() ?? "";
+
+                var isServiceable = activeZones.Any(z =>
+                    (!string.IsNullOrEmpty(city) && z.AllowedCities.Contains(city)) ||
+                    (!string.IsNullOrEmpty(postal) && z.AllowedPostalCodes.Contains(postal)));
+
+                if (!isServiceable)
+                    return Result<OrderResponse>.Fail(
+                        "Sorry, we don't deliver to this address yet.",
+                        "Bad request", ResultType.BadRequest);
+            }
 
             // Build order items
             var orderItems = new List<OrderItem>();

@@ -242,13 +242,13 @@
         <member name="M:HomeTaste.API.Controllers.OrderController.GetAll(System.Int32,System.Int32,System.Nullable{HomeTaste.Domain.Enums.OrderStatus})">
             <summary>Gets all orders with optional status filter and pagination. Admin only.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.OrderController.PlaceOrder(HomeTaste.Application.DTOs.Order.CreateOrderRequest)">
+        <member name="M:HomeTaste.API.Controllers.OrderController.PlaceOrder(HomeTaste.Application.Features.Orders.CreateOrderRequest)">
             <summary>Places a new order for the authenticated customer.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.OrderController.UpdateStatus(System.Guid,HomeTaste.Application.DTOs.Order.UpdateOrderStatusRequest)">
+        <member name="M:HomeTaste.API.Controllers.OrderController.UpdateStatus(System.Guid,HomeTaste.Application.Features.Orders.UpdateOrderStatusRequest)">
             <summary>Advances an order through its status workflow. Admin only.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.OrderController.Cancel(System.Guid,HomeTaste.Application.DTOs.Order.CancelOrderRequest)">
+        <member name="M:HomeTaste.API.Controllers.OrderController.Cancel(System.Guid,HomeTaste.Application.Features.Orders.CancelOrderRequest)">
             <summary>Cancels an order. Customers can cancel Pending/Confirmed orders; Admins can cancel any.</summary>
         </member>
         <member name="M:HomeTaste.API.Controllers.OrderController.GetInvoice(System.Guid)">
@@ -259,16 +259,16 @@
             Handles payment initiation, confirmation, refunds, and history.
             </summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.PaymentController.Initiate(HomeTaste.Application.DTOs.Payment.InitiatePaymentRequest)">
+        <member name="M:HomeTaste.API.Controllers.PaymentController.Initiate(HomeTaste.Application.Features.Payments.InitiatePaymentRequest)">
             <summary>Initiates a payment for an order. Returns a pending transaction.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.PaymentController.Confirm(System.Guid,HomeTaste.Application.DTOs.Payment.ConfirmPaymentRequest)">
+        <member name="M:HomeTaste.API.Controllers.PaymentController.Confirm(System.Guid,HomeTaste.Application.Features.Payments.ConfirmPaymentRequest)">
             <summary>Confirms a pending payment transaction (e.g. after gateway callback).</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.PaymentController.ConfirmDirect(HomeTaste.Application.DTOs.Payment.ConfirmDirectPaymentRequest)">
+        <member name="M:HomeTaste.API.Controllers.PaymentController.ConfirmDirect(HomeTaste.Application.Features.Payments.ConfirmDirectPaymentRequest)">
             <summary>Confirms a direct payment (Stripe/manual) and creates the transaction as Success.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.PaymentController.Refund(System.Guid,HomeTaste.Application.DTOs.Payment.RefundPaymentRequest)">
+        <member name="M:HomeTaste.API.Controllers.PaymentController.Refund(System.Guid,HomeTaste.Application.Features.Payments.RefundPaymentRequest)">
             <summary>Refunds a successful payment. Admin only.</summary>
         </member>
         <member name="M:HomeTaste.API.Controllers.PaymentController.GetByOrder(System.Guid)">

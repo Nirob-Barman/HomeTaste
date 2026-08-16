@@ -15,10 +15,10 @@
         <member name="M:HomeTaste.API.Controllers.AddressController.GetById(System.Guid)">
             <summary>Gets a single address by ID.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.AddressController.Create(HomeTaste.Application.DTOs.Address.AddressRequest)">
+        <member name="M:HomeTaste.API.Controllers.AddressController.Create(HomeTaste.Application.Features.Addresses.AddressRequest)">
             <summary>Creates a new address for the current user.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.AddressController.Update(System.Guid,HomeTaste.Application.DTOs.Address.AddressRequest)">
+        <member name="M:HomeTaste.API.Controllers.AddressController.Update(System.Guid,HomeTaste.Application.Features.Addresses.AddressRequest)">
             <summary>Updates an existing address.</summary>
         </member>
         <member name="M:HomeTaste.API.Controllers.AddressController.Delete(System.Guid)">

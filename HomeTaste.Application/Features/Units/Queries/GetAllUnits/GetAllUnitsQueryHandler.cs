@@ -2,29 +2,31 @@ using HomeTaste.Application.DTOs.Units;
 using HomeTaste.Application.Helpers.Pagination;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
-using UnitEntity = HomeTaste.Domain.Entities.Units;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeTaste.Application.Features.Units.Queries.GetAllUnits
 {
     public class GetAllUnitsQueryHandler : IRequestHandler<GetAllUnitsQuery, Result<PaginatedResponse<IEnumerable<UnitResponse>>>>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IApplicationDbContext _context;
 
-        public GetAllUnitsQueryHandler(IUnitOfWork unitOfWork)
+        public GetAllUnitsQueryHandler(IApplicationDbContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         public async Task<Result<PaginatedResponse<IEnumerable<UnitResponse>>>> Handle(GetAllUnitsQuery request, CancellationToken cancellationToken)
         {
-            var unitResponses = await _unitOfWork.Repository<UnitEntity>().GetAllAsync(unit => unit.DeletedAt == null,
-                unit => new UnitResponse
+            var unitResponses = await _context.Units
+                .Where(unit => unit.DeletedAt == null)
+                .Select(unit => new UnitResponse
                 {
                     Id = unit.Id,
                     Name = unit.Name,
                     Abbreviation = unit.Abbreviation
-                });
+                })
+                .ToListAsync(cancellationToken);
 
             if (!string.IsNullOrWhiteSpace(request.SearchTerm))
             {

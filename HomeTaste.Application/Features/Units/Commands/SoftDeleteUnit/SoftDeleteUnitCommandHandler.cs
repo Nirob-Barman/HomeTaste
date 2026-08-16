@@ -1,22 +1,21 @@
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
-using UnitEntity = HomeTaste.Domain.Entities.Units;
 using MediatR;
 
 namespace HomeTaste.Application.Features.Units.Commands.SoftDeleteUnit
 {
     public class SoftDeleteUnitCommandHandler : IRequestHandler<SoftDeleteUnitCommand, Result<bool>>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IApplicationDbContext _context;
 
-        public SoftDeleteUnitCommandHandler(IUnitOfWork unitOfWork)
+        public SoftDeleteUnitCommandHandler(IApplicationDbContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         public async Task<Result<bool>> Handle(SoftDeleteUnitCommand request, CancellationToken cancellationToken)
         {
-            var unit = await _unitOfWork.Repository<UnitEntity>().GetByIdAsync(request.Id);
+            var unit = await _context.Units.FindAsync(new object?[] { request.Id }, cancellationToken);
 
             if (unit == null || unit.DeletedAt != null)
             {
@@ -26,8 +25,7 @@ namespace HomeTaste.Application.Features.Units.Commands.SoftDeleteUnit
             unit.DeletedAt = DateTime.UtcNow;
             //unit.DeletedBy = Guid.NewGuid(); // Replace with logged-in user id
 
-            _unitOfWork.Repository<UnitEntity>().Update(unit);
-            await _unitOfWork.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return Result<bool>.Ok(true, "Unit soft deleted successfully", ResultType.Success);
         }

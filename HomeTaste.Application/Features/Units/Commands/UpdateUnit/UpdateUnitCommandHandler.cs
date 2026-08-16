@@ -1,18 +1,18 @@
 using HomeTaste.Application.DTOs.Units;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
-using UnitEntity = HomeTaste.Domain.Entities.Units;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeTaste.Application.Features.Units.Commands.UpdateUnit
 {
     public class UpdateUnitCommandHandler : IRequestHandler<UpdateUnitCommand, Result<UnitResponse>>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IApplicationDbContext _context;
 
-        public UpdateUnitCommandHandler(IUnitOfWork unitOfWork)
+        public UpdateUnitCommandHandler(IApplicationDbContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         public async Task<Result<UnitResponse>> Handle(UpdateUnitCommand request, CancellationToken cancellationToken)
@@ -20,69 +20,55 @@ namespace HomeTaste.Application.Features.Units.Commands.UpdateUnit
             var id = request.Id;
             var unitRequest = request.UnitRequest;
 
-            // First, use Dapper to get the existing unit details
-            var query = @"SELECT Id, Name, Abbreviation FROM Units WHERE Id = @Id";
-            var parameters = new { Id = id };
-
-            var unitResponse = await _unitOfWork.QueryAsync<UnitResponse>(query, parameters);
+            // Get the existing unit details
+            var unitResponse = await _context.Units
+                .Where(u => u.Id == id)
+                .Select(u => new UnitResponse { Id = u.Id, Name = u.Name, Abbreviation = u.Abbreviation })
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (unitResponse == null)
             {
                 return Result<UnitResponse>.Fail("Unit not found", "Unit not found", ResultType.NotFound);
             }
 
-            // Check if another unit with the same name or abbreviation exists using EF
-            var existingUnit = await _unitOfWork.Repository<UnitEntity>().FirstOrDefaultAsync(u =>
-                (u.Name == unitRequest.Name || u.Abbreviation == unitRequest.Abbreviation) && u.Id != id,
-                u => new UnitResponse
-                {
-                    Id = u.Id,
-                    Name = u.Name,
-                    Abbreviation = u.Abbreviation
-                });
+            // Check if another unit with the same name or abbreviation exists
+            var existingUnit = await _context.Units
+                .Where(u => (u.Name == unitRequest.Name || u.Abbreviation == unitRequest.Abbreviation) && u.Id != id)
+                .Select(u => new UnitResponse { Id = u.Id, Name = u.Name, Abbreviation = u.Abbreviation })
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (existingUnit != null)
             {
                 return Result<UnitResponse>.Fail("Unit with the same name or abbreviation already exists.", "Duplicate unit", ResultType.Conflict);
             }
 
-            var checkDuplicateQuery = @"
-        SELECT Id, Name, Abbreviation
-        FROM Units
-        WHERE (Name = @Name OR Abbreviation = @Abbreviation) AND Id != @Id";
-
-            var duplicateUnit = await _unitOfWork.QueryFirstOrDefaultAsync<UnitResponse>(checkDuplicateQuery,
-                new { unitRequest.Name, unitRequest.Abbreviation, Id = id });
+            var duplicateUnit = await _context.Units
+                .Where(u => (u.Name == unitRequest.Name || u.Abbreviation == unitRequest.Abbreviation) && u.Id != id)
+                .Select(u => new UnitResponse { Id = u.Id, Name = u.Name, Abbreviation = u.Abbreviation })
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (duplicateUnit != null)
             {
                 return Result<UnitResponse>.Fail("Unit with the same name or abbreviation already exists.", "Duplicate unit", ResultType.Conflict);
             }
 
-            // Begin the transaction with the UnitOfWork
-            await _unitOfWork.BeginTransaction();
+            await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
             try
             {
-                // Now, use EF to update the unit
-                var unitToUpdate = await _unitOfWork.Repository<UnitEntity>().GetByIdAsync(id);
+                var unitToUpdate = await _context.Units.FindAsync(new object?[] { id }, cancellationToken);
 
                 if (unitToUpdate == null)
                 {
                     return Result<UnitResponse>.Fail("Unit not found", "Unit not found", ResultType.NotFound);
                 }
 
-                // Update the entity using EF
                 unitToUpdate.Name = unitRequest.Name ?? unitToUpdate.Name;
                 unitToUpdate.Abbreviation = unitRequest.Abbreviation ?? unitToUpdate.Abbreviation;
 
-                // Perform the update with EF
-                _unitOfWork.Repository<UnitEntity>().Update(unitToUpdate);
+                await _context.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
 
-                // Commit the transaction after the EF update
-                await _unitOfWork.CommitAsync();
-
-                // Return the updated unit details
                 var updatedUnitResponse = new UnitResponse
                 {
                     Id = unitToUpdate.Id,
@@ -94,8 +80,7 @@ namespace HomeTaste.Application.Features.Units.Commands.UpdateUnit
             }
             catch (Exception ex)
             {
-                // Rollback if something goes wrong
-                await _unitOfWork.RollbackAsync();
+                await transaction.RollbackAsync(cancellationToken);
                 return Result<UnitResponse>.Fail($"An error occurred: {ex.Message}", "", ResultType.Failure);
             }
         }

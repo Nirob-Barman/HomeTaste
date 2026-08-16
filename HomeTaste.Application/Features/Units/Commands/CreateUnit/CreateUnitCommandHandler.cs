@@ -1,31 +1,34 @@
 using HomeTaste.Application.DTOs.Units;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
-using UnitEntity = HomeTaste.Domain.Entities.Units;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using UnitEntity = HomeTaste.Domain.Entities.Units;
 
 namespace HomeTaste.Application.Features.Units.Commands.CreateUnit
 {
     public class CreateUnitCommandHandler : IRequestHandler<CreateUnitCommand, Result<UnitResponse>>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IApplicationDbContext _context;
 
-        public CreateUnitCommandHandler(IUnitOfWork unitOfWork)
+        public CreateUnitCommandHandler(IApplicationDbContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         public async Task<Result<UnitResponse>> Handle(CreateUnitCommand request, CancellationToken cancellationToken)
         {
             var unitRequest = request.UnitRequest;
 
-            var existingUnit = await _unitOfWork.Repository<UnitEntity>().FirstOrDefaultAsync(u => u.Name == unitRequest.Name || u.Abbreviation == unitRequest.Abbreviation,
-                u => new UnitResponse
+            var existingUnit = await _context.Units
+                .Where(u => u.Name == unitRequest.Name || u.Abbreviation == unitRequest.Abbreviation)
+                .Select(u => new UnitResponse
                 {
                     Id = u.Id,
                     Name = u.Name,
                     Abbreviation = u.Abbreviation
-                });
+                })
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (existingUnit != null)
             {
@@ -38,8 +41,8 @@ namespace HomeTaste.Application.Features.Units.Commands.CreateUnit
                 Abbreviation = unitRequest.Abbreviation
             };
 
-            await _unitOfWork.Repository<UnitEntity>().AddAsync(unit);
-            await _unitOfWork.SaveChangesAsync();
+            _context.Units.Add(unit);
+            await _context.SaveChangesAsync(cancellationToken);
 
             var unitResponse = new UnitResponse
             {

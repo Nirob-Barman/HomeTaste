@@ -1,17 +1,18 @@
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
-using UnitEntity = HomeTaste.Domain.Entities.Units;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using UnitEntity = HomeTaste.Domain.Entities.Units;
 
 namespace HomeTaste.Application.Features.Units.Commands.BulkInsertUnits
 {
     public class BulkInsertUnitsCommandHandler : IRequestHandler<BulkInsertUnitsCommand, Result<int>>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IApplicationDbContext _context;
 
-        public BulkInsertUnitsCommandHandler(IUnitOfWork unitOfWork)
+        public BulkInsertUnitsCommandHandler(IApplicationDbContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         public async Task<Result<int>> Handle(BulkInsertUnitsCommand request, CancellationToken cancellationToken)
@@ -38,7 +39,7 @@ namespace HomeTaste.Application.Features.Units.Commands.BulkInsertUnits
 
                 foreach (var unit in units)
                 {
-                    var unitExists = await _unitOfWork.Repository<UnitEntity>().AnyAsync(u => u.Name == unit.Name || u.Abbreviation == unit.Abbreviation);
+                    var unitExists = await _context.Units.AnyAsync(u => u.Name == unit.Name || u.Abbreviation == unit.Abbreviation, cancellationToken);
 
                     if (!unitExists)
                     {
@@ -50,8 +51,8 @@ namespace HomeTaste.Application.Features.Units.Commands.BulkInsertUnits
                     return Result<int>.Fail("All units already exist.", "No new units to insert", ResultType.Conflict);
                 }
 
-                await _unitOfWork.Repository<UnitEntity>().AddRangeAsync(newUnits);
-                await _unitOfWork.SaveChangesAsync();
+                _context.Units.AddRange(newUnits);
+                await _context.SaveChangesAsync(cancellationToken);
 
                 return Result<int>.Ok(newUnits.Count, "New units successfully inserted", ResultType.Success);
             }

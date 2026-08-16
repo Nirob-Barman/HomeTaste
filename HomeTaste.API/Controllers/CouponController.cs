@@ -1,7 +1,13 @@
-using HomeTaste.API.Wrappers;
 using HomeTaste.Application.Authorization;
-using HomeTaste.Application.DTOs.Coupon;
-using HomeTaste.Application.Interfaces.Coupon;
+using HomeTaste.Application.Features.Coupons;
+using HomeTaste.Application.Features.Coupons.Commands.CreateCoupon;
+using HomeTaste.Application.Features.Coupons.Commands.DeleteCoupon;
+using HomeTaste.Application.Features.Coupons.Commands.ToggleCouponActive;
+using HomeTaste.Application.Features.Coupons.Commands.UpdateCoupon;
+using HomeTaste.Application.Features.Coupons.Queries.GetAllCoupons;
+using HomeTaste.Application.Features.Coupons.Queries.GetCouponById;
+using HomeTaste.Application.Features.Coupons.Queries.ValidateCoupon;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +20,11 @@ namespace HomeTaste.API.Controllers
     [ApiController]
     public class CouponController : ControllerBase
     {
-        private readonly ICouponService _couponService;
+        private readonly IMediator _mediator;
 
-        public CouponController(ICouponService couponService)
+        public CouponController(IMediator mediator)
         {
-            _couponService = couponService;
+            _mediator = mediator;
         }
 
         /// <summary>Gets all coupons with optional search and pagination. Admin only.</summary>
@@ -26,8 +32,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!)
         {
-            var result = await _couponService.GetAllCouponsAsync(pageNumber, pageSize, searchTerm);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetAllCouponsQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
+            return Ok(result);
         }
 
         /// <summary>Gets a coupon by ID. Admin only.</summary>
@@ -35,8 +41,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var result = await _couponService.GetCouponByIdAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetCouponByIdQuery(id));
+            return Ok(result);
         }
 
         /// <summary>Creates a new coupon. Admin only.</summary>
@@ -44,8 +50,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Create([FromBody] CouponRequest request)
         {
-            var result = await _couponService.CreateCouponAsync(request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new CreateCouponCommand(request));
+            return StatusCode(201, result);
         }
 
         /// <summary>Updates an existing coupon. Admin only.</summary>
@@ -53,8 +59,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Update(Guid id, [FromBody] CouponRequest request)
         {
-            var result = await _couponService.UpdateCouponAsync(id, request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new UpdateCouponCommand(id, request));
+            return Ok(result);
         }
 
         /// <summary>Deletes a coupon. Admin only.</summary>
@@ -62,8 +68,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _couponService.DeleteCouponAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new DeleteCouponCommand(id));
+            return Ok(result);
         }
 
         /// <summary>Toggles a coupon active/inactive. Admin only.</summary>
@@ -71,16 +77,16 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Toggle(Guid id)
         {
-            var result = await _couponService.ToggleActiveAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new ToggleCouponActiveCommand(id));
+            return Ok(result);
         }
 
         /// <summary>Validates a coupon code against a given order amount. Public.</summary>
         [HttpPost("validate")]
         public async Task<IActionResult> Validate([FromBody] ValidateCouponRequest request)
         {
-            var result = await _couponService.ValidateCouponAsync(request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new ValidateCouponQuery(request));
+            return Ok(result);
         }
     }
 }

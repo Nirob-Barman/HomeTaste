@@ -74,10 +74,10 @@
         <member name="M:HomeTaste.API.Controllers.CouponController.GetById(System.Guid)">
             <summary>Gets a coupon by ID. Admin only.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.CouponController.Create(HomeTaste.Application.DTOs.Coupon.CouponRequest)">
+        <member name="M:HomeTaste.API.Controllers.CouponController.Create(HomeTaste.Application.Features.Coupons.CouponRequest)">
             <summary>Creates a new coupon. Admin only.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.CouponController.Update(System.Guid,HomeTaste.Application.DTOs.Coupon.CouponRequest)">
+        <member name="M:HomeTaste.API.Controllers.CouponController.Update(System.Guid,HomeTaste.Application.Features.Coupons.CouponRequest)">
             <summary>Updates an existing coupon. Admin only.</summary>
         </member>
         <member name="M:HomeTaste.API.Controllers.CouponController.Delete(System.Guid)">
@@ -86,7 +86,7 @@
         <member name="M:HomeTaste.API.Controllers.CouponController.Toggle(System.Guid)">
             <summary>Toggles a coupon active/inactive. Admin only.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.CouponController.Validate(HomeTaste.Application.DTOs.Coupon.ValidateCouponRequest)">
+        <member name="M:HomeTaste.API.Controllers.CouponController.Validate(HomeTaste.Application.Features.Coupons.ValidateCouponRequest)">
             <summary>Validates a coupon code against a given order amount. Public.</summary>
         </member>
         <member name="T:HomeTaste.API.Controllers.DeliveryController">

@@ -252,7 +252,7 @@ namespace HomeTaste.Application.Services.Order
                 couponDiscountAmount = Math.Min(couponDiscountAmount, amountAfterLoyalty);
                 couponDiscountAmount = Math.Round(couponDiscountAmount, 2);
                 couponId = coupon.Id;
-                coupon.UsageCount++;
+                coupon.IncrementUsageCount();
                 _unitOfWork.Repository<Domain.Entities.Coupon.Coupon>().Update(coupon);
             }
 

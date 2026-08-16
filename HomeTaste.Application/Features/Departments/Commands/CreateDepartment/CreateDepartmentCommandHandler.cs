@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.OrganizationDepartment;
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using HomeTaste.Domain.Entities.OrganizationDepartment;
@@ -27,7 +27,7 @@ namespace HomeTaste.Application.Features.Departments.Commands.CreateDepartment
 
             if (existingDepartment != null)
             {
-                return Result<DepartmentResponse>.Fail("Department already exists.", "Duplicate department", ResultType.Conflict);
+                throw new ConflictException("Department already exists.");
             }
 
             var department = Department.Create(departmentRequest.Name, departmentRequest.Description);
@@ -42,7 +42,7 @@ namespace HomeTaste.Application.Features.Departments.Commands.CreateDepartment
                 Description = department.Description
             };
 
-            return Result<DepartmentResponse>.Ok(departmentResponse, "Department created successfully", ResultType.Success);
+            return Result<DepartmentResponse>.Ok(departmentResponse, "Department created successfully");
         }
     }
 }

@@ -1,3 +1,4 @@
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.DTOs.Support;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
@@ -29,10 +30,10 @@ namespace HomeTaste.Application.Features.CategoryTypes.Queries.GetCategoryTypeBy
 
             if (categoryType == null)
             {
-                return Result<CategoryTypeResponse>.Fail("Category type not found", "Category type not found", ResultType.NotFound);
+                throw new NotFoundException("Category type not found");
             }
 
-            return Result<CategoryTypeResponse>.Ok(categoryType, "Category type retrieved successfully", ResultType.Success);
+            return Result<CategoryTypeResponse>.Ok(categoryType, "Category type retrieved successfully");
         }
     }
 }

@@ -1,3 +1,4 @@
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -17,11 +18,11 @@ namespace HomeTaste.Application.Features.MealCategories.Commands.DeleteMealCateg
         {
             var mealCategory = await _context.MealCategories.FindAsync(new object?[] { request.Id }, cancellationToken);
             if (mealCategory == null)
-                return Result<bool>.Fail("Meal category not found", "Meal category not found", ResultType.NotFound);
+                throw new NotFoundException("Meal category not found");
 
             _context.MealCategories.Remove(mealCategory);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<bool>.Ok(true, "Meal category deleted successfully", ResultType.Success);
+            return Result<bool>.Ok(true, "Meal category deleted successfully");
         }
     }
 }

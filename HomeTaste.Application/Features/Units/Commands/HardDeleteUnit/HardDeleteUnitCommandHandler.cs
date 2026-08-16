@@ -1,3 +1,4 @@
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -19,12 +20,12 @@ namespace HomeTaste.Application.Features.Units.Commands.HardDeleteUnit
 
             if (unit == null)
             {
-                return Result<bool>.Fail("Unit not found", "Unit not found", ResultType.NotFound);
+                throw new NotFoundException("Unit not found");
             }
 
             _context.Units.Remove(unit);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<bool>.Ok(true, "Unit deleted successfully", ResultType.Success);
+            return Result<bool>.Ok(true, "Unit deleted successfully");
         }
     }
 }

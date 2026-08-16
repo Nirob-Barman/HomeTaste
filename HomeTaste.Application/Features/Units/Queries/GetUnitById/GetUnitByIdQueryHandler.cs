@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.Units;
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -29,10 +29,10 @@ namespace HomeTaste.Application.Features.Units.Queries.GetUnitById
 
             if (unitResponse == null)
             {
-                return Result<UnitResponse>.Fail("Unit not found", "Unit not found", ResultType.NotFound);
+                throw new NotFoundException("Unit not found");
             }
 
-            return Result<UnitResponse>.Ok(unitResponse, "Unit retrieved successfully", ResultType.Success);
+            return Result<UnitResponse>.Ok(unitResponse, "Unit retrieved successfully");
         }
     }
 }

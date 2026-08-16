@@ -1,3 +1,4 @@
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.DTOs.Support;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
@@ -24,7 +25,7 @@ namespace HomeTaste.Application.Features.CategoryTypes.Commands.UpdateCategoryTy
 
             if (categoryType == null)
             {
-                return Result<CategoryTypeResponse>.Fail("Category type not found", "Category type not found", ResultType.NotFound);
+                throw new NotFoundException("Category type not found");
             }
 
             var existingCategoryType = await _context.CategoryTypes
@@ -34,7 +35,7 @@ namespace HomeTaste.Application.Features.CategoryTypes.Commands.UpdateCategoryTy
 
             if (existingCategoryType != null)
             {
-                return Result<CategoryTypeResponse>.Fail("Category type with the same name already exists.", "Duplicate category type", ResultType.Conflict);
+                throw new ConflictException("Category type with the same name already exists.");
             }
 
             categoryType.UpdateDetails(categoryTypeRequest.Name, categoryTypeRequest.Description);
@@ -48,7 +49,7 @@ namespace HomeTaste.Application.Features.CategoryTypes.Commands.UpdateCategoryTy
                 Description = categoryType.Description
             };
 
-            return Result<CategoryTypeResponse>.Ok(updatedCategoryTypeResponse, "Category type updated successfully", ResultType.Success);
+            return Result<CategoryTypeResponse>.Ok(updatedCategoryTypeResponse, "Category type updated successfully");
         }
     }
 }

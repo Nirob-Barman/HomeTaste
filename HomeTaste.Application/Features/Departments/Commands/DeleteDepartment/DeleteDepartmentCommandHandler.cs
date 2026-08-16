@@ -1,3 +1,4 @@
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -19,13 +20,13 @@ namespace HomeTaste.Application.Features.Departments.Commands.DeleteDepartment
 
             if (department == null)
             {
-                return Result<bool>.Fail("Department not found", "Department not found", ResultType.NotFound);
+                throw new NotFoundException("Department not found");
             }
 
             _context.Departments.Remove(department);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<bool>.Ok(true, "Department deleted successfully", ResultType.Success);
+            return Result<bool>.Ok(true, "Department deleted successfully");
         }
     }
 }

@@ -1,3 +1,4 @@
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -19,13 +20,13 @@ namespace HomeTaste.Application.Features.CategoryTypes.Commands.DeleteCategoryTy
 
             if (categoryType == null)
             {
-                return Result<bool>.Fail("Category type not found", "Category type not found", ResultType.NotFound);
+                throw new NotFoundException("Category type not found");
             }
 
             _context.CategoryTypes.Remove(categoryType);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<bool>.Ok(true, "Category type deleted successfully", ResultType.Success);
+            return Result<bool>.Ok(true, "Category type deleted successfully");
         }
     }
 }

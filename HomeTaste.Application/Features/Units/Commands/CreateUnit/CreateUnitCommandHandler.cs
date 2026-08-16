@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.Units;
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -32,7 +32,7 @@ namespace HomeTaste.Application.Features.Units.Commands.CreateUnit
 
             if (existingUnit != null)
             {
-                return Result<UnitResponse>.Fail("Unit already exists with the same name or abbreviation.", "Duplicate unit", ResultType.Conflict);
+                throw new ConflictException("Unit already exists with the same name or abbreviation.");
             }
 
             var unit = UnitEntity.Create(unitRequest.Name, unitRequest.Abbreviation);
@@ -47,7 +47,7 @@ namespace HomeTaste.Application.Features.Units.Commands.CreateUnit
                 Abbreviation = unit.Abbreviation
             };
 
-            return Result<UnitResponse>.Ok(unitResponse, "Unit created successfully", ResultType.Success);
+            return Result<UnitResponse>.Ok(unitResponse, "Unit created successfully");
         }
     }
 }

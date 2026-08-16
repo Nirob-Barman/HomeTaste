@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.Units;
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Helpers.Pagination;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
@@ -57,10 +57,10 @@ namespace HomeTaste.Application.Features.Units.Queries.GetAllUnits
 
             if (!pagedUnits.Any())
             {
-                return Result<PaginatedResponse<IEnumerable<UnitResponse>>>.Fail("No units found", "No units found", ResultType.NotFound);
+                throw new NotFoundException("No units found");
             }
 
-            return Result<PaginatedResponse<IEnumerable<UnitResponse>>>.Ok(response, "Units retrieved successfully", ResultType.Success);
+            return Result<PaginatedResponse<IEnumerable<UnitResponse>>>.Ok(response, "Units retrieved successfully");
         }
     }
 }

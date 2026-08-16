@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.OrganizationDepartment;
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -24,7 +24,7 @@ namespace HomeTaste.Application.Features.Departments.Commands.UpdateDepartment
 
             if (department == null)
             {
-                return Result<DepartmentResponse>.Fail("Department not found", "Department not found", ResultType.NotFound);
+                throw new NotFoundException("Department not found");
             }
 
             var existingDepartment = await _context.Departments
@@ -34,7 +34,7 @@ namespace HomeTaste.Application.Features.Departments.Commands.UpdateDepartment
 
             if (existingDepartment != null)
             {
-                return Result<DepartmentResponse>.Fail("Department with the same name already exists.", "Duplicate department", ResultType.Conflict);
+                throw new ConflictException("Department with the same name already exists.");
             }
 
             department.UpdateDetails(departmentRequest.Name, departmentRequest.Description);
@@ -48,7 +48,7 @@ namespace HomeTaste.Application.Features.Departments.Commands.UpdateDepartment
                 Description = department.Description
             };
 
-            return Result<DepartmentResponse>.Ok(updatedDepartmentResponse, "Department updated successfully", ResultType.Success);
+            return Result<DepartmentResponse>.Ok(updatedDepartmentResponse, "Department updated successfully");
         }
     }
 }

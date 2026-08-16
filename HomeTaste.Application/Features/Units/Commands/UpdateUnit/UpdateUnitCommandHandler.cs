@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.Units;
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -28,7 +28,7 @@ namespace HomeTaste.Application.Features.Units.Commands.UpdateUnit
 
             if (unitResponse == null)
             {
-                return Result<UnitResponse>.Fail("Unit not found", "Unit not found", ResultType.NotFound);
+                throw new NotFoundException("Unit not found");
             }
 
             // Check if another unit with the same name or abbreviation exists
@@ -39,7 +39,7 @@ namespace HomeTaste.Application.Features.Units.Commands.UpdateUnit
 
             if (existingUnit != null)
             {
-                return Result<UnitResponse>.Fail("Unit with the same name or abbreviation already exists.", "Duplicate unit", ResultType.Conflict);
+                throw new ConflictException("Unit with the same name or abbreviation already exists.");
             }
 
             var duplicateUnit = await _context.Units
@@ -49,7 +49,7 @@ namespace HomeTaste.Application.Features.Units.Commands.UpdateUnit
 
             if (duplicateUnit != null)
             {
-                return Result<UnitResponse>.Fail("Unit with the same name or abbreviation already exists.", "Duplicate unit", ResultType.Conflict);
+                throw new ConflictException("Unit with the same name or abbreviation already exists.");
             }
 
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
@@ -60,7 +60,7 @@ namespace HomeTaste.Application.Features.Units.Commands.UpdateUnit
 
                 if (unitToUpdate == null)
                 {
-                    return Result<UnitResponse>.Fail("Unit not found", "Unit not found", ResultType.NotFound);
+                    throw new NotFoundException("Unit not found");
                 }
 
                 unitToUpdate.UpdateDetails(unitRequest.Name, unitRequest.Abbreviation);
@@ -75,12 +75,12 @@ namespace HomeTaste.Application.Features.Units.Commands.UpdateUnit
                     Abbreviation = unitToUpdate.Abbreviation
                 };
 
-                return Result<UnitResponse>.Ok(updatedUnitResponse, "Unit updated successfully", ResultType.Success);
+                return Result<UnitResponse>.Ok(updatedUnitResponse, "Unit updated successfully");
             }
-            catch (Exception ex)
+            catch
             {
                 await transaction.RollbackAsync(cancellationToken);
-                return Result<UnitResponse>.Fail($"An error occurred: {ex.Message}", "", ResultType.Failure);
+                throw;
             }
         }
     }

@@ -1,5 +1,4 @@
-﻿using HomeTaste.API.Wrappers;
-using HomeTaste.Application.DTOs.Units;
+﻿using HomeTaste.Application.Features.Units;
 using HomeTaste.Application.Features.Units.Commands.BulkInsertUnits;
 using HomeTaste.Application.Features.Units.Commands.CreateUnit;
 using HomeTaste.Application.Features.Units.Commands.HardDeleteUnit;
@@ -28,7 +27,7 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> GetAllUnits([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!)
         {
             var result = await _mediator.Send(new GetAllUnitsQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
         // Get unit by Id
@@ -36,7 +35,7 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> GetUnitById(Guid id)
         {
             var result = await _mediator.Send(new GetUnitByIdQuery(id));
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
         // Create a new unit
@@ -44,7 +43,7 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> CreateUnit([FromBody] UnitRequest unitRequest)
         {
             var result = await _mediator.Send(new CreateUnitCommand(unitRequest));
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
         // Update an existing unit
@@ -52,14 +51,14 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> UpdateUnit(Guid id, [FromBody] UnitRequest unitRequest)
         {
             var result = await _mediator.Send(new UpdateUnitCommand(id, unitRequest));
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
         [HttpDelete("soft/{id}")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             var result = await _mediator.Send(new SoftDeleteUnitCommand(id));
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
         // Delete a unit
@@ -67,7 +66,7 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> HardDelete(Guid id)
         {
             var result = await _mediator.Send(new HardDeleteUnitCommand(id));
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
 
@@ -75,7 +74,7 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> BulkInsertPredefinedUnits()
         {
             var result = await _mediator.Send(new BulkInsertUnitsCommand());
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
     }

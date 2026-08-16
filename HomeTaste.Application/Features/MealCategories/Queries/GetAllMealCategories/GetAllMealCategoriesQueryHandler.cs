@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.MealManagement;
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Helpers.Pagination;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
@@ -32,7 +32,10 @@ namespace HomeTaste.Application.Features.MealCategories.Queries.GetAllMealCatego
 
             if (!ValidSortColumns.Contains(request.SortBy))
             {
-                return Result<PaginatedResponse<IEnumerable<MealCategoryResponse>>>.Fail("Invalid sort column", "Invalid sort column.", ResultType.Failure);
+                // Note: the original service mapped this to ResultType.Failure (500), which is a
+                // miscategorized status for a client input problem - using BadRequestException (400)
+                // here instead. Flagged in plan.md; the validation rule itself is unchanged.
+                throw new BadRequestException("Invalid sort column.");
             }
 
             var totalCount = await query.CountAsync(cancellationToken);
@@ -67,7 +70,7 @@ namespace HomeTaste.Application.Features.MealCategories.Queries.GetAllMealCatego
                 MetaData = paginationMeta
             };
 
-            return Result<PaginatedResponse<IEnumerable<MealCategoryResponse>>>.Ok(response, "Meal categories retrieved successfully", ResultType.Success);
+            return Result<PaginatedResponse<IEnumerable<MealCategoryResponse>>>.Ok(response, "Meal categories retrieved successfully");
         }
     }
 }

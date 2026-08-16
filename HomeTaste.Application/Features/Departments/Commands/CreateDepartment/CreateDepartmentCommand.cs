@@ -1,4 +1,3 @@
-using HomeTaste.Application.DTOs.OrganizationDepartment;
 using HomeTaste.Application.Wrappers;
 using MediatR;
 

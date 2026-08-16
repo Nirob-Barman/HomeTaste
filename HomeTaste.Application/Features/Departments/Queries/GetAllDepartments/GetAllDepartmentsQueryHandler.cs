@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.OrganizationDepartment;
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Helpers.Pagination;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
@@ -56,10 +56,10 @@ namespace HomeTaste.Application.Features.Departments.Queries.GetAllDepartments
 
             if (!pagedDepartments.Any())
             {
-                return Result<PaginatedResponse<IEnumerable<DepartmentResponse>>>.Fail("No departments found", "No departments found", ResultType.NotFound);
+                throw new NotFoundException("No departments found");
             }
 
-            return Result<PaginatedResponse<IEnumerable<DepartmentResponse>>>.Ok(response, "Departments retrieved successfully", ResultType.Success);
+            return Result<PaginatedResponse<IEnumerable<DepartmentResponse>>>.Ok(response, "Departments retrieved successfully");
         }
     }
 }

@@ -1,8 +1,6 @@
-﻿
-
-namespace HomeTaste.Application.DTOs.Support
+namespace HomeTaste.Application.Features.Departments
 {
-    public class CategoryTypeRequest
+    public class DepartmentRequest
     {
         public string? Name { get; set; }
         public string? Description { get; set; }

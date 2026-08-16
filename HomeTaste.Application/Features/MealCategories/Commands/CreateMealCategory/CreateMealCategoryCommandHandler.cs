@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.MealManagement;
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using HomeTaste.Domain.Entities.MealManagement;
@@ -24,7 +24,7 @@ namespace HomeTaste.Application.Features.MealCategories.Commands.CreateMealCateg
 
             if (existingCategory != null)
             {
-                return Result<MealCategoryResponse>.Fail("Meal category with the same name already exists.", "Duplicate meal category", ResultType.Conflict);
+                throw new ConflictException("Meal category with the same name already exists.");
             }
 
             var mealCategory = MealCategory.Create(mealCategoryRequest.Name, mealCategoryRequest.Description);
@@ -40,7 +40,7 @@ namespace HomeTaste.Application.Features.MealCategories.Commands.CreateMealCateg
                 ImageUrl = mealCategory.ImageUrl
             };
 
-            return Result<MealCategoryResponse>.Ok(response, "Meal category created successfully", ResultType.Success);
+            return Result<MealCategoryResponse>.Ok(response, "Meal category created successfully");
         }
     }
 }

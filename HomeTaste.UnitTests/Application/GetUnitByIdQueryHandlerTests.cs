@@ -1,3 +1,4 @@
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Features.Units.Queries.GetUnitById;
 using HomeTaste.Domain.Entities;
 
@@ -29,17 +30,15 @@ namespace HomeTaste.UnitTests.Application
         }
 
         [Fact]
-        public async Task Handle_WhenUnitNotFound_ReturnsFailure()
+        public async Task Handle_WhenUnitNotFound_ThrowsNotFoundException()
         {
             // Arrange
             using var context = TestApplicationDbContext.CreateInMemory();
             var handler = new GetUnitByIdQueryHandler(context);
 
-            // Act
-            var result = await handler.Handle(new GetUnitByIdQuery(Guid.NewGuid()), CancellationToken.None);
-
-            // Assert
-            Assert.False(result.Success);
+            // Act & Assert
+            await Assert.ThrowsAsync<NotFoundException>(() =>
+                handler.Handle(new GetUnitByIdQuery(Guid.NewGuid()), CancellationToken.None));
         }
     }
 }

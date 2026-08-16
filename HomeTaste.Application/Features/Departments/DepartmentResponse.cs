@@ -1,6 +1,4 @@
-﻿
-
-namespace HomeTaste.Application.DTOs.OrganizationDepartment
+namespace HomeTaste.Application.Features.Departments
 {
     public class DepartmentResponse
     {

@@ -1,5 +1,4 @@
-﻿using HomeTaste.API.Wrappers;
-using HomeTaste.Application.DTOs.Support;
+﻿using HomeTaste.Application.Features.CategoryTypes;
 using HomeTaste.Application.Features.CategoryTypes.Commands.CreateCategoryType;
 using HomeTaste.Application.Features.CategoryTypes.Commands.DeleteCategoryType;
 using HomeTaste.Application.Features.CategoryTypes.Commands.UpdateCategoryType;
@@ -26,7 +25,7 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> GetAllCategoryTypes([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!)
         {
             var result = await _mediator.Send(new GetAllCategoryTypesQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
         // Get category type by Id
@@ -34,7 +33,7 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> GetCategoryTypeById(Guid id)
         {
             var result = await _mediator.Send(new GetCategoryTypeByIdQuery(id));
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
         // Create a new category type
@@ -42,7 +41,7 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> CreateCategoryType([FromBody] CategoryTypeRequest categoryTypeRequest)
         {
             var result = await _mediator.Send(new CreateCategoryTypeCommand(categoryTypeRequest));
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
         // Update an existing category type
@@ -50,7 +49,7 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> UpdateCategoryType(Guid id, [FromBody] CategoryTypeRequest categoryTypeRequest)
         {
             var result = await _mediator.Send(new UpdateCategoryTypeCommand(id, categoryTypeRequest));
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
         // Delete a category type
@@ -58,7 +57,7 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> DeleteCategoryType(Guid id)
         {
             var result = await _mediator.Send(new DeleteCategoryTypeCommand(id));
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
     }
 }

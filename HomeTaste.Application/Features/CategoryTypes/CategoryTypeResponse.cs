@@ -1,5 +1,4 @@
-﻿
-namespace HomeTaste.Application.DTOs.Support
+namespace HomeTaste.Application.Features.CategoryTypes
 {
     public class CategoryTypeResponse
     {

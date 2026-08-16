@@ -1,5 +1,4 @@
-﻿using HomeTaste.API.Wrappers;
-using HomeTaste.Application.DTOs.OrganizationDepartment;
+﻿using HomeTaste.Application.Features.Departments;
 using HomeTaste.Application.Features.Departments.Commands.CreateDepartment;
 using HomeTaste.Application.Features.Departments.Commands.DeleteDepartment;
 using HomeTaste.Application.Features.Departments.Commands.UpdateDepartment;
@@ -25,35 +24,35 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> GetAllDepartments([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!)
         {
             var result = await _mediator.Send(new GetAllDepartmentsQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDepartmentById(Guid id)
         {
             var result = await _mediator.Send(new GetDepartmentByIdQuery(id));
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateDepartment([FromBody] DepartmentRequest departmentRequest)
         {
             var result = await _mediator.Send(new CreateDepartmentCommand(departmentRequest));
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateDepartment(Guid id, [FromBody] DepartmentRequest departmentRequest)
         {
             var result = await _mediator.Send(new UpdateDepartmentCommand(id, departmentRequest));
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(Guid id)
         {
             var result = await _mediator.Send(new DeleteDepartmentCommand(id));
-            return ApiResponseMapper.FromResult(this, result);
+            return Ok(result);
         }
     }
 }

@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.MealManagement;
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -22,14 +22,14 @@ namespace HomeTaste.Application.Features.MealCategories.Commands.UpdateMealCateg
 
             var mealCategory = await _context.MealCategories.FindAsync(new object?[] { id }, cancellationToken);
             if (mealCategory == null)
-                return Result<MealCategoryResponse>.Fail("Meal category not found", "Meal category not found", ResultType.NotFound);
+                throw new NotFoundException("Meal category not found");
 
             var existingCategory = await _context.MealCategories
                 .FirstOrDefaultAsync(c => c.Name == mealCategoryRequest.Name && c.Id != id, cancellationToken);
 
             if (existingCategory != null)
             {
-                return Result<MealCategoryResponse>.Fail("Meal category with the same name already exists.", "Duplicate meal category", ResultType.Conflict);
+                throw new ConflictException("Meal category with the same name already exists.");
             }
 
             mealCategory.UpdateDetails(mealCategoryRequest.Name, mealCategoryRequest.Description);
@@ -44,7 +44,7 @@ namespace HomeTaste.Application.Features.MealCategories.Commands.UpdateMealCateg
                 ImageUrl = mealCategory.ImageUrl
             };
 
-            return Result<MealCategoryResponse>.Ok(response, "Meal category updated successfully", ResultType.Success);
+            return Result<MealCategoryResponse>.Ok(response, "Meal category updated successfully");
         }
     }
 }

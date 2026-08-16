@@ -1,4 +1,4 @@
-﻿namespace HomeTaste.Application.DTOs.Units
+namespace HomeTaste.Application.Features.Units
 {
     public class UnitResponse
     {
@@ -6,5 +6,4 @@
         public string? Name { get; set; }
         public string? Abbreviation { get; set; }
     }
-
 }

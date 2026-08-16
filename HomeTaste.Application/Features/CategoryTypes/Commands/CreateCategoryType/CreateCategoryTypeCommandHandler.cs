@@ -1,3 +1,4 @@
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.DTOs.Support;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
@@ -27,7 +28,7 @@ namespace HomeTaste.Application.Features.CategoryTypes.Commands.CreateCategoryTy
 
             if (existingCategoryType != null)
             {
-                return Result<CategoryTypeResponse>.Fail("Category type with the same name already exists.", "Duplicate category type", ResultType.Conflict);
+                throw new ConflictException("Category type with the same name already exists.");
             }
 
             var categoryType = CategoryType.Create(categoryTypeRequest.Name, categoryTypeRequest.Description);
@@ -42,7 +43,7 @@ namespace HomeTaste.Application.Features.CategoryTypes.Commands.CreateCategoryTy
                 Description = categoryType.Description
             };
 
-            return Result<CategoryTypeResponse>.Ok(categoryTypeResponse, "Category type created successfully", ResultType.Success);
+            return Result<CategoryTypeResponse>.Ok(categoryTypeResponse, "Category type created successfully");
         }
     }
 }

@@ -1,3 +1,4 @@
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.DTOs.Support;
 using HomeTaste.Application.Helpers.Pagination;
 using HomeTaste.Application.Interfaces.Persistence;
@@ -56,10 +57,10 @@ namespace HomeTaste.Application.Features.CategoryTypes.Queries.GetAllCategoryTyp
 
             if (!pagedCategoryTypes.Any())
             {
-                return Result<PaginatedResponse<IEnumerable<CategoryTypeResponse>>>.Fail("No category types found", "No category types found", ResultType.NotFound);
+                throw new NotFoundException("No category types found");
             }
 
-            return Result<PaginatedResponse<IEnumerable<CategoryTypeResponse>>>.Ok(response, "Category types retrieved successfully", ResultType.Success);
+            return Result<PaginatedResponse<IEnumerable<CategoryTypeResponse>>>.Ok(response, "Category types retrieved successfully");
         }
     }
 }

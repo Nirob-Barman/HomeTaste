@@ -1,3 +1,4 @@
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -19,7 +20,7 @@ namespace HomeTaste.Application.Features.Units.Commands.SoftDeleteUnit
 
             if (unit == null || unit.DeletedAt != null)
             {
-                return Result<bool>.Fail("Unit not found", "Unit not found", ResultType.NotFound);
+                throw new NotFoundException("Unit not found");
             }
 
             unit.DeletedAt = DateTime.UtcNow;
@@ -27,7 +28,7 @@ namespace HomeTaste.Application.Features.Units.Commands.SoftDeleteUnit
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<bool>.Ok(true, "Unit soft deleted successfully", ResultType.Success);
+            return Result<bool>.Ok(true, "Unit soft deleted successfully");
         }
     }
 }

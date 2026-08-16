@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.MealManagement;
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -18,7 +18,7 @@ namespace HomeTaste.Application.Features.MealCategories.Queries.GetMealCategoryB
         {
             var mealCategory = await _context.MealCategories.FindAsync(new object?[] { request.Id }, cancellationToken);
             if (mealCategory == null)
-                return Result<MealCategoryResponse>.Fail("Meal category not found", "Meal category not found", ResultType.NotFound);
+                throw new NotFoundException("Meal category not found");
 
             var response = new MealCategoryResponse
             {
@@ -28,7 +28,7 @@ namespace HomeTaste.Application.Features.MealCategories.Queries.GetMealCategoryB
                 ImageUrl = mealCategory.ImageUrl
             };
 
-            return Result<MealCategoryResponse>.Ok(response, "Meal category retrieved successfully", ResultType.Success);
+            return Result<MealCategoryResponse>.Ok(response, "Meal category retrieved successfully");
         }
     }
 }

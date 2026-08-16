@@ -1,4 +1,4 @@
-﻿namespace HomeTaste.Application.DTOs.Units
+namespace HomeTaste.Application.Features.Units
 {
     public class UnitRequest
     {

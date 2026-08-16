@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.OrganizationDepartment;
+using HomeTaste.Application.Common.Exceptions;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;
 using MediatR;
@@ -29,10 +29,10 @@ namespace HomeTaste.Application.Features.Departments.Queries.GetDepartmentById
 
             if (departmentResponse == null)
             {
-                return Result<DepartmentResponse>.Fail("Department not found", "Department not found", ResultType.NotFound);
+                throw new NotFoundException("Department not found");
             }
 
-            return Result<DepartmentResponse>.Ok(departmentResponse, "Department retrieved successfully", ResultType.Success);
+            return Result<DepartmentResponse>.Ok(departmentResponse, "Department retrieved successfully");
         }
     }
 }

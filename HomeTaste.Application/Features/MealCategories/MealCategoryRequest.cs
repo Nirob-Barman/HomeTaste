@@ -1,8 +1,7 @@
-﻿namespace HomeTaste.Application.DTOs.MealManagement
+namespace HomeTaste.Application.Features.MealCategories
 {
-    public class MealCategoryResponse
+    public class MealCategoryRequest
     {
-        public Guid Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }

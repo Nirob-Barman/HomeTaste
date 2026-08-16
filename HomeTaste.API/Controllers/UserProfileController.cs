@@ -1,7 +1,11 @@
 using HomeTaste.API.Wrappers;
-using HomeTaste.Application.DTOs.UserProfile;
+using HomeTaste.Application.Features.UserProfile;
+using HomeTaste.Application.Features.UserProfile.Commands.ChangePassword;
+using HomeTaste.Application.Features.UserProfile.Commands.UpdateProfile;
+using HomeTaste.Application.Features.UserProfile.Commands.UploadAvatar;
+using HomeTaste.Application.Features.UserProfile.Queries.GetProfile;
 using HomeTaste.Application.Interfaces.Order;
-using HomeTaste.Application.Interfaces.UserProfile;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,39 +17,39 @@ namespace HomeTaste.API.Controllers
     [ApiController]
     public class UserProfileController : ControllerBase
     {
-        private readonly IUserProfileService _userProfileService;
-        private readonly IOrderService       _orderService;
+        private readonly IMediator _mediator;
+        private readonly IOrderService _orderService;
 
         public UserProfileController(
-            IUserProfileService userProfileService,
+            IMediator mediator,
             IOrderService orderService)
         {
-            _userProfileService = userProfileService;
-            _orderService       = orderService;
+            _mediator = mediator;
+            _orderService = orderService;
         }
 
         /// <summary>Returns the current user's profile (name, email, phone, avatar, roles).</summary>
         [HttpGet]
         public async Task<IActionResult> GetProfile()
         {
-            var result = await _userProfileService.GetProfileAsync();
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetProfileQuery());
+            return Ok(result);
         }
 
         /// <summary>Updates editable profile fields (first/last name, date of birth, phone number).</summary>
         [HttpPut]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
         {
-            var result = await _userProfileService.UpdateProfileAsync(request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new UpdateProfileCommand(request));
+            return Ok(result);
         }
 
         /// <summary>Changes the current user's password. Requires the existing password for verification.</summary>
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
-            var result = await _userProfileService.ChangePasswordAsync(request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new ChangePasswordCommand(request));
+            return Ok(result);
         }
 
         /// <summary>Uploads or replaces the current user's avatar image. Send as multipart/form-data with field name "file".</summary>
@@ -56,8 +60,8 @@ namespace HomeTaste.API.Controllers
                 return BadRequest("No file provided.");
 
             await using var stream = file.OpenReadStream();
-            var result = await _userProfileService.UploadAvatarAsync(stream, file.FileName, file.ContentType);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new UploadAvatarCommand(stream, file.FileName, file.ContentType));
+            return Ok(result);
         }
 
         /// <summary>Returns the current user's paginated order history.</summary>
@@ -65,6 +69,9 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> GetOrderHistory(
             [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
+            // IOrderService is not yet converted to CQRS — still returns Result<T> with a
+            // meaningful ResultType, so this action keeps using ApiResponseMapper, unlike
+            // every other action in this controller.
             var result = await _orderService.GetMyOrdersAsync(pageNumber, pageSize);
             return ApiResponseMapper.FromResult(this, result);
         }

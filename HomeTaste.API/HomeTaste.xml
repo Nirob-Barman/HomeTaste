@@ -301,10 +301,10 @@
         <member name="M:HomeTaste.API.Controllers.UserProfileController.GetProfile">
             <summary>Returns the current user's profile (name, email, phone, avatar, roles).</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.UserProfileController.UpdateProfile(HomeTaste.Application.DTOs.UserProfile.UpdateProfileRequest)">
+        <member name="M:HomeTaste.API.Controllers.UserProfileController.UpdateProfile(HomeTaste.Application.Features.UserProfile.UpdateProfileRequest)">
             <summary>Updates editable profile fields (first/last name, date of birth, phone number).</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.UserProfileController.ChangePassword(HomeTaste.Application.DTOs.UserProfile.ChangePasswordRequest)">
+        <member name="M:HomeTaste.API.Controllers.UserProfileController.ChangePassword(HomeTaste.Application.Features.UserProfile.ChangePasswordRequest)">
             <summary>Changes the current user's password. Requires the existing password for verification.</summary>
         </member>
         <member name="M:HomeTaste.API.Controllers.UserProfileController.UploadAvatar(Microsoft.AspNetCore.Http.IFormFile)">

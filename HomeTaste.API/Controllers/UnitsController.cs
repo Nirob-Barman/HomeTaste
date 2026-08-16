@@ -1,6 +1,13 @@
 ﻿using HomeTaste.API.Wrappers;
 using HomeTaste.Application.DTOs.Units;
-using HomeTaste.Application.Interfaces.Measurements;
+using HomeTaste.Application.Features.Units.Commands.BulkInsertUnits;
+using HomeTaste.Application.Features.Units.Commands.CreateUnit;
+using HomeTaste.Application.Features.Units.Commands.HardDeleteUnit;
+using HomeTaste.Application.Features.Units.Commands.SoftDeleteUnit;
+using HomeTaste.Application.Features.Units.Commands.UpdateUnit;
+using HomeTaste.Application.Features.Units.Queries.GetAllUnits;
+using HomeTaste.Application.Features.Units.Queries.GetUnitById;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeTaste.API.Controllers
@@ -9,10 +16,10 @@ namespace HomeTaste.API.Controllers
     [ApiController]
     public class UnitsController : ControllerBase
     {
-        private readonly IUnitService _unitService;
-        public UnitsController(IUnitService unitService)
+        private readonly IMediator _mediator;
+        public UnitsController(IMediator mediator)
         {
-            _unitService = unitService;
+            _mediator = mediator;
         }
 
 
@@ -20,7 +27,7 @@ namespace HomeTaste.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUnits([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!)
         {
-            var result = await _unitService.GetAllUnitsAsync(pageNumber, pageSize, searchTerm);
+            var result = await _mediator.Send(new GetAllUnitsQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -28,7 +35,7 @@ namespace HomeTaste.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUnitById(Guid id)
         {
-            var result = await _unitService.GetUnitByIdAsync(id);
+            var result = await _mediator.Send(new GetUnitByIdQuery(id));
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -36,7 +43,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUnit([FromBody] UnitRequest unitRequest)
         {
-            var result = await _unitService.CreateUnitAsync(unitRequest);
+            var result = await _mediator.Send(new CreateUnitCommand(unitRequest));
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -44,15 +51,14 @@ namespace HomeTaste.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUnit(Guid id, [FromBody] UnitRequest unitRequest)
         {
-            //var result = await _unitService.UpdateUnitAsync(id, unitRequest);
-            var result = await _unitService.UpdateUnitAsyncUsingDapperGetAndEfUpdate(id, unitRequest);
+            var result = await _mediator.Send(new UpdateUnitCommand(id, unitRequest));
             return ApiResponseMapper.FromResult(this, result);
         }
 
         [HttpDelete("soft/{id}")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
-            var result = await _unitService.SoftDeleteUnitAsync(id);
+            var result = await _mediator.Send(new SoftDeleteUnitCommand(id));
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -60,7 +66,7 @@ namespace HomeTaste.API.Controllers
         [HttpDelete("hard/{id}")]
         public async Task<IActionResult> HardDelete(Guid id)
         {
-            var result = await _unitService.HardDeleteUnitAsync(id);
+            var result = await _mediator.Send(new HardDeleteUnitCommand(id));
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -68,7 +74,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost("bulk-insert")]
         public async Task<IActionResult> BulkInsertPredefinedUnits()
         {
-            var result = await _unitService.BulkInsertPredefinedUnitsAsync();
+            var result = await _mediator.Send(new BulkInsertUnitsCommand());
             return ApiResponseMapper.FromResult(this, result);
         }
 

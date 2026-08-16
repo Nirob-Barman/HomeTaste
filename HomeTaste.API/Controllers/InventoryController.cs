@@ -1,7 +1,10 @@
-﻿using HomeTaste.API.Wrappers;
 using HomeTaste.Application.Authorization;
-using HomeTaste.Application.DTOs.MealManagement.Inventory;
-using HomeTaste.Application.Interfaces.MealManagement;
+using HomeTaste.Application.Features.Inventory.Commands.AddInventoryItem;
+using HomeTaste.Application.Features.Inventory.Commands.BulkInsertInventoryItems;
+using HomeTaste.Application.Features.Inventory.Commands.DeleteInventoryItem;
+using HomeTaste.Application.Features.Inventory.Commands.UpdateInventoryItem;
+using HomeTaste.Application.Features.Inventory.Queries.GetAllInventoryItems;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +14,11 @@ namespace HomeTaste.API.Controllers
     [ApiController]
     public class InventoryController : ControllerBase
     {
-        private readonly IInventoryService _inventoryService;
+        private readonly IMediator _mediator;
 
-        public InventoryController(IInventoryService inventoryService)
+        public InventoryController(IMediator mediator)
         {
-            _inventoryService = inventoryService;
+            _mediator = mediator;
         }
 
         // Get a list of inventory items
@@ -25,8 +28,8 @@ namespace HomeTaste.API.Controllers
             int pageSize = 10,
             string searchTerm = null!)
         {
-            var result = await _inventoryService.GetAllInventoryItemsAsync(pageNumber, pageSize, searchTerm);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetAllInventoryItemsQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
+            return Ok(result);
         }
 
         // Add a new item to the inventory
@@ -34,8 +37,8 @@ namespace HomeTaste.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddInventoryItem([FromBody] AddInventoryItemRequest request)
         {
-            var result = await _inventoryService.AddInventoryItemAsync(request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new AddInventoryItemCommand(request));
+            return Ok(result);
         }
 
         // Update an existing item in the inventory
@@ -43,8 +46,8 @@ namespace HomeTaste.API.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateInventoryItem(Guid id, [FromBody] UpdateInventoryItemRequest request)
         {
-            var result = await _inventoryService.UpdateInventoryItemAsync(id, request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new UpdateInventoryItemCommand(id, request));
+            return Ok(result);
         }
 
         // Delete an item from the inventory
@@ -52,19 +55,16 @@ namespace HomeTaste.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteInventoryItem(Guid id)
         {
-            var result = await _inventoryService.DeleteInventoryItemAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new DeleteInventoryItemCommand(id));
+            return Ok(result);
         }
 
         [Authorize(Policy = Policies.AdminOnly)]
         [HttpPost("bulk-insert")]
         public async Task<IActionResult> BulkInsertInventoryItems()
         {
-            // Call the service method to insert predefined inventory items
-            var result = await _inventoryService.BulkInsertInventoryItemsAsync();
-
-            // Map the result to an API response format (similar to how you handled predefined units)
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new BulkInsertInventoryItemsCommand());
+            return Ok(result);
         }
     }
 }

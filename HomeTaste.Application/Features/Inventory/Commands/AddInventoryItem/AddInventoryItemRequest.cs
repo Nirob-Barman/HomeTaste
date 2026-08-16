@@ -1,5 +1,4 @@
-﻿
-namespace HomeTaste.Application.DTOs.MealManagement.Inventory
+namespace HomeTaste.Application.Features.Inventory.Commands.AddInventoryItem
 {
     public class AddInventoryItemRequest
     {

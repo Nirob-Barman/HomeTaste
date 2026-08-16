@@ -5,7 +5,6 @@ namespace HomeTaste.Domain.Entities.Delivery
 {
     public class DeliveryAssignment : BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid OrderId { get; set; }
         public Guid DeliveryPersonnelId { get; set; }
         public DeliveryStatus Status { get; set; } = DeliveryStatus.Assigned;

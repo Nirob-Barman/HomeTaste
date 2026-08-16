@@ -4,7 +4,6 @@ namespace HomeTaste.Domain.Entities.MealManagement
 {
     public class MealIngredient : BaseEntity
     {
-        public Guid Id { get; set; }
         [ForeignKey("Meal")]
         public Guid MealId { get; set; }            // Meal associated with the ingredient (Foreign Key)
         [ForeignKey("Ingredient")]

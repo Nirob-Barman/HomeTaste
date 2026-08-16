@@ -4,7 +4,6 @@ namespace HomeTaste.Domain.Entities.MealManagement
 {
     public class Ingredient : BaseEntity
     {
-        public Guid Id { get; set; }
         public string? Name { get; set; }           // Name of the Ingredient (e.g., Chicken, Lettuce)
         public string? Description { get; set; }   // Description of the Ingredient
         public bool IsAllergen { get; set; }

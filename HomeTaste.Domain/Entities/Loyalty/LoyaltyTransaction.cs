@@ -4,7 +4,6 @@ namespace HomeTaste.Domain.Entities.Loyalty
 {
     public class LoyaltyTransaction : BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid LoyaltyAccountId { get; set; }
         public int Points { get; set; }
         public LoyaltyTransactionType TransactionType { get; set; }

@@ -4,7 +4,6 @@ namespace HomeTaste.Domain.Entities.Notification
 {
     public class Notification : BaseEntity
     {
-        public Guid Id { get; set; }
         public string? UserId { get; set; }
         public string? Title { get; set; }
         public string? Message { get; set; }

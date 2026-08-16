@@ -3,7 +3,6 @@ namespace HomeTaste.Domain.Entities.Support
 {
     public class SupportTicket : BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid UserId { get; set; }  // Customer who raised the ticket
         public string? Subject { get; set; }
         public string? Description { get; set; }

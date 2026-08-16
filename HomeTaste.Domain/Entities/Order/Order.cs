@@ -6,7 +6,6 @@ namespace HomeTaste.Domain.Entities.Order
 {
     public class Order : BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public Guid AddressId { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.Pending;

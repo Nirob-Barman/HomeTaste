@@ -2,7 +2,6 @@ namespace HomeTaste.Domain.Entities.Delivery
 {
     public class DeliveryPersonnel : BaseEntity
     {
-        public Guid Id { get; set; }
         public string? UserId { get; set; }
         public string? FullName { get; set; }
         public string? Phone { get; set; }

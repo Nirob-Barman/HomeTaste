@@ -4,7 +4,6 @@ namespace HomeTaste.Domain.Entities.Coupon
 {
     public class Coupon : BaseEntity
     {
-        public Guid Id { get; set; }
         public string? Code { get; set; }
         public string? Description { get; set; }
         public DiscountType DiscountType { get; set; }

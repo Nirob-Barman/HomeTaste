@@ -3,7 +3,6 @@ namespace HomeTaste.Domain.Entities.MealManagement
 {
     public class InventoryTransaction : BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid InventoryItemId { get; set; }
         public InventoryItem? InventoryItem { get; set; }
 

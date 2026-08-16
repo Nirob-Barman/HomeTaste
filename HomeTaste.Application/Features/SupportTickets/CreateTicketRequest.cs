@@ -1,9 +1,8 @@
-﻿
 using HomeTaste.Domain.Enums;
 
-namespace HomeTaste.Application.DTOs.Support
+namespace HomeTaste.Application.Features.SupportTickets
 {
-    public class CreateTicketRequest
+    public record CreateTicketRequest
     {
         public string? Subject { get; set; }
         public string? Description { get; set; }

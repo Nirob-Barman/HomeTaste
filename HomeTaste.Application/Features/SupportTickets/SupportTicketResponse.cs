@@ -1,8 +1,8 @@
-﻿using HomeTaste.Domain.Enums;
+using HomeTaste.Domain.Enums;
 
-namespace HomeTaste.Application.DTOs.Support
+namespace HomeTaste.Application.Features.SupportTickets
 {
-    public class SupportTicketResponse
+    public record SupportTicketResponse
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }

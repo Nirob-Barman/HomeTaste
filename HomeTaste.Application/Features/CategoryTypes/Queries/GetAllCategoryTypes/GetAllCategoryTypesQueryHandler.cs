@@ -1,5 +1,4 @@
 using HomeTaste.Application.Common.Exceptions;
-using HomeTaste.Application.DTOs.Support;
 using HomeTaste.Application.Helpers.Pagination;
 using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Wrappers;

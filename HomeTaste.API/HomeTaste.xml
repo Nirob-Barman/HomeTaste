@@ -36,16 +36,16 @@
         <member name="M:HomeTaste.API.Controllers.AdminUsersController.GetUserById(System.String)">
             <summary>Returns a single user by their identity ID.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.AdminUsersController.BanUser(System.String,HomeTaste.Application.DTOs.UserProfile.BanUserRequest)">
+        <member name="M:HomeTaste.API.Controllers.AdminUsersController.BanUser(System.String,HomeTaste.Application.Features.Users.Admin.BanUserRequest)">
             <summary>Bans a user (locks their account indefinitely).</summary>
         </member>
         <member name="M:HomeTaste.API.Controllers.AdminUsersController.UnbanUser(System.String)">
             <summary>Lifts a ban from a user (unlocks their account).</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.AdminUsersController.AssignRole(HomeTaste.Application.DTOs.Admin.AssignRoleRequest)">
+        <member name="M:HomeTaste.API.Controllers.AdminUsersController.AssignRole(HomeTaste.Application.Features.Users.Admin.AssignRoleRequest)">
             <summary>Assigns a role to a user.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.AdminUsersController.RemoveRole(HomeTaste.Application.DTOs.Admin.RemoveRoleRequest)">
+        <member name="M:HomeTaste.API.Controllers.AdminUsersController.RemoveRole(HomeTaste.Application.Features.Users.Admin.RemoveRoleRequest)">
             <summary>Removes a role from a user.</summary>
         </member>
         <member name="T:HomeTaste.API.Controllers.AnalyticsController">

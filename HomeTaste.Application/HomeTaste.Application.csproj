@@ -18,8 +18,4 @@
     <ProjectReference Include="..\HomeTaste.Domain\HomeTaste.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Enums\" />
-  </ItemGroup>
-
 </Project>

@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HomeTaste.Infrastructure\HomeTaste.Infrastructure.csproj" />
+    <ProjectReference Include="..\HomeTaste.Application\HomeTaste.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

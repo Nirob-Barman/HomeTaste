@@ -1,5 +1,7 @@
 # HomeTaste — CLAUDE.md
 
+> ⚠️ **Architecture migration in progress.** This codebase is being refactored from the Service-layer + `Result<T>`/`ResultType`/`ApiResponseMapper` architecture documented below into **Clean Architecture with CQRS + MediatR** (feature-based `Application/Features/`, FluentValidation, exception-based error mapping, no `ResultType`, no `ApiResponseMapper`). The full discovery findings, refactoring map, and phased plan live in `plan.md` at the repo root (gitignored, local-only). Until that migration lands feature-by-feature, the conventions below remain accurate for any code that hasn't been converted yet — check `plan.md` for what's already moved before assuming a file still follows the old pattern.
+
 ## Project Overview
 HomeTaste is an ASP.NET Core 8 Web API platform for a scalable homemade food service. It follows **Clean Architecture** with 4 layers: Domain → Application → Infrastructure → API. The system supports customers, admins, and delivery personnel with JWT-based authentication, meal management, order processing, inventory, reviews, support tickets, and real-time features.
 
@@ -45,7 +47,9 @@ dotnet ef database update --project HomeTaste.Infrastructure --startup-project H
 | New entity | Create in `Domain/Entities/` → add `DbSet` in `ApplicationDbContext` → add `IEntityTypeConfiguration<T>` in `Infrastructure/Persistence/Configuration/` → run migration |
 | New service | Interface in `Application/Interfaces/` → implementation in `Application/Services/` → register in DI |
 | Enums | Always defined in `HomeTaste.Domain/` — never in Application or API |
-| Validators | FluentValidation in `Application/Validators/` |
+| Validators | `Application/Validators/` (see note below) |
+
+> **Note:** `Application/Validators/` currently holds hand-rolled `public static class X { public static List<string> Validate(...) }` helpers, not the FluentValidation library — no `FluentValidation` package is referenced anywhere in the solution today. The migration in `plan.md` converts these to real FluentValidation `AbstractValidator<T>` classes run via a MediatR pipeline behavior; until a given feature is converted, follow the existing static-helper convention for consistency with its neighbors.
 
 ### Result<T> usage
 ```csharp
@@ -131,13 +135,13 @@ HomeTaste.Infrastructure/Persistence/Configuration/
 `ApplicationDbContext.OnModelCreating` calls `builder.ApplyConfigurationsFromAssembly(...)` — adding a new entity config is just a new file, no edits to `ApplicationDbContext`.
 
 ## Base Entity
-All domain entities inherit `BaseEntity`. Enums do **not**.
+Most domain entities inherit `BaseEntity` (a few root-level ones — `RefreshToken`, `Department`, `CategoryType`, `MealPreference`, `LoginAudit` — currently don't and declare their own `Id`). Enums do **not**.
 
 ```csharp
 public abstract class BaseEntity
 {
     public Guid Id { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? CreatedAt { get; set; }
     public Guid? CreatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public Guid? UpdatedBy { get; set; }
@@ -145,6 +149,8 @@ public abstract class BaseEntity
     public Guid? DeletedBy { get; set; }
 }
 ```
+
+> **Note:** every audit field except `Id` is nullable, including `CreatedAt` — this corrects an earlier version of this document that described a non-nullable `DateTime CreatedAt`. `Id` was consolidated into `BaseEntity` from the 24 entities that previously each redeclared it individually (zero schema/behavior change — confirmed via an EF Core migration dry-run producing an empty `Up()`/`Down()`).
 
 ## ApplicationUser
 Extends `IdentityUser` with app-specific fields. Lives in `HomeTaste.Infrastructure/Identity/`.  

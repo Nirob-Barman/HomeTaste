@@ -54,3 +54,6 @@ coverage/
 
 # Publish output
 publish/
+
+# Local working docs
+plan.md

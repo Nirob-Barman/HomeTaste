@@ -5,6 +5,7 @@ using HomeTaste.Application.Interfaces.Support;
 using HomeTaste.Application.Validators.Support;
 using HomeTaste.Application.Wrappers;
 using HomeTaste.Domain.Entities.Support;
+using HomeTaste.Domain.Enums;
 
 namespace HomeTaste.Application.Services.Support
 {

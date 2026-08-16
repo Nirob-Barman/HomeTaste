@@ -1,5 +1,6 @@
 using HomeTaste.Application.DTOs.Support;
 using HomeTaste.Domain.Entities.Support;
+using HomeTaste.Domain.Enums;
 
 namespace HomeTaste.Application.Validators.Support
 {

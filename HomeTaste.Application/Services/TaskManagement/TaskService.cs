@@ -4,6 +4,7 @@ using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Interfaces.TaskManagement;
 using HomeTaste.Application.Wrappers;
 using HomeTaste.Domain.Entities.Tasks;
+using HomeTaste.Domain.Enums;
 
 namespace HomeTaste.Application.Services.TaskManagement
 {

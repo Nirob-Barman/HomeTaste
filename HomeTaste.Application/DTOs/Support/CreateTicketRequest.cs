@@ -1,5 +1,5 @@
 ﻿
-using HomeTaste.Domain.Entities.Support;
+using HomeTaste.Domain.Enums;
 
 namespace HomeTaste.Application.DTOs.Support
 {

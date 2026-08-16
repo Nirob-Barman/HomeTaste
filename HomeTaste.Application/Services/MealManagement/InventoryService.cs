@@ -5,6 +5,7 @@ using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Application.Validators.MealManagement;
 using HomeTaste.Application.Wrappers;
 using HomeTaste.Domain.Entities.MealManagement;
+using HomeTaste.Domain.Enums;
 
 namespace HomeTaste.Application.Services.MealManagement
 {

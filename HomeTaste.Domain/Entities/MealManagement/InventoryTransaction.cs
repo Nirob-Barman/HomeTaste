@@ -13,12 +13,4 @@ namespace HomeTaste.Domain.Entities.MealManagement
         public int TransactionType { get; set; } // Type of transaction (e.g., "Restock", "Order Use", "Adjustment")
         public string? Notes { get; set; } // Additional notes for the transaction (optional)
     }
-
-    public enum TransactionType
-    {
-        Restock = 1,    // Stock added back into inventory
-        OrderUse = 2,   // Stock used for an order
-        Adjustment = 3, // Adjustments made to stock (e.g., damaged goods, manual changes)
-        Deletion = 4    // Item deletion from inventory (if relevant)
-    }
 }

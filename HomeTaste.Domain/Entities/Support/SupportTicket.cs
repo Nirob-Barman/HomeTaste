@@ -1,4 +1,5 @@
-﻿
+﻿using HomeTaste.Domain.Enums;
+
 namespace HomeTaste.Domain.Entities.Support
 {
     public class SupportTicket : BaseEntity
@@ -22,22 +23,4 @@ namespace HomeTaste.Domain.Entities.Support
         // Navigation property to User (if necessary, based on your models)
         // public ApplicationUser User { get; set; }
     }
-   
-    public enum TicketStatus
-    {
-        Open = 1,
-        Resolved = 2,
-        InProgress = 3,
-        Closed = 4
-    }
-
-    public enum TicketPriority
-    {
-        Low = 1,
-        Medium = 2,
-        High = 3,
-        Urgent = 4
-    }
-
-
 }

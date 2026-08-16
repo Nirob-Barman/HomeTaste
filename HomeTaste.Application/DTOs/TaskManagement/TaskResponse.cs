@@ -1,4 +1,4 @@
-﻿using HomeTaste.Domain.Entities.Tasks;
+﻿using HomeTaste.Domain.Enums;
 
 namespace HomeTaste.Application.DTOs.TaskManagement
 {

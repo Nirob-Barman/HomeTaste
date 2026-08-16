@@ -1,6 +1,6 @@
 namespace HomeTaste.Application.Features.Departments
 {
-    public class DepartmentResponse
+    public record DepartmentResponse
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }

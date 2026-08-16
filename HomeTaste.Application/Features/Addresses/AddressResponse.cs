@@ -1,6 +1,6 @@
 namespace HomeTaste.Application.Features.Addresses
 {
-    public class AddressResponse
+    public record AddressResponse
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }

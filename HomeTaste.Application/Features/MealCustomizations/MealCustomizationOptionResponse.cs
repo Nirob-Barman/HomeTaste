@@ -2,7 +2,7 @@ using HomeTaste.Domain.Enums;
 
 namespace HomeTaste.Application.Features.MealCustomizations
 {
-    public class MealCustomizationOptionResponse
+    public record MealCustomizationOptionResponse
     {
         public Guid Id { get; set; }
         public Guid MealId { get; set; }

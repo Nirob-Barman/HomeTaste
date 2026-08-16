@@ -1,6 +1,6 @@
 namespace HomeTaste.Application.Features.CategoryTypes
 {
-    public class CategoryTypeResponse
+    public record CategoryTypeResponse
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }

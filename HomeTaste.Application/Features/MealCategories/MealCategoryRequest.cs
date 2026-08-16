@@ -1,6 +1,6 @@
 namespace HomeTaste.Application.Features.MealCategories
 {
-    public class MealCategoryRequest
+    public record MealCategoryRequest
     {
         public string? Name { get; set; }
         public string? Description { get; set; }

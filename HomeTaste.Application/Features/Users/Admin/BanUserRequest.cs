@@ -1,6 +1,6 @@
 namespace HomeTaste.Application.Features.Users.Admin
 {
-    public class BanUserRequest
+    public record BanUserRequest
     {
         public string? Reason { get; set; }
     }

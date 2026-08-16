@@ -1,6 +1,6 @@
 namespace HomeTaste.Application.Features.Coupons
 {
-    public class CouponValidationResponse
+    public record CouponValidationResponse
     {
         public bool IsValid { get; set; }
         public decimal DiscountAmount { get; set; }

@@ -1,6 +1,6 @@
 namespace HomeTaste.Application.Features.Units
 {
-    public class UnitResponse
+    public record UnitResponse
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }

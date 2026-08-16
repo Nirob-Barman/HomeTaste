@@ -2,7 +2,7 @@ using HomeTaste.Domain.Enums;
 
 namespace HomeTaste.Application.Features.Tasks
 {
-    public class TaskResponse
+    public record TaskResponse
     {
         public Guid Id { get; set; }
         public string? Title { get; set; }

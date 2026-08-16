@@ -1,6 +1,6 @@
 namespace HomeTaste.Application.Features.Users.Admin
 {
-    public class AdminUserResponse
+    public record AdminUserResponse
     {
         public string Id { get; set; } = null!;
         public string? Email { get; set; }

@@ -1,6 +1,6 @@
 namespace HomeTaste.Application.Features.CategoryTypes
 {
-    public class CategoryTypeRequest
+    public record CategoryTypeRequest
     {
         public string? Name { get; set; }
         public string? Description { get; set; }

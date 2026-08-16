@@ -1,6 +1,6 @@
 namespace HomeTaste.Application.Features.Addresses
 {
-    public class AddressRequest
+    public record AddressRequest
     {
         public string? Label { get; set; }
         public string? AddressLine1 { get; set; }

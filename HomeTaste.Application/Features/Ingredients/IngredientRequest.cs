@@ -1,6 +1,6 @@
 namespace HomeTaste.Application.Features.Ingredients
 {
-    public class IngredientRequest
+    public record IngredientRequest
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }

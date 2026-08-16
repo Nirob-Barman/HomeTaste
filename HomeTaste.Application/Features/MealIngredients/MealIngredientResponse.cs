@@ -1,6 +1,6 @@
 namespace HomeTaste.Application.Features.MealIngredients
 {
-    public class MealIngredientResponse
+    public record MealIngredientResponse
     {
         public Guid Id { get; set; }
         public Guid MealId { get; set; }

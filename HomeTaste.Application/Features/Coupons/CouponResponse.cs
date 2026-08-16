@@ -2,7 +2,7 @@ using HomeTaste.Domain.Enums;
 
 namespace HomeTaste.Application.Features.Coupons
 {
-    public class CouponResponse
+    public record CouponResponse
     {
         public Guid Id { get; set; }
         public string? Code { get; set; }

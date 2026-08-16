@@ -198,10 +198,10 @@
         <member name="M:HomeTaste.API.Controllers.MealCustomizationController.GetById(System.Guid)">
             <summary>Gets a single customization option by ID.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.MealCustomizationController.Create(HomeTaste.Application.DTOs.MealManagement.MealCustomizationOptionRequest)">
+        <member name="M:HomeTaste.API.Controllers.MealCustomizationController.Create(HomeTaste.Application.Features.MealCustomizations.MealCustomizationOptionRequest)">
             <summary>Creates a new customization option for a meal. Admin only.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.MealCustomizationController.Update(System.Guid,HomeTaste.Application.DTOs.MealManagement.MealCustomizationOptionRequest)">
+        <member name="M:HomeTaste.API.Controllers.MealCustomizationController.Update(System.Guid,HomeTaste.Application.Features.MealCustomizations.MealCustomizationOptionRequest)">
             <summary>Updates an existing customization option. Admin only.</summary>
         </member>
         <member name="M:HomeTaste.API.Controllers.MealCustomizationController.Delete(System.Guid)">

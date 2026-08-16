@@ -17,9 +17,9 @@ namespace HomeTaste.Application.Features.Ingredients.Commands.DeleteIngredient
             _fileStorage = fileStorage;
         }
 
-        public async Task<Result<bool>> Handle(DeleteIngredientCommand request, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Handle(DeleteIngredientCommand command, CancellationToken cancellationToken)
         {
-            var ingredient = await _context.Ingredients.FindAsync(new object?[] { request.Id }, cancellationToken);
+            var ingredient = await _context.Ingredients.FindAsync(new object?[] { command.Id }, cancellationToken);
             if (ingredient == null)
                 throw new NotFoundException("Ingredient not found");
 

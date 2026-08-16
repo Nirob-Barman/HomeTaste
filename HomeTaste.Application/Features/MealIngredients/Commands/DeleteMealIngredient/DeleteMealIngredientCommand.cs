@@ -3,13 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.MealIngredients.Commands.DeleteMealIngredient
 {
-    public class DeleteMealIngredientCommand : IRequest<Result<bool>>
-    {
-        public Guid Id { get; set; }
-
-        public DeleteMealIngredientCommand(Guid id)
-        {
-            Id = id;
-        }
-    }
+    public record DeleteMealIngredientCommand(Guid Id) : IRequest<Result<bool>>;
 }

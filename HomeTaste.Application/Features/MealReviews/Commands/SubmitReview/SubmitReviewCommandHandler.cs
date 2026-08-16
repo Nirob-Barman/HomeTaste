@@ -20,17 +20,15 @@ namespace HomeTaste.Application.Features.MealReviews.Commands.SubmitReview
 
         public async Task<Result<string>> Handle(SubmitReviewCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
-            var meal = await _context.Meals.FindAsync(new object?[] { request.MealId }, cancellationToken);
+            var meal = await _context.Meals.FindAsync(new object?[] { command.MealId }, cancellationToken);
             if (meal == null)
                 throw new NotFoundException("Meal not found");
 
             var review = ReviewEntity.Create(
-                request.MealId,
-                request.UserId,
-                request.Rating,
-                request.Feedback,
+                command.MealId,
+                command.UserId,
+                command.Rating,
+                command.Feedback,
                 _dateTimeService.GetLocalNow());
 
             _context.MealReviews.Add(review);

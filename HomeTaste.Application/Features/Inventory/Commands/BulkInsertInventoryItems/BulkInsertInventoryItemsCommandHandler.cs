@@ -17,7 +17,7 @@ namespace HomeTaste.Application.Features.Inventory.Commands.BulkInsertInventoryI
             _context = context;
         }
 
-        public async Task<Result<int>> Handle(BulkInsertInventoryItemsCommand request, CancellationToken cancellationToken)
+        public async Task<Result<int>> Handle(BulkInsertInventoryItemsCommand command, CancellationToken cancellationToken)
         {
             // Predefined inventory items
             var predefined = new List<(string Name, int StockCount, decimal Price)>

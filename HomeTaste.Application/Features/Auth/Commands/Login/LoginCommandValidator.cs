@@ -6,8 +6,8 @@ namespace HomeTaste.Application.Features.Auth.Commands.Login
     {
         public LoginCommandValidator()
         {
-            RuleFor(x => x.Request.Email).NotEmpty().WithMessage("Email is required.");
-            RuleFor(x => x.Request.Password).NotEmpty().WithMessage("Password is required.");
+            RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required.");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required.");
         }
     }
 }

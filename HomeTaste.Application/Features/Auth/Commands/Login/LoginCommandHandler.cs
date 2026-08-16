@@ -36,11 +36,9 @@ namespace HomeTaste.Application.Features.Auth.Commands.Login
 
         public async Task<Result<AuthResponse>> Handle(LoginCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
-            var user = await _userManager.FindByEmailAsync(request.Email!);
+            var user = await _userManager.FindByEmailAsync(command.Email);
 
             if (user == null)
             {
@@ -51,7 +49,7 @@ namespace HomeTaste.Application.Features.Auth.Commands.Login
                 throw new UnauthorizedException("Invalid username");
             }
 
-            var passwordValid = await _signInManager.CheckPasswordSignInAsync(user, request.Password!);
+            var passwordValid = await _signInManager.CheckPasswordSignInAsync(user, command.Password);
 
             var loginAudit = LoginAudit.Create(user.Id, passwordValid, _userContextService.IpAddress, _userContextService.UserAgent);
             _context.LoginAudits.Add(loginAudit);

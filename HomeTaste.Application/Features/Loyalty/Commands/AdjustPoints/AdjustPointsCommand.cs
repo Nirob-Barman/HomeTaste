@@ -3,13 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Loyalty.Commands.AdjustPoints
 {
-    public class AdjustPointsCommand : IRequest<Result<bool>>
-    {
-        public AdjustPointsRequest Request { get; set; }
-
-        public AdjustPointsCommand(AdjustPointsRequest request)
-        {
-            Request = request;
-        }
-    }
+    public record AdjustPointsCommand(string? UserId, int Points, string? Description) : IRequest<Result<bool>>;
 }

@@ -4,13 +4,6 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.UserProfile.Commands.UpdateProfile
 {
-    public class UpdateProfileCommand : IRequest<Result<UserProfileResponse>>
-    {
-        public UpdateProfileRequest Request { get; set; }
-
-        public UpdateProfileCommand(UpdateProfileRequest request)
-        {
-            Request = request;
-        }
-    }
+    public record UpdateProfileCommand(string? FirstName, string? LastName, DateTime? DateOfBirth, string? PhoneNumber)
+        : IRequest<Result<UserProfileResponse>>;
 }

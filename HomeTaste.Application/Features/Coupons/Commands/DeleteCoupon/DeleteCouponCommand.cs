@@ -3,13 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Coupons.Commands.DeleteCoupon
 {
-    public class DeleteCouponCommand : IRequest<Result<bool>>
-    {
-        public Guid Id { get; set; }
-
-        public DeleteCouponCommand(Guid id)
-        {
-            Id = id;
-        }
-    }
+    public record DeleteCouponCommand(Guid Id) : IRequest<Result<bool>>;
 }

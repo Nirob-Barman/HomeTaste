@@ -16,18 +16,16 @@ namespace HomeTaste.Application.Features.Users.Admin.Commands.RemoveRole
 
         public async Task<Result<RoleRemovalResponse>> Handle(RemoveRoleCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
-            var user = await _userManager.FindByIdAsync(request.UserId!);
+            var user = await _userManager.FindByIdAsync(command.UserId!);
             if (user == null)
                 throw new NotFoundException("User not found");
 
-            var (succeeded, errors) = await _userManager.RemoveFromRoleAsync(user, request.RoleName!);
+            var (succeeded, errors) = await _userManager.RemoveFromRoleAsync(user, command.RoleName!);
             if (!succeeded)
                 throw new ServerErrorException(string.Join(" ", errors));
 
             return Result<RoleRemovalResponse>.Ok(
-                new RoleRemovalResponse { UserId = request.UserId, RoleName = request.RoleName },
+                new RoleRemovalResponse { UserId = command.UserId, RoleName = command.RoleName },
                 "Role removed successfully");
         }
     }

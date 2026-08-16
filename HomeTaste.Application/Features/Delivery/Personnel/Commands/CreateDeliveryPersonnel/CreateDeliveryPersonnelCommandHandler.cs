@@ -18,16 +18,14 @@ namespace HomeTaste.Application.Features.Delivery.Personnel.Commands.CreateDeliv
 
         public async Task<Result<DeliveryPersonnelResponse>> Handle(CreateDeliveryPersonnelCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
-            if (!string.IsNullOrWhiteSpace(request.UserId))
+            if (!string.IsNullOrWhiteSpace(command.UserId))
             {
-                var alreadyLinked = await _context.DeliveryPersonnel.AnyAsync(p => p.UserId == request.UserId, cancellationToken);
+                var alreadyLinked = await _context.DeliveryPersonnel.AnyAsync(p => p.UserId == command.UserId, cancellationToken);
                 if (alreadyLinked)
                     throw new ConflictException("This user is already linked to a delivery personnel profile.");
             }
 
-            var personnel = DeliveryPersonnelEntity.Create(request.UserId, request.FullName, request.Phone, request.VehicleType, request.VehicleNumber);
+            var personnel = DeliveryPersonnelEntity.Create(command.UserId, command.FullName, command.Phone, command.VehicleType, command.VehicleNumber);
 
             _context.DeliveryPersonnel.Add(personnel);
             await _context.SaveChangesAsync(cancellationToken);

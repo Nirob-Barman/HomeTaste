@@ -37,14 +37,14 @@ namespace HomeTaste.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateDepartment([FromBody] DepartmentRequest departmentRequest)
         {
-            var result = await _mediator.Send(new CreateDepartmentCommand(departmentRequest));
+            var result = await _mediator.Send(new CreateDepartmentCommand(departmentRequest.Name, departmentRequest.Description));
             return Ok(result);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateDepartment(Guid id, [FromBody] DepartmentRequest departmentRequest)
         {
-            var result = await _mediator.Send(new UpdateDepartmentCommand(id, departmentRequest));
+            var result = await _mediator.Send(new UpdateDepartmentCommand(id, departmentRequest.Name, departmentRequest.Description));
             return Ok(result);
         }
 

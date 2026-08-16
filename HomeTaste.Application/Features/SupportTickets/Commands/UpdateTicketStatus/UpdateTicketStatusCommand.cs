@@ -1,17 +1,8 @@
 using HomeTaste.Application.Wrappers;
+using HomeTaste.Domain.Enums;
 using MediatR;
 
 namespace HomeTaste.Application.Features.SupportTickets.Commands.UpdateTicketStatus
 {
-    public class UpdateTicketStatusCommand : IRequest<Result<string>>
-    {
-        public Guid TicketId { get; set; }
-        public UpdateTicketRequest Request { get; set; }
-
-        public UpdateTicketStatusCommand(Guid ticketId, UpdateTicketRequest request)
-        {
-            TicketId = ticketId;
-            Request = request;
-        }
-    }
+    public record UpdateTicketStatusCommand(Guid TicketId, TicketStatus Status) : IRequest<Result<string>>;
 }

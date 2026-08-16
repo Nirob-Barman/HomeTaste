@@ -6,11 +6,11 @@ namespace HomeTaste.Application.Features.Loyalty.Commands.AdjustPoints
     {
         public AdjustPointsCommandValidator()
         {
-            RuleFor(x => x.Request.UserId).NotEmpty().WithMessage("UserId is required.");
+            RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId is required.");
 
-            RuleFor(x => x.Request.Points).NotEqual(0).WithMessage("Points must be a non-zero value (positive to add, negative to deduct).");
+            RuleFor(x => x.Points).NotEqual(0).WithMessage("Points must be a non-zero value (positive to add, negative to deduct).");
 
-            RuleFor(x => x.Request.Description).MaximumLength(500).WithMessage("Description cannot exceed 500 characters.");
+            RuleFor(x => x.Description).MaximumLength(500).WithMessage("Description cannot exceed 500 characters.");
         }
     }
 }

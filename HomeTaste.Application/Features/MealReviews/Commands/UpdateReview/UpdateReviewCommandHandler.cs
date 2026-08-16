@@ -30,7 +30,7 @@ namespace HomeTaste.Application.Features.MealReviews.Commands.UpdateReview
             if (review.UserId != userId && !_userContextService.IsInRole("Admin"))
                 throw new UnauthorizedException("You are not authorized to update this review.");
 
-            review.UpdateFeedback(command.Request.Feedback, command.Request.Rating);
+            review.UpdateFeedback(command.Feedback, command.Rating);
 
             await _context.SaveChangesAsync(cancellationToken);
 

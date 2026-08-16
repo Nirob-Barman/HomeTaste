@@ -3,7 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Inventory.Commands.BulkInsertInventoryItems
 {
-    public class BulkInsertInventoryItemsCommand : IRequest<Result<int>>
-    {
-    }
+    public record BulkInsertInventoryItemsCommand : IRequest<Result<int>>;
 }

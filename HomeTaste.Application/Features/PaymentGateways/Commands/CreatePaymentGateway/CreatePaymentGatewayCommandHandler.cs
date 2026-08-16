@@ -24,14 +24,13 @@ namespace HomeTaste.Application.Features.PaymentGateways.Commands.CreatePaymentG
 
         public async Task<Result<PaymentGatewayResponse>> Handle(CreatePaymentGatewayCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-            var slug = request.Slug.Trim().ToLowerInvariant();
+            var slug = command.Slug.Trim().ToLowerInvariant();
 
             var variant = GatewayConfigSchema.FindVariant(slug);
             if (variant == null)
                 throw new BadRequestException($"Unknown gateway slug '{slug}'.");
 
-            var missingField = variant.Fields.FirstOrDefault(f => f.IsRequired && !request.Config.ContainsKey(f.Key));
+            var missingField = variant.Fields.FirstOrDefault(f => f.IsRequired && !command.Config.ContainsKey(f.Key));
             if (missingField != null)
                 throw new BadRequestException($"'{missingField.Label}' is required.");
 
@@ -42,14 +41,14 @@ namespace HomeTaste.Application.Features.PaymentGateways.Commands.CreatePaymentG
             var family = GatewayConfigSchema.FindFamily(slug)!;
             Guid.TryParse(_userContextService.UserId, out var userId);
 
-            var configJson = PaymentGatewayConfigHelper.BuildConfigJson(request.Config);
+            var configJson = PaymentGatewayConfigHelper.BuildConfigJson(command.Config);
             var entity = GatewayEntity.Create(
-                request.Name.Trim(),
+                command.Name.Trim(),
                 family.Key,
                 slug,
                 _encryptor.Encrypt(configJson),
-                request.IsActive,
-                request.IsSandbox,
+                command.IsActive,
+                command.IsSandbox,
                 userId == Guid.Empty ? null : userId);
 
             _context.PaymentGateways.Add(entity);

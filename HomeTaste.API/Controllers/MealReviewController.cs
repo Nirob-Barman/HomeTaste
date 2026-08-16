@@ -34,7 +34,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitReview([FromBody] SubmitReviewRequest request)
         {
-            var result = await _mediator.Send(new SubmitReviewCommand(request));
+            var result = await _mediator.Send(new SubmitReviewCommand(request.MealId, request.UserId, request.Rating, request.Feedback));
             return Ok(result);
         }
 
@@ -50,7 +50,7 @@ namespace HomeTaste.API.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateReview(Guid id, [FromBody] UpdateReviewRequest request)
         {
-            var result = await _mediator.Send(new UpdateReviewCommand(id, request));
+            var result = await _mediator.Send(new UpdateReviewCommand(id, request.Rating, request.Feedback));
             return Ok(result);
         }
         [Authorize]

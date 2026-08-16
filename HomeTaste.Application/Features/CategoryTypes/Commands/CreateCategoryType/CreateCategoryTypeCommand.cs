@@ -3,13 +3,6 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.CategoryTypes.Commands.CreateCategoryType
 {
-    public class CreateCategoryTypeCommand : IRequest<Result<CategoryTypeResponse>>
-    {
-        public CategoryTypeRequest CategoryTypeRequest { get; set; }
-
-        public CreateCategoryTypeCommand(CategoryTypeRequest categoryTypeRequest)
-        {
-            CategoryTypeRequest = categoryTypeRequest;
-        }
-    }
+    public record CreateCategoryTypeCommand(string? Name, string? Description)
+        : IRequest<Result<CategoryTypeResponse>>;
 }

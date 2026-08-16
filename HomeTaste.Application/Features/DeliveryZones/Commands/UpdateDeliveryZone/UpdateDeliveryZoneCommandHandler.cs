@@ -16,18 +16,16 @@ namespace HomeTaste.Application.Features.DeliveryZones.Commands.UpdateDeliveryZo
 
         public async Task<Result<DeliveryZoneResponse>> Handle(UpdateDeliveryZoneCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             var zone = await _context.DeliveryZones.FindAsync(new object?[] { command.Id }, cancellationToken);
             if (zone == null)
                 throw new NotFoundException("Zone not found.");
 
             zone.UpdateDetails(
-                request.Name.Trim(),
-                request.Description?.Trim(),
-                request.IsActive,
-                request.AllowedCities.Select(c => c.Trim().ToLowerInvariant()).ToList(),
-                request.AllowedPostalCodes.Select(p => p.Trim().ToLowerInvariant()).ToList());
+                command.Name.Trim(),
+                command.Description?.Trim(),
+                command.IsActive,
+                command.AllowedCities.Select(c => c.Trim().ToLowerInvariant()).ToList(),
+                command.AllowedPostalCodes.Select(p => p.Trim().ToLowerInvariant()).ToList());
 
             await _context.SaveChangesAsync(cancellationToken);
 

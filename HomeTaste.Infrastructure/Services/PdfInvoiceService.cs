@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.Order;
+using HomeTaste.Application.Features.Orders;
 using HomeTaste.Application.Interfaces.Order;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;

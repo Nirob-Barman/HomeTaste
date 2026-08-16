@@ -3,13 +3,14 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Meals.Commands.CreateMeal
 {
-    public class CreateMealCommand : IRequest<Result<MealResponse>>
-    {
-        public MealRequest Request { get; set; }
-
-        public CreateMealCommand(MealRequest request)
-        {
-            Request = request;
-        }
-    }
+    public record CreateMealCommand(
+        string? Name,
+        string? Description,
+        decimal Price,
+        Guid CategoryId,
+        string? ImageUrl,
+        bool IsAvailable,
+        int? PreparationTime,
+        decimal? DiscountPrice,
+        int? Calories) : IRequest<Result<MealResponse>>;
 }

@@ -1,15 +1,9 @@
 using HomeTaste.Application.Wrappers;
+using HomeTaste.Domain.Enums;
 using MediatR;
 
 namespace HomeTaste.Application.Features.Tasks.Commands.CreateTask
 {
-    public class CreateTaskCommand : IRequest<Result<TaskResponse>>
-    {
-        public TaskRequest Request { get; set; }
-
-        public CreateTaskCommand(TaskRequest request)
-        {
-            Request = request;
-        }
-    }
+    public record CreateTaskCommand(string? Title, string? Description, DateTime DueDate, TaskPriority Priority, TasksStatus Status)
+        : IRequest<Result<TaskResponse>>;
 }

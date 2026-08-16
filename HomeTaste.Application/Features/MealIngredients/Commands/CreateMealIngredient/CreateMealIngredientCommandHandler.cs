@@ -17,27 +17,25 @@ namespace HomeTaste.Application.Features.MealIngredients.Commands.CreateMealIngr
 
         public async Task<Result<MealIngredientResponse>> Handle(CreateMealIngredientCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
-            var meal = await _context.Meals.FindAsync(new object?[] { request.MealId }, cancellationToken);
+            var meal = await _context.Meals.FindAsync(new object?[] { command.MealId }, cancellationToken);
             if (meal == null)
             {
                 throw new NotFoundException("Meal not found");
             }
 
-            var ingredient = await _context.Ingredients.FindAsync(new object?[] { request.IngredientId }, cancellationToken);
+            var ingredient = await _context.Ingredients.FindAsync(new object?[] { command.IngredientId }, cancellationToken);
             if (ingredient == null)
             {
                 throw new NotFoundException("Ingredient not found");
             }
 
-            var unit = await _context.Units.FindAsync(new object?[] { request.UnitId }, cancellationToken);
+            var unit = await _context.Units.FindAsync(new object?[] { command.UnitId }, cancellationToken);
             if (unit == null)
             {
                 throw new NotFoundException("Unit not found");
             }
 
-            var mealIngredient = MealIngredient.Create(request.MealId, request.IngredientId, request.Quantity, request.UnitId);
+            var mealIngredient = MealIngredient.Create(command.MealId, command.IngredientId, command.Quantity, command.UnitId);
 
             _context.MealIngredients.Add(mealIngredient);
             await _context.SaveChangesAsync(cancellationToken);

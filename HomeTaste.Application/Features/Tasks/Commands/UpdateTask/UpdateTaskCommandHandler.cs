@@ -16,13 +16,11 @@ namespace HomeTaste.Application.Features.Tasks.Commands.UpdateTask
 
         public async Task<Result<TaskResponse>> Handle(UpdateTaskCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             var task = await _context.Tasks.FindAsync(new object?[] { command.Id }, cancellationToken);
             if (task == null)
                 throw new NotFoundException("Task not found");
 
-            task.UpdateDetails(request.Title, request.Description, request.DueDate, request.Priority, request.Status);
+            task.UpdateDetails(command.Title, command.Description, command.DueDate, command.Priority, command.Status);
 
             await _context.SaveChangesAsync(cancellationToken);
 

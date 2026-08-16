@@ -17,13 +17,11 @@ namespace HomeTaste.Application.Features.Delivery.Assignments.Commands.UpdateDel
 
         public async Task<Result<DeliveryAssignmentResponse>> Handle(UpdateDeliveryStatusCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             var assignment = await _context.DeliveryAssignments.FindAsync(new object?[] { command.AssignmentId }, cancellationToken);
             if (assignment == null)
                 throw new NotFoundException("Assignment not found.");
 
-            var validationError = ValidateDeliveryStatusTransition(assignment.Status, request.Status);
+            var validationError = ValidateDeliveryStatusTransition(assignment.Status, command.Status);
             if (validationError != null)
                 throw new BadRequestException(validationError);
 
@@ -32,16 +30,14 @@ namespace HomeTaste.Application.Features.Delivery.Assignments.Commands.UpdateDel
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
             try
             {
-                assignment.UpdateStatus(request.Status, request.Notes);
+                assignment.UpdateStatus(command.Status, command.Notes);
 
-                if (request.Status == DeliveryStatus.Delivered)
+                if (command.Status == DeliveryStatus.Delivered)
                 {
                     var order = await _context.Orders.FindAsync(new object?[] { assignment.OrderId }, cancellationToken);
                     if (order != null)
                     {
-                        order.Status = OrderStatus.Delivered;
-                        order.DeliveredAt = DateTime.UtcNow;
-                        order.UpdatedAt = DateTime.UtcNow;
+                        order.UpdateStatus(OrderStatus.Delivered);
                     }
 
                     if (personnel != null)
@@ -51,7 +47,7 @@ namespace HomeTaste.Application.Features.Delivery.Assignments.Commands.UpdateDel
                     }
                 }
 
-                if (request.Status == DeliveryStatus.Failed && personnel != null)
+                if (command.Status == DeliveryStatus.Failed && personnel != null)
                 {
                     personnel.SetAvailability(true);
                 }

@@ -19,23 +19,21 @@ namespace HomeTaste.Application.Features.Ingredients.Commands.CreateIngredient
             _fileStorage = fileStorage;
         }
 
-        public async Task<Result<IngredientResponse>> Handle(CreateIngredientCommand request, CancellationToken cancellationToken)
+        public async Task<Result<IngredientResponse>> Handle(CreateIngredientCommand command, CancellationToken cancellationToken)
         {
-            var ingredientRequest = request.IngredientRequest;
-
-            var existingIngredient = await _context.Ingredients.FirstOrDefaultAsync(i => i.Name == ingredientRequest.Name, cancellationToken);
+            var existingIngredient = await _context.Ingredients.FirstOrDefaultAsync(i => i.Name == command.Name, cancellationToken);
 
             if (existingIngredient != null)
             {
                 throw new ConflictException("Ingredient with the same name already exists.");
             }
 
-            var imageUrl = ingredientRequest.ImageUrl;
-            var publicId = ingredientRequest.PublicId;
+            var imageUrl = command.ImageUrl;
+            var publicId = command.PublicId;
 
-            if (request.File != null)
+            if (command.File != null)
             {
-                var imageResult = await _fileStorage.UploadFileAsync(request.File.Content!, request.File.FileName!, "uploads/ingredients");
+                var imageResult = await _fileStorage.UploadFileAsync(command.File.Content!, command.File.FileName!, "uploads/ingredients");
                 if (imageResult != null)
                 {
                     imageUrl = imageResult.Url;
@@ -47,7 +45,7 @@ namespace HomeTaste.Application.Features.Ingredients.Commands.CreateIngredient
                 }
             }
 
-            var ingredient = Ingredient.Create(ingredientRequest.Name, ingredientRequest.Description, ingredientRequest.IsAllergen, imageUrl, publicId);
+            var ingredient = Ingredient.Create(command.Name, command.Description, command.IsAllergen, imageUrl, publicId);
 
             _context.Ingredients.Add(ingredient);
             await _context.SaveChangesAsync(cancellationToken);

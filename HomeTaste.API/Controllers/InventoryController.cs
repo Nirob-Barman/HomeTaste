@@ -37,7 +37,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddInventoryItem([FromBody] AddInventoryItemRequest request)
         {
-            var result = await _mediator.Send(new AddInventoryItemCommand(request));
+            var result = await _mediator.Send(new AddInventoryItemCommand(request.Name, request.StockCount, request.Price));
             return Ok(result);
         }
 
@@ -46,7 +46,7 @@ namespace HomeTaste.API.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateInventoryItem(Guid id, [FromBody] UpdateInventoryItemRequest request)
         {
-            var result = await _mediator.Send(new UpdateInventoryItemCommand(id, request));
+            var result = await _mediator.Send(new UpdateInventoryItemCommand(id, request.StockCount, request.Price));
             return Ok(result);
         }
 

@@ -20,20 +20,18 @@ namespace HomeTaste.Application.Features.SupportTickets.Commands.CreateTicket
 
         public async Task<Result<Guid>> Handle(CreateTicketCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             var userIdString = _userContextService.UserId!;
             if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
                 throw new UnauthorizedException("Invalid User ID.");
 
             var ticket = TicketEntity.Create(
                 userId,
-                request.Subject,
-                request.Description,
-                request.Priority,
-                request.MobileNo,
-                request.DepartmentId,
-                request.CategoryTypeId);
+                command.Subject,
+                command.Description,
+                command.Priority,
+                command.MobileNo,
+                command.DepartmentId,
+                command.CategoryTypeId);
 
             _context.SupportTickets.Add(ticket);
             await _context.SaveChangesAsync(cancellationToken);

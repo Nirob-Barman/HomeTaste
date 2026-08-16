@@ -3,13 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Addresses.Commands.DeleteAddress
 {
-    public class DeleteAddressCommand : IRequest<Result<bool>>
-    {
-        public Guid Id { get; set; }
-
-        public DeleteAddressCommand(Guid id)
-        {
-            Id = id;
-        }
-    }
+    public record DeleteAddressCommand(Guid Id) : IRequest<Result<bool>>;
 }

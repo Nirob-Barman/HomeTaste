@@ -16,7 +16,7 @@ namespace HomeTaste.Application.Features.Ingredients.Commands.BulkInsertIngredie
             _context = context;
         }
 
-        public async Task<Result<int>> Handle(BulkInsertIngredientsCommand request, CancellationToken cancellationToken)
+        public async Task<Result<int>> Handle(BulkInsertIngredientsCommand command, CancellationToken cancellationToken)
         {
             // Predefined ingredients
             var predefined = new List<(string Name, string Description, string ImageUrl)>

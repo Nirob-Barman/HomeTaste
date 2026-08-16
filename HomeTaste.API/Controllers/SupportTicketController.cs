@@ -35,7 +35,13 @@ namespace HomeTaste.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTicket([FromBody] CreateTicketRequest request)
         {
-            var result = await _mediator.Send(new CreateTicketCommand(request));
+            var result = await _mediator.Send(new CreateTicketCommand(
+                request.Subject,
+                request.Description,
+                request.Priority,
+                request.MobileNo,
+                request.DepartmentId,
+                request.CategoryTypeId));
             return Ok(result);
         }
 
@@ -51,7 +57,7 @@ namespace HomeTaste.API.Controllers
         [HttpPatch("{ticketId}")]
         public async Task<IActionResult> UpdateTicketStatus(Guid ticketId, [FromBody] UpdateTicketRequest request)
         {
-            var result = await _mediator.Send(new UpdateTicketStatusCommand(ticketId, request));
+            var result = await _mediator.Send(new UpdateTicketStatusCommand(ticketId, request.Status));
             return Ok(result);
         }
 

@@ -46,7 +46,17 @@ namespace HomeTaste.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddressRequest request)
         {
-            var result = await _mediator.Send(new CreateAddressCommand(request));
+            var result = await _mediator.Send(new CreateAddressCommand(
+                request.Label,
+                request.AddressLine1,
+                request.AddressLine2,
+                request.City,
+                request.State,
+                request.PostalCode,
+                request.Country,
+                request.Latitude,
+                request.Longitude,
+                request.IsDefault));
             return StatusCode(201, result);
         }
 
@@ -54,7 +64,18 @@ namespace HomeTaste.API.Controllers
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] AddressRequest request)
         {
-            var result = await _mediator.Send(new UpdateAddressCommand(id, request));
+            var result = await _mediator.Send(new UpdateAddressCommand(
+                id,
+                request.Label,
+                request.AddressLine1,
+                request.AddressLine2,
+                request.City,
+                request.State,
+                request.PostalCode,
+                request.Country,
+                request.Latitude,
+                request.Longitude,
+                request.IsDefault));
             return Ok(result);
         }
 

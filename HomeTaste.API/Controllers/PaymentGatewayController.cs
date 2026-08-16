@@ -62,7 +62,12 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Create([FromBody] CreatePaymentGatewayRequest request)
         {
-            var result = await _mediator.Send(new CreatePaymentGatewayCommand(request));
+            var result = await _mediator.Send(new CreatePaymentGatewayCommand(
+                request.Name,
+                request.Slug,
+                request.Config,
+                request.IsActive,
+                request.IsSandbox));
             return StatusCode(201, result);
         }
 
@@ -70,7 +75,12 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdatePaymentGatewayRequest request)
         {
-            var result = await _mediator.Send(new UpdatePaymentGatewayCommand(id, request));
+            var result = await _mediator.Send(new UpdatePaymentGatewayCommand(
+                id,
+                request.Name,
+                request.Config,
+                request.IsActive,
+                request.IsSandbox));
             return Ok(result);
         }
 

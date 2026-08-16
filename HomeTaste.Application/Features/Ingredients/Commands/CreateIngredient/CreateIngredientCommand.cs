@@ -4,15 +4,11 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Ingredients.Commands.CreateIngredient
 {
-    public class CreateIngredientCommand : IRequest<Result<IngredientResponse>>
-    {
-        public IngredientRequest IngredientRequest { get; set; }
-        public FileUploadDto? File { get; set; }
-
-        public CreateIngredientCommand(IngredientRequest ingredientRequest, FileUploadDto? file)
-        {
-            IngredientRequest = ingredientRequest;
-            File = file;
-        }
-    }
+    public record CreateIngredientCommand(
+        string? Name,
+        string? Description,
+        bool IsAllergen,
+        string? ImageUrl,
+        string? PublicId,
+        FileUploadDto? File) : IRequest<Result<IngredientResponse>>;
 }

@@ -20,7 +20,7 @@ namespace HomeTaste.Application.Features.Delivery.Personnel.Commands.UpdateLocat
             if (personnel == null)
                 throw new NotFoundException("Delivery personnel not found.");
 
-            personnel.UpdateLocation(command.Request.Latitude, command.Request.Longitude);
+            personnel.UpdateLocation(command.Latitude, command.Longitude);
             await _context.SaveChangesAsync(cancellationToken);
 
             return Result<bool>.Ok(true, "Location updated successfully.");

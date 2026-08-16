@@ -18,17 +18,15 @@ namespace HomeTaste.Application.Features.Inventory.Commands.UpdateInventoryItem
 
         public async Task<Result<InventoryItemResponse>> Handle(UpdateInventoryItemCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             var item = await _context.InventoryItems.FindAsync(new object?[] { command.Id }, cancellationToken);
             if (item == null)
             {
                 throw new NotFoundException("Item not found");
             }
 
-            if (request.StockCount != item.StockCount)
+            if (command.StockCount != item.StockCount)
             {
-                int stockDifference = request.StockCount - item.StockCount;
+                int stockDifference = command.StockCount - item.StockCount;
 
                 // If stock count is increased, create a "Restock" transaction
                 var transactionType = stockDifference > 0 ? TransactionType.Restock : TransactionType.OrderUse;
@@ -40,10 +38,10 @@ namespace HomeTaste.Application.Features.Inventory.Commands.UpdateInventoryItem
                     stockDifference > 0 ? "Stock restocked" : "Stock used for order");
 
                 _context.InventoryTransactions.Add(transaction);
-                item.UpdateStockCount(request.StockCount);
+                item.UpdateStockCount(command.StockCount);
             }
 
-            item.UpdatePrice(request.Price);
+            item.UpdatePrice(command.Price);
 
             await _context.SaveChangesAsync(cancellationToken);
 

@@ -19,13 +19,11 @@ namespace HomeTaste.Application.Features.UserProfile.Commands.ChangePassword
 
         public async Task<Result<bool>> Handle(ChangePasswordCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             var userId = _userContextService.UserId;
             if (string.IsNullOrEmpty(userId))
                 throw new UnauthorizedException("Unauthorized");
 
-            var (succeeded, errors) = await _userManager.ChangePasswordAsync(userId, request.CurrentPassword, request.NewPassword);
+            var (succeeded, errors) = await _userManager.ChangePasswordAsync(userId, command.CurrentPassword, command.NewPassword);
             if (!succeeded)
                 throw new ServerErrorException(string.Join(" ", errors));
 

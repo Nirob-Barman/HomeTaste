@@ -57,7 +57,7 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> CreatePersonnel([FromBody] CreateDeliveryPersonnelRequest request)
         {
-            var result = await _mediator.Send(new CreateDeliveryPersonnelCommand(request));
+            var result = await _mediator.Send(new CreateDeliveryPersonnelCommand(request.UserId, request.FullName, request.Phone, request.VehicleType, request.VehicleNumber));
             return StatusCode(201, result);
         }
 
@@ -66,7 +66,7 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> UpdatePersonnel(Guid id, [FromBody] UpdateDeliveryPersonnelRequest request)
         {
-            var result = await _mediator.Send(new UpdateDeliveryPersonnelCommand(id, request));
+            var result = await _mediator.Send(new UpdateDeliveryPersonnelCommand(id, request.FullName, request.Phone, request.VehicleType, request.VehicleNumber));
             return Ok(result);
         }
 
@@ -95,7 +95,7 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.DeliveryPersonnelOnly)]
         public async Task<IActionResult> UpdateLocation(Guid id, [FromBody] UpdateLocationRequest request)
         {
-            var result = await _mediator.Send(new UpdateLocationCommand(id, request));
+            var result = await _mediator.Send(new UpdateLocationCommand(id, request.Latitude, request.Longitude));
             return Ok(result);
         }
 
@@ -106,7 +106,7 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Assign([FromBody] AssignDeliveryRequest request)
         {
-            var result = await _mediator.Send(new AssignDeliveryCommand(request));
+            var result = await _mediator.Send(new AssignDeliveryCommand(request.OrderId, request.DeliveryPersonnelId));
             return StatusCode(201, result);
         }
 
@@ -115,7 +115,7 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOrDelivery)]
         public async Task<IActionResult> UpdateDeliveryStatus(Guid assignmentId, [FromBody] UpdateDeliveryStatusRequest request)
         {
-            var result = await _mediator.Send(new UpdateDeliveryStatusCommand(assignmentId, request));
+            var result = await _mediator.Send(new UpdateDeliveryStatusCommand(assignmentId, request.Status, request.Notes));
             return Ok(result);
         }
 

@@ -6,9 +6,9 @@ namespace HomeTaste.Application.Features.Auth.Commands.Register
     {
         public RegisterCommandValidator()
         {
-            RuleFor(x => x.Request.Email).NotEmpty().WithMessage("Email is required.");
-            RuleFor(x => x.Request.Password).NotEmpty().WithMessage("Password is required.");
-            RuleFor(x => x.Request.Role).NotEmpty().WithMessage("Role is required.");
+            RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required.");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required.");
+            RuleFor(x => x.Role).NotEmpty().WithMessage("Role is required.");
         }
     }
 }

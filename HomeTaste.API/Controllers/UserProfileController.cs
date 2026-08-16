@@ -1,10 +1,9 @@
-using HomeTaste.API.Wrappers;
+using HomeTaste.Application.Features.Orders.Queries.GetMyOrders;
 using HomeTaste.Application.Features.UserProfile;
 using HomeTaste.Application.Features.UserProfile.Commands.ChangePassword;
 using HomeTaste.Application.Features.UserProfile.Commands.UpdateProfile;
 using HomeTaste.Application.Features.UserProfile.Commands.UploadAvatar;
 using HomeTaste.Application.Features.UserProfile.Queries.GetProfile;
-using HomeTaste.Application.Interfaces.Order;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +17,10 @@ namespace HomeTaste.API.Controllers
     public class UserProfileController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IOrderService _orderService;
 
-        public UserProfileController(
-            IMediator mediator,
-            IOrderService orderService)
+        public UserProfileController(IMediator mediator)
         {
             _mediator = mediator;
-            _orderService = orderService;
         }
 
         /// <summary>Returns the current user's profile (name, email, phone, avatar, roles).</summary>
@@ -40,7 +35,7 @@ namespace HomeTaste.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
         {
-            var result = await _mediator.Send(new UpdateProfileCommand(request));
+            var result = await _mediator.Send(new UpdateProfileCommand(request.FirstName, request.LastName, request.DateOfBirth, request.PhoneNumber));
             return Ok(result);
         }
 
@@ -48,7 +43,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
-            var result = await _mediator.Send(new ChangePasswordCommand(request));
+            var result = await _mediator.Send(new ChangePasswordCommand(request.CurrentPassword, request.NewPassword));
             return Ok(result);
         }
 
@@ -69,11 +64,8 @@ namespace HomeTaste.API.Controllers
         public async Task<IActionResult> GetOrderHistory(
             [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            // IOrderService is not yet converted to CQRS — still returns Result<T> with a
-            // meaningful ResultType, so this action keeps using ApiResponseMapper, unlike
-            // every other action in this controller.
-            var result = await _orderService.GetMyOrdersAsync(pageNumber, pageSize);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetMyOrdersQuery(pageNumber, pageSize));
+            return Ok(result);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            var result = await _mediator.Send(new RegisterCommand(request));
+            var result = await _mediator.Send(new RegisterCommand(request.FirstName, request.LastName, request.DateOfBirth, request.Email, request.Password, request.Role));
             return Ok(result);
         }
 
@@ -32,7 +32,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var result = await _mediator.Send(new LoginCommand(request));
+            var result = await _mediator.Send(new LoginCommand(request.Email!, request.Password!));
             return Ok(result);
         }
 

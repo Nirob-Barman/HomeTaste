@@ -47,7 +47,7 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Create([FromBody] MealCustomizationOptionRequest request)
         {
-            var result = await _mediator.Send(new CreateOptionCommand(request));
+            var result = await _mediator.Send(new CreateOptionCommand(request.MealId, request.Name, request.AdditionalPrice, request.IsAvailable, request.OptionType));
             return StatusCode(201, result);
         }
 
@@ -56,7 +56,7 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Update(Guid id, [FromBody] MealCustomizationOptionRequest request)
         {
-            var result = await _mediator.Send(new UpdateOptionCommand(id, request));
+            var result = await _mediator.Send(new UpdateOptionCommand(id, request.MealId, request.Name, request.AdditionalPrice, request.IsAvailable, request.OptionType));
             return Ok(result);
         }
 

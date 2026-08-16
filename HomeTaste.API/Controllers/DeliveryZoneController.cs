@@ -58,7 +58,12 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Create([FromBody] CreateDeliveryZoneRequest request)
         {
-            var result = await _mediator.Send(new CreateDeliveryZoneCommand(request));
+            var result = await _mediator.Send(new CreateDeliveryZoneCommand(
+                request.Name,
+                request.Description,
+                request.IsActive,
+                request.AllowedCities,
+                request.AllowedPostalCodes));
             return StatusCode(201, result);
         }
 
@@ -67,7 +72,13 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateDeliveryZoneRequest request)
         {
-            var result = await _mediator.Send(new UpdateDeliveryZoneCommand(id, request));
+            var result = await _mediator.Send(new UpdateDeliveryZoneCommand(
+                id,
+                request.Name,
+                request.Description,
+                request.IsActive,
+                request.AllowedCities,
+                request.AllowedPostalCodes));
             return Ok(result);
         }
 

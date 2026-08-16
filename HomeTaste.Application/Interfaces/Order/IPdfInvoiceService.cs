@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.Order;
+using HomeTaste.Application.Features.Orders;
 
 namespace HomeTaste.Application.Interfaces.Order
 {

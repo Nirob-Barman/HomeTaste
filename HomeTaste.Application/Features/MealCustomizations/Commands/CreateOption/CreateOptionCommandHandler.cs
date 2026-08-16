@@ -17,13 +17,11 @@ namespace HomeTaste.Application.Features.MealCustomizations.Commands.CreateOptio
 
         public async Task<Result<MealCustomizationOptionResponse>> Handle(CreateOptionCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
-            var meal = await _context.Meals.FindAsync(new object?[] { request.MealId }, cancellationToken);
+            var meal = await _context.Meals.FindAsync(new object?[] { command.MealId }, cancellationToken);
             if (meal == null)
                 throw new NotFoundException("Meal not found.");
 
-            var option = MealCustomizationOption.Create(request.MealId, request.Name, request.AdditionalPrice, request.IsAvailable, request.OptionType);
+            var option = MealCustomizationOption.Create(command.MealId, command.Name, command.AdditionalPrice, command.IsAvailable, command.OptionType);
 
             _context.MealCustomizationOptions.Add(option);
             await _context.SaveChangesAsync(cancellationToken);

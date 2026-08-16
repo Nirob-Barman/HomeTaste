@@ -3,15 +3,16 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Addresses.Commands.UpdateAddress
 {
-    public class UpdateAddressCommand : IRequest<Result<AddressResponse>>
-    {
-        public Guid Id { get; set; }
-        public AddressRequest Request { get; set; }
-
-        public UpdateAddressCommand(Guid id, AddressRequest request)
-        {
-            Id = id;
-            Request = request;
-        }
-    }
+    public record UpdateAddressCommand(
+        Guid Id,
+        string? Label,
+        string? AddressLine1,
+        string? AddressLine2,
+        string? City,
+        string? State,
+        string? PostalCode,
+        string? Country,
+        double? Latitude,
+        double? Longitude,
+        bool IsDefault) : IRequest<Result<AddressResponse>>;
 }

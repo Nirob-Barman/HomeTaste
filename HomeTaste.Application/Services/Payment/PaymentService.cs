@@ -225,8 +225,7 @@ namespace HomeTaste.Application.Services.Payment
 
                 if (order.Status == OrderStatus.Pending)
                 {
-                    order.Status = OrderStatus.Confirmed;
-                    order.UpdatedAt = DateTime.UtcNow;
+                    order.UpdateStatus(OrderStatus.Confirmed);
                     _unitOfWork.Repository<OrderEntity>().Update(order);
                 }
 
@@ -317,8 +316,7 @@ namespace HomeTaste.Application.Services.Payment
 
                 if (order.Status == OrderStatus.Pending)
                 {
-                    order.Status = OrderStatus.Confirmed;
-                    order.UpdatedAt = DateTime.UtcNow;
+                    order.UpdateStatus(OrderStatus.Confirmed);
                     _unitOfWork.Repository<OrderEntity>().Update(order);
                 }
 
@@ -393,8 +391,7 @@ namespace HomeTaste.Application.Services.Payment
                 transaction.UpdatedAt = DateTime.UtcNow;
                 _unitOfWork.Repository<PaymentTransaction>().Update(transaction);
 
-                order.Status = OrderStatus.Refunded;
-                order.UpdatedAt = DateTime.UtcNow;
+                order.UpdateStatus(OrderStatus.Refunded);
                 _unitOfWork.Repository<OrderEntity>().Update(order);
 
                 await _unitOfWork.SaveChangesAsync();

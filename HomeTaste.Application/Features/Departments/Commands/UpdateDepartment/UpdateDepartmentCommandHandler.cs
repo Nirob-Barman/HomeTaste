@@ -17,10 +17,7 @@ namespace HomeTaste.Application.Features.Departments.Commands.UpdateDepartment
 
         public async Task<Result<DepartmentResponse>> Handle(UpdateDepartmentCommand request, CancellationToken cancellationToken)
         {
-            var id = request.Id;
-            var departmentRequest = request.DepartmentRequest;
-
-            var department = await _context.Departments.FindAsync(new object?[] { id }, cancellationToken);
+            var department = await _context.Departments.FindAsync(new object?[] { request.Id }, cancellationToken);
 
             if (department == null)
             {
@@ -28,7 +25,7 @@ namespace HomeTaste.Application.Features.Departments.Commands.UpdateDepartment
             }
 
             var existingDepartment = await _context.Departments
-                .Where(d => d.Name == departmentRequest.Name && d.Id != id)
+                .Where(d => d.Name == request.Name && d.Id != request.Id)
                 .Select(d => new DepartmentResponse { Id = d.Id, Name = d.Name, Description = d.Description })
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -37,7 +34,7 @@ namespace HomeTaste.Application.Features.Departments.Commands.UpdateDepartment
                 throw new ConflictException("Department with the same name already exists.");
             }
 
-            department.UpdateDetails(departmentRequest.Name, departmentRequest.Description);
+            department.UpdateDetails(request.Name, request.Description);
 
             await _context.SaveChangesAsync(cancellationToken);
 

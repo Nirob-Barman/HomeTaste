@@ -19,18 +19,16 @@ namespace HomeTaste.Application.Features.Inventory.Commands.AddInventoryItem
 
         public async Task<Result<InventoryItemResponse>> Handle(AddInventoryItemCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
-            var existingItem = await _context.InventoryItems.FirstOrDefaultAsync(i => i.Name == request.Name, cancellationToken);
+            var existingItem = await _context.InventoryItems.FirstOrDefaultAsync(i => i.Name == command.Name, cancellationToken);
             if (existingItem != null)
             {
                 throw new ConflictException("Item with the same name already exists.");
             }
 
-            var item = InventoryItem.Create(request.Name, request.StockCount, request.Price);
+            var item = InventoryItem.Create(command.Name, command.StockCount, command.Price);
             _context.InventoryItems.Add(item);
 
-            var transaction = InventoryTransaction.Create(item.Id, request.StockCount, item.Price, TransactionType.Restock, "Initial stock addition");
+            var transaction = InventoryTransaction.Create(item.Id, command.StockCount, item.Price, TransactionType.Restock, "Initial stock addition");
             _context.InventoryTransactions.Add(transaction);
 
             await _context.SaveChangesAsync(cancellationToken);

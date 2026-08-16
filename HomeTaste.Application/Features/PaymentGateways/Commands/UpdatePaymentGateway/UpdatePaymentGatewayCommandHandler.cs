@@ -21,20 +21,18 @@ namespace HomeTaste.Application.Features.PaymentGateways.Commands.UpdatePaymentG
 
         public async Task<Result<PaymentGatewayResponse>> Handle(UpdatePaymentGatewayCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             var entity = await _context.PaymentGateways.FindAsync(new object?[] { command.Id }, cancellationToken);
             if (entity == null)
                 throw new NotFoundException("Gateway not found.");
 
             Guid.TryParse(_userContextService.UserId, out var userId);
 
-            var mergedConfig = PaymentGatewayConfigHelper.MergeConfig(_encryptor, entity.Config, request.Config);
+            var mergedConfig = PaymentGatewayConfigHelper.MergeConfig(_encryptor, entity.Config, command.Config);
 
             entity.UpdateDetails(
-                request.Name.Trim(),
-                request.IsActive,
-                request.IsSandbox,
+                command.Name.Trim(),
+                command.IsActive,
+                command.IsSandbox,
                 mergedConfig,
                 userId == Guid.Empty ? null : userId);
 

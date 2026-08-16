@@ -6,8 +6,8 @@ namespace HomeTaste.Application.Features.Users.Admin.Commands.RemoveRole
     {
         public RemoveRoleCommandValidator()
         {
-            RuleFor(x => x.Request.UserId).NotEmpty().WithMessage("UserId and RoleName are required");
-            RuleFor(x => x.Request.RoleName).NotEmpty().WithMessage("UserId and RoleName are required");
+            RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId and RoleName are required");
+            RuleFor(x => x.RoleName).NotEmpty().WithMessage("UserId and RoleName are required");
         }
     }
 }

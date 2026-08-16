@@ -3,13 +3,6 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Inventory.Commands.AddInventoryItem
 {
-    public class AddInventoryItemCommand : IRequest<Result<InventoryItemResponse>>
-    {
-        public AddInventoryItemRequest Request { get; set; }
-
-        public AddInventoryItemCommand(AddInventoryItemRequest request)
-        {
-            Request = request;
-        }
-    }
+    public record AddInventoryItemCommand(string? Name, int StockCount, decimal Price)
+        : IRequest<Result<InventoryItemResponse>>;
 }

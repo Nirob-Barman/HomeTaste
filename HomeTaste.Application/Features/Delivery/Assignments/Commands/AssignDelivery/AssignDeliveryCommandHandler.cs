@@ -19,16 +19,14 @@ namespace HomeTaste.Application.Features.Delivery.Assignments.Commands.AssignDel
 
         public async Task<Result<DeliveryAssignmentResponse>> Handle(AssignDeliveryCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
-            var order = await _context.Orders.FindAsync(new object?[] { request.OrderId }, cancellationToken);
+            var order = await _context.Orders.FindAsync(new object?[] { command.OrderId }, cancellationToken);
             if (order == null)
                 throw new NotFoundException("Order not found.");
 
             if (order.Status == OrderStatus.Delivered || order.Status == OrderStatus.Cancelled)
                 throw new BadRequestException($"Cannot assign delivery for a {order.Status} order.");
 
-            var personnel = await _context.DeliveryPersonnel.FindAsync(new object?[] { request.DeliveryPersonnelId }, cancellationToken);
+            var personnel = await _context.DeliveryPersonnel.FindAsync(new object?[] { command.DeliveryPersonnelId }, cancellationToken);
             if (personnel == null)
                 throw new NotFoundException("Delivery personnel not found.");
 
@@ -36,21 +34,20 @@ namespace HomeTaste.Application.Features.Delivery.Assignments.Commands.AssignDel
                 throw new BadRequestException("This delivery personnel is not available.");
 
             var existingAssignment = await _context.DeliveryAssignments
-                .FirstOrDefaultAsync(a => a.OrderId == request.OrderId && a.Status != DeliveryStatus.Failed, cancellationToken);
+                .FirstOrDefaultAsync(a => a.OrderId == command.OrderId && a.Status != DeliveryStatus.Failed, cancellationToken);
             if (existingAssignment != null)
                 throw new ConflictException("This order already has an active delivery assignment.");
 
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
             try
             {
-                var assignment = DeliveryAssignment.Create(request.OrderId, request.DeliveryPersonnelId);
+                var assignment = DeliveryAssignment.Create(command.OrderId, command.DeliveryPersonnelId);
 
                 personnel.SetAvailability(false);
 
                 if (order.Status == OrderStatus.Confirmed || order.Status == OrderStatus.Preparing || order.Status == OrderStatus.ReadyForPickup)
                 {
-                    order.Status = OrderStatus.OutForDelivery;
-                    order.UpdatedAt = DateTime.UtcNow;
+                    order.UpdateStatus(OrderStatus.OutForDelivery);
                 }
 
                 _context.DeliveryAssignments.Add(assignment);

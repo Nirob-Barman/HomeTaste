@@ -3,7 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Tasks.Commands.BulkInsertTasks
 {
-    public class BulkInsertTasksCommand : IRequest<Result<int>>
-    {
-    }
+    public record BulkInsertTasksCommand : IRequest<Result<int>>;
 }

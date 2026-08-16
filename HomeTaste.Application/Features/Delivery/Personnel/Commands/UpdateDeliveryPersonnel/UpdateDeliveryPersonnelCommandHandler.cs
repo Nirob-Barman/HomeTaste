@@ -16,13 +16,11 @@ namespace HomeTaste.Application.Features.Delivery.Personnel.Commands.UpdateDeliv
 
         public async Task<Result<DeliveryPersonnelResponse>> Handle(UpdateDeliveryPersonnelCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             var personnel = await _context.DeliveryPersonnel.FindAsync(new object?[] { command.Id }, cancellationToken);
             if (personnel == null)
                 throw new NotFoundException("Delivery personnel not found.");
 
-            personnel.UpdateDetails(request.FullName, request.Phone, request.VehicleType, request.VehicleNumber);
+            personnel.UpdateDetails(command.FullName, command.Phone, command.VehicleType, command.VehicleNumber);
 
             await _context.SaveChangesAsync(cancellationToken);
 

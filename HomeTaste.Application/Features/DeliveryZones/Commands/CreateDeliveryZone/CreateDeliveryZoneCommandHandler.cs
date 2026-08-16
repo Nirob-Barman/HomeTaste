@@ -16,14 +16,12 @@ namespace HomeTaste.Application.Features.DeliveryZones.Commands.CreateDeliveryZo
 
         public async Task<Result<DeliveryZoneResponse>> Handle(CreateDeliveryZoneCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             var zone = DeliveryZoneEntity.Create(
-                request.Name.Trim(),
-                request.Description?.Trim(),
-                request.IsActive,
-                request.AllowedCities.Select(c => c.Trim().ToLowerInvariant()).ToList(),
-                request.AllowedPostalCodes.Select(p => p.Trim().ToLowerInvariant()).ToList());
+                command.Name.Trim(),
+                command.Description?.Trim(),
+                command.IsActive,
+                command.AllowedCities.Select(c => c.Trim().ToLowerInvariant()).ToList(),
+                command.AllowedPostalCodes.Select(p => p.Trim().ToLowerInvariant()).ToList());
 
             _context.DeliveryZones.Add(zone);
             await _context.SaveChangesAsync(cancellationToken);

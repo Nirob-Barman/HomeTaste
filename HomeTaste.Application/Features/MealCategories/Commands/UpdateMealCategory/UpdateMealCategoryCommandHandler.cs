@@ -15,24 +15,21 @@ namespace HomeTaste.Application.Features.MealCategories.Commands.UpdateMealCateg
             _context = context;
         }
 
-        public async Task<Result<MealCategoryResponse>> Handle(UpdateMealCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<Result<MealCategoryResponse>> Handle(UpdateMealCategoryCommand command, CancellationToken cancellationToken)
         {
-            var id = request.Id;
-            var mealCategoryRequest = request.MealCategoryRequest;
-
-            var mealCategory = await _context.MealCategories.FindAsync(new object?[] { id }, cancellationToken);
+            var mealCategory = await _context.MealCategories.FindAsync(new object?[] { command.Id }, cancellationToken);
             if (mealCategory == null)
                 throw new NotFoundException("Meal category not found");
 
             var existingCategory = await _context.MealCategories
-                .FirstOrDefaultAsync(c => c.Name == mealCategoryRequest.Name && c.Id != id, cancellationToken);
+                .FirstOrDefaultAsync(c => c.Name == command.Name && c.Id != command.Id, cancellationToken);
 
             if (existingCategory != null)
             {
                 throw new ConflictException("Meal category with the same name already exists.");
             }
 
-            mealCategory.UpdateDetails(mealCategoryRequest.Name, mealCategoryRequest.Description);
+            mealCategory.UpdateDetails(command.Name, command.Description);
 
             await _context.SaveChangesAsync(cancellationToken);
 

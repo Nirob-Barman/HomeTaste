@@ -6,7 +6,7 @@ namespace HomeTaste.Application.Features.PaymentGateways.Commands.UpdatePaymentG
     {
         public UpdatePaymentGatewayCommandValidator()
         {
-            RuleFor(x => x.Request.Name).NotEmpty().WithMessage("Name is required.");
+            RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required.");
         }
     }
 }

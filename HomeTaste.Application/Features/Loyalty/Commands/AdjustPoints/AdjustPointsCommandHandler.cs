@@ -18,26 +18,24 @@ namespace HomeTaste.Application.Features.Loyalty.Commands.AdjustPoints
 
         public async Task<Result<bool>> Handle(AdjustPointsCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
+            var account = await LoyaltyAccountHelper.GetOrCreateAccountAsync(_context, command.UserId!, cancellationToken);
 
-            var account = await LoyaltyAccountHelper.GetOrCreateAccountAsync(_context, request.UserId!, cancellationToken);
-
-            if (request.Points < 0 && account.CurrentPoints + request.Points < 0)
+            if (command.Points < 0 && account.CurrentPoints + command.Points < 0)
                 throw new BadRequestException("Adjustment would result in a negative balance.");
 
-            account.AdjustPoints(request.Points);
+            account.AdjustPoints(command.Points);
 
             var transaction = LoyaltyTransactionEntity.Create(
                 account.Id,
-                request.Points,
+                command.Points,
                 LoyaltyTransactionType.Adjusted,
                 null,
-                request.Description ?? "Admin adjustment");
+                command.Description ?? "Admin adjustment");
 
             _context.LoyaltyTransactions.Add(transaction);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<bool>.Ok(true, $"Points adjusted by {request.Points:+#;-#;0}.");
+            return Result<bool>.Ok(true, $"Points adjusted by {command.Points:+#;-#;0}.");
         }
     }
 }

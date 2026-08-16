@@ -18,10 +18,8 @@ namespace HomeTaste.Application.Features.CategoryTypes.Commands.CreateCategoryTy
 
         public async Task<Result<CategoryTypeResponse>> Handle(CreateCategoryTypeCommand request, CancellationToken cancellationToken)
         {
-            var categoryTypeRequest = request.CategoryTypeRequest;
-
             var existingCategoryType = await _context.CategoryTypes
-                .Where(ct => ct.Name == categoryTypeRequest.Name)
+                .Where(ct => ct.Name == request.Name)
                 .Select(ct => new CategoryTypeResponse { Id = ct.Id, Name = ct.Name, Description = ct.Description })
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -30,7 +28,7 @@ namespace HomeTaste.Application.Features.CategoryTypes.Commands.CreateCategoryTy
                 throw new ConflictException("Category type with the same name already exists.");
             }
 
-            var categoryType = CategoryType.Create(categoryTypeRequest.Name, categoryTypeRequest.Description);
+            var categoryType = CategoryType.Create(request.Name, request.Description);
 
             _context.CategoryTypes.Add(categoryType);
             await _context.SaveChangesAsync(cancellationToken);

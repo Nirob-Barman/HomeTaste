@@ -17,12 +17,9 @@ namespace HomeTaste.Application.Features.Units.Commands.UpdateUnit
 
         public async Task<Result<UnitResponse>> Handle(UpdateUnitCommand request, CancellationToken cancellationToken)
         {
-            var id = request.Id;
-            var unitRequest = request.UnitRequest;
-
             // Get the existing unit details
             var unitResponse = await _context.Units
-                .Where(u => u.Id == id)
+                .Where(u => u.Id == request.Id)
                 .Select(u => new UnitResponse { Id = u.Id, Name = u.Name, Abbreviation = u.Abbreviation })
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -33,7 +30,7 @@ namespace HomeTaste.Application.Features.Units.Commands.UpdateUnit
 
             // Check if another unit with the same name or abbreviation exists
             var existingUnit = await _context.Units
-                .Where(u => (u.Name == unitRequest.Name || u.Abbreviation == unitRequest.Abbreviation) && u.Id != id)
+                .Where(u => (u.Name == request.Name || u.Abbreviation == request.Abbreviation) && u.Id != request.Id)
                 .Select(u => new UnitResponse { Id = u.Id, Name = u.Name, Abbreviation = u.Abbreviation })
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -43,7 +40,7 @@ namespace HomeTaste.Application.Features.Units.Commands.UpdateUnit
             }
 
             var duplicateUnit = await _context.Units
-                .Where(u => (u.Name == unitRequest.Name || u.Abbreviation == unitRequest.Abbreviation) && u.Id != id)
+                .Where(u => (u.Name == request.Name || u.Abbreviation == request.Abbreviation) && u.Id != request.Id)
                 .Select(u => new UnitResponse { Id = u.Id, Name = u.Name, Abbreviation = u.Abbreviation })
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -56,14 +53,14 @@ namespace HomeTaste.Application.Features.Units.Commands.UpdateUnit
 
             try
             {
-                var unitToUpdate = await _context.Units.FindAsync(new object?[] { id }, cancellationToken);
+                var unitToUpdate = await _context.Units.FindAsync(new object?[] { request.Id }, cancellationToken);
 
                 if (unitToUpdate == null)
                 {
                     throw new NotFoundException("Unit not found");
                 }
 
-                unitToUpdate.UpdateDetails(unitRequest.Name, unitRequest.Abbreviation);
+                unitToUpdate.UpdateDetails(request.Name, request.Abbreviation);
 
                 await _context.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);

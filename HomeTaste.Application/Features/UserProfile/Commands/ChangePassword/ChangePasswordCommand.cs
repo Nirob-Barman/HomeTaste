@@ -3,13 +3,6 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.UserProfile.Commands.ChangePassword
 {
-    public class ChangePasswordCommand : IRequest<Result<bool>>
-    {
-        public ChangePasswordRequest Request { get; set; }
-
-        public ChangePasswordCommand(ChangePasswordRequest request)
-        {
-            Request = request;
-        }
-    }
+    public record ChangePasswordCommand(string CurrentPassword, string NewPassword)
+        : IRequest<Result<bool>>;
 }

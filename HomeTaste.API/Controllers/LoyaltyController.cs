@@ -61,7 +61,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost("adjust")]
         public async Task<IActionResult> AdjustPoints([FromBody] AdjustPointsRequest request)
         {
-            var result = await _mediator.Send(new AdjustPointsCommand(request));
+            var result = await _mediator.Send(new AdjustPointsCommand(request.UserId, request.Points, request.Description));
             return Ok(result);
         }
     }

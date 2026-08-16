@@ -65,7 +65,13 @@ namespace HomeTaste.API.Controllers
                     Size = image.Length
                 };
             }
-            var result = await _mediator.Send(new CreateIngredientCommand(ingredientRequest, fileDto));
+            var result = await _mediator.Send(new CreateIngredientCommand(
+                ingredientRequest.Name,
+                ingredientRequest.Description,
+                ingredientRequest.IsAllergen,
+                ingredientRequest.ImageUrl,
+                ingredientRequest.PublicId,
+                fileDto));
             return Ok(result);
         }
 
@@ -73,7 +79,13 @@ namespace HomeTaste.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateIngredient(Guid id, [FromBody] IngredientRequest ingredientRequest)
         {
-            var result = await _mediator.Send(new UpdateIngredientCommand(id, ingredientRequest));
+            var result = await _mediator.Send(new UpdateIngredientCommand(
+                id,
+                ingredientRequest.Name,
+                ingredientRequest.Description,
+                ingredientRequest.IsAllergen,
+                ingredientRequest.ImageUrl,
+                ingredientRequest.PublicId));
             return Ok(result);
         }
 

@@ -43,7 +43,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTask([FromBody] TaskRequest taskRequest)
         {
-            var result = await _mediator.Send(new CreateTaskCommand(taskRequest));
+            var result = await _mediator.Send(new CreateTaskCommand(taskRequest.Title, taskRequest.Description, taskRequest.DueDate, taskRequest.Priority, taskRequest.Status));
             return Ok(result);
         }
 
@@ -51,7 +51,7 @@ namespace HomeTaste.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(Guid id, [FromBody] TaskRequest taskRequest)
         {
-            var result = await _mediator.Send(new UpdateTaskCommand(id, taskRequest));
+            var result = await _mediator.Send(new UpdateTaskCommand(id, taskRequest.Title, taskRequest.Description, taskRequest.DueDate, taskRequest.Priority, taskRequest.Status));
             return Ok(result);
         }
 

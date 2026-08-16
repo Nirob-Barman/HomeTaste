@@ -20,7 +20,7 @@ namespace HomeTaste.Application.Features.SupportTickets.Commands.UpdateTicketSta
             if (ticket == null)
                 throw new NotFoundException("Ticket not found");
 
-            ticket.UpdateStatus(command.Request.Status);
+            ticket.UpdateStatus(command.Status);
 
             await _context.SaveChangesAsync(cancellationToken);
 

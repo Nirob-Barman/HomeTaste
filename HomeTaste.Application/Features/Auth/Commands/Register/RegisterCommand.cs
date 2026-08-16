@@ -3,13 +3,6 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Auth.Commands.Register
 {
-    public class RegisterCommand : IRequest<Result<RegisterResponse>>
-    {
-        public RegisterRequest Request { get; set; }
-
-        public RegisterCommand(RegisterRequest request)
-        {
-            Request = request;
-        }
-    }
+    public record RegisterCommand(string? FirstName, string? LastName, DateTime? DateOfBirth, string? Email, string? Password, string Role = "Customer")
+        : IRequest<Result<RegisterResponse>>;
 }

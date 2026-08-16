@@ -18,10 +18,8 @@ namespace HomeTaste.Application.Features.Departments.Commands.CreateDepartment
 
         public async Task<Result<DepartmentResponse>> Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
         {
-            var departmentRequest = request.DepartmentRequest;
-
             var existingDepartment = await _context.Departments
-                .Where(d => d.Name == departmentRequest.Name)
+                .Where(d => d.Name == request.Name)
                 .Select(d => new DepartmentResponse { Id = d.Id, Name = d.Name, Description = d.Description })
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -30,7 +28,7 @@ namespace HomeTaste.Application.Features.Departments.Commands.CreateDepartment
                 throw new ConflictException("Department already exists.");
             }
 
-            var department = Department.Create(departmentRequest.Name, departmentRequest.Description);
+            var department = Department.Create(request.Name, request.Description);
 
             _context.Departments.Add(department);
             await _context.SaveChangesAsync(cancellationToken);

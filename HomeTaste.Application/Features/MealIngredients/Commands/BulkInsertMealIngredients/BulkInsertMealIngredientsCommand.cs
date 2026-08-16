@@ -3,7 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.MealIngredients.Commands.BulkInsertMealIngredients
 {
-    public class BulkInsertMealIngredientsCommand : IRequest<Result<int>>
-    {
-    }
+    public record BulkInsertMealIngredientsCommand : IRequest<Result<int>>;
 }

@@ -17,10 +17,7 @@ namespace HomeTaste.Application.Features.CategoryTypes.Commands.UpdateCategoryTy
 
         public async Task<Result<CategoryTypeResponse>> Handle(UpdateCategoryTypeCommand request, CancellationToken cancellationToken)
         {
-            var id = request.Id;
-            var categoryTypeRequest = request.CategoryTypeRequest;
-
-            var categoryType = await _context.CategoryTypes.FindAsync(new object?[] { id }, cancellationToken);
+            var categoryType = await _context.CategoryTypes.FindAsync(new object?[] { request.Id }, cancellationToken);
 
             if (categoryType == null)
             {
@@ -28,7 +25,7 @@ namespace HomeTaste.Application.Features.CategoryTypes.Commands.UpdateCategoryTy
             }
 
             var existingCategoryType = await _context.CategoryTypes
-                .Where(ct => ct.Name == categoryTypeRequest.Name && ct.Id != id)
+                .Where(ct => ct.Name == request.Name && ct.Id != request.Id)
                 .Select(ct => new CategoryTypeResponse { Id = ct.Id, Name = ct.Name, Description = ct.Description })
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -37,7 +34,7 @@ namespace HomeTaste.Application.Features.CategoryTypes.Commands.UpdateCategoryTy
                 throw new ConflictException("Category type with the same name already exists.");
             }
 
-            categoryType.UpdateDetails(categoryTypeRequest.Name, categoryTypeRequest.Description);
+            categoryType.UpdateDetails(request.Name, request.Description);
 
             await _context.SaveChangesAsync(cancellationToken);
 

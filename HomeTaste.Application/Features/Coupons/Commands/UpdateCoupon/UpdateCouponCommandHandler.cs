@@ -17,28 +17,26 @@ namespace HomeTaste.Application.Features.Coupons.Commands.UpdateCoupon
 
         public async Task<Result<CouponResponse>> Handle(UpdateCouponCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             var coupon = await _context.Coupons.FindAsync(new object?[] { command.Id }, cancellationToken);
             if (coupon == null)
                 throw new NotFoundException("Coupon not found.");
 
-            var code = request.Code?.Trim().ToUpperInvariant();
+            var code = command.Code?.Trim().ToUpperInvariant();
             var duplicate = await _context.Coupons.AnyAsync(c => c.Code == code && c.Id != command.Id, cancellationToken);
             if (duplicate)
                 throw new ConflictException("A coupon with this code already exists.");
 
             coupon.UpdateDetails(
                 code,
-                request.Description,
-                request.DiscountType,
-                request.DiscountValue,
-                request.MinOrderAmount,
-                request.MaxDiscountAmount,
-                request.UsageLimit,
-                request.ExpiresAt,
-                request.IsActive,
-                request.IsFirstOrderOnly);
+                command.Description,
+                command.DiscountType,
+                command.DiscountValue,
+                command.MinOrderAmount,
+                command.MaxDiscountAmount,
+                command.UsageLimit,
+                command.ExpiresAt,
+                command.IsActive,
+                command.IsFirstOrderOnly);
 
             await _context.SaveChangesAsync(cancellationToken);
 

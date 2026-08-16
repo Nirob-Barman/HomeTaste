@@ -3,13 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Delivery.Personnel.Commands.DeleteDeliveryPersonnel
 {
-    public class DeleteDeliveryPersonnelCommand : IRequest<Result<bool>>
-    {
-        public Guid Id { get; set; }
-
-        public DeleteDeliveryPersonnelCommand(Guid id)
-        {
-            Id = id;
-        }
-    }
+    public record DeleteDeliveryPersonnelCommand(Guid Id) : IRequest<Result<bool>>;
 }

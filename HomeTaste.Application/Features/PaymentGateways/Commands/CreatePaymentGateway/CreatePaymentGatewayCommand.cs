@@ -3,13 +3,10 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.PaymentGateways.Commands.CreatePaymentGateway
 {
-    public class CreatePaymentGatewayCommand : IRequest<Result<PaymentGatewayResponse>>
-    {
-        public CreatePaymentGatewayRequest Request { get; set; }
-
-        public CreatePaymentGatewayCommand(CreatePaymentGatewayRequest request)
-        {
-            Request = request;
-        }
-    }
+    public record CreatePaymentGatewayCommand(
+        string Name,
+        string Slug,
+        Dictionary<string, string> Config,
+        bool IsActive,
+        bool IsSandbox) : IRequest<Result<PaymentGatewayResponse>>;
 }

@@ -18,10 +18,8 @@ namespace HomeTaste.Application.Features.Units.Commands.CreateUnit
 
         public async Task<Result<UnitResponse>> Handle(CreateUnitCommand request, CancellationToken cancellationToken)
         {
-            var unitRequest = request.UnitRequest;
-
             var existingUnit = await _context.Units
-                .Where(u => u.Name == unitRequest.Name || u.Abbreviation == unitRequest.Abbreviation)
+                .Where(u => u.Name == request.Name || u.Abbreviation == request.Abbreviation)
                 .Select(u => new UnitResponse
                 {
                     Id = u.Id,
@@ -35,7 +33,7 @@ namespace HomeTaste.Application.Features.Units.Commands.CreateUnit
                 throw new ConflictException("Unit already exists with the same name or abbreviation.");
             }
 
-            var unit = UnitEntity.Create(unitRequest.Name, unitRequest.Abbreviation);
+            var unit = UnitEntity.Create(request.Name, request.Abbreviation);
 
             _context.Units.Add(unit);
             await _context.SaveChangesAsync(cancellationToken);

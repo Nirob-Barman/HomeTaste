@@ -3,15 +3,11 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Ingredients.Commands.UpdateIngredient
 {
-    public class UpdateIngredientCommand : IRequest<Result<IngredientResponse>>
-    {
-        public Guid Id { get; set; }
-        public IngredientRequest IngredientRequest { get; set; }
-
-        public UpdateIngredientCommand(Guid id, IngredientRequest ingredientRequest)
-        {
-            Id = id;
-            IngredientRequest = ingredientRequest;
-        }
-    }
+    public record UpdateIngredientCommand(
+        Guid Id,
+        string? Name,
+        string? Description,
+        bool IsAllergen,
+        string? ImageUrl,
+        string? PublicId) : IRequest<Result<IngredientResponse>>;
 }

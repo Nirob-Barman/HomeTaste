@@ -1,44 +1,8 @@
 using HomeTaste.Domain.Enums;
 
-namespace HomeTaste.Application.DTOs.Order
+namespace HomeTaste.Application.Features.Orders
 {
-    public class CreateOrderRequest
-    {
-        public Guid AddressId { get; set; }
-        public List<OrderItemRequest>? Items { get; set; }
-        public string? CouponCode { get; set; }
-        public int PointsToRedeem { get; set; }
-        public string? Notes { get; set; }
-    }
-
-    public class OrderItemRequest
-    {
-        public Guid MealId { get; set; }
-        public int Quantity { get; set; }
-        public string? SpecialInstructions { get; set; }
-        public List<Guid>? CustomizationOptionIds { get; set; }
-    }
-
-    public class UpdateOrderStatusRequest
-    {
-        public OrderStatus Status { get; set; }
-        public string? CancellationReason { get; set; }
-    }
-
-    public class CancelOrderRequest
-    {
-        public string? Reason { get; set; }
-    }
-
-    public class DeliveryFeeResponse
-    {
-        public decimal Fee { get; set; }
-        public bool IsFree => Fee == 0;
-        public string Label => Fee == 0 ? "Free" : $"${Fee:F2}";
-        public decimal FreeThreshold { get; set; } = 50m;
-    }
-
-    public class OrderResponse
+    public record OrderResponse
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
@@ -63,7 +27,7 @@ namespace HomeTaste.Application.DTOs.Order
         public List<OrderItemResponse>? Items { get; set; }
     }
 
-    public class OrderItemResponse
+    public record OrderItemResponse
     {
         public Guid Id { get; set; }
         public Guid MealId { get; set; }
@@ -76,7 +40,7 @@ namespace HomeTaste.Application.DTOs.Order
         public List<OrderItemCustomizationResponse>? Customizations { get; set; }
     }
 
-    public class OrderItemCustomizationResponse
+    public record OrderItemCustomizationResponse
     {
         public Guid Id { get; set; }
         public Guid? CustomizationOptionId { get; set; }

@@ -18,27 +18,25 @@ namespace HomeTaste.Application.Features.Meals.Commands.CreateMeal
 
         public async Task<Result<MealResponse>> Handle(CreateMealCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
-            var mealCategory = await _context.MealCategories.FindAsync(new object?[] { request.CategoryId }, cancellationToken);
+            var mealCategory = await _context.MealCategories.FindAsync(new object?[] { command.CategoryId }, cancellationToken);
             if (mealCategory == null)
                 throw new NotFoundException("Meal category not found.");
 
             var existingMeal = await _context.Meals
-                .AnyAsync(m => m.Name == request.Name && m.CategoryId == request.CategoryId, cancellationToken);
+                .AnyAsync(m => m.Name == command.Name && m.CategoryId == command.CategoryId, cancellationToken);
             if (existingMeal)
                 throw new ConflictException("Meal with the same name already exists in this category.");
 
             var meal = MealEntity.Create(
-                request.Name,
-                request.Description,
-                request.Price,
-                request.CategoryId,
-                request.ImageUrl,
-                request.IsAvailable,
-                request.PreparationTime,
-                request.DiscountPrice,
-                request.Calories);
+                command.Name,
+                command.Description,
+                command.Price,
+                command.CategoryId,
+                command.ImageUrl,
+                command.IsAvailable,
+                command.PreparationTime,
+                command.DiscountPrice,
+                command.Calories);
 
             _context.Meals.Add(meal);
             await _context.SaveChangesAsync(cancellationToken);

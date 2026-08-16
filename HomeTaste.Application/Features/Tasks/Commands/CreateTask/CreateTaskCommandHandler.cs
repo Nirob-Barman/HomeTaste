@@ -16,9 +16,7 @@ namespace HomeTaste.Application.Features.Tasks.Commands.CreateTask
 
         public async Task<Result<TaskResponse>> Handle(CreateTaskCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
-            var task = TaskEntity.Create(request.Title, request.Description, request.DueDate, request.Priority, request.Status);
+            var task = TaskEntity.Create(command.Title, command.Description, command.DueDate, command.Priority, command.Status);
 
             _context.Tasks.Add(task);
             await _context.SaveChangesAsync(cancellationToken);

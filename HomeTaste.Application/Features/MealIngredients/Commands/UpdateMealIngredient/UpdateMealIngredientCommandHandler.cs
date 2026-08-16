@@ -16,31 +16,29 @@ namespace HomeTaste.Application.Features.MealIngredients.Commands.UpdateMealIngr
 
         public async Task<Result<MealIngredientResponse>> Handle(UpdateMealIngredientCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             var mealIngredient = await _context.MealIngredients.FindAsync(new object?[] { command.Id }, cancellationToken);
             if (mealIngredient == null)
                 throw new NotFoundException("Meal Ingredient not found");
 
-            var meal = await _context.Meals.FindAsync(new object?[] { request.MealId }, cancellationToken);
+            var meal = await _context.Meals.FindAsync(new object?[] { command.MealId }, cancellationToken);
             if (meal == null)
             {
                 throw new NotFoundException("Meal not found");
             }
 
-            var ingredient = await _context.Ingredients.FindAsync(new object?[] { request.IngredientId }, cancellationToken);
+            var ingredient = await _context.Ingredients.FindAsync(new object?[] { command.IngredientId }, cancellationToken);
             if (ingredient == null)
             {
                 throw new NotFoundException("Ingredient not found");
             }
 
-            var unit = await _context.Units.FindAsync(new object?[] { request.UnitId }, cancellationToken);
+            var unit = await _context.Units.FindAsync(new object?[] { command.UnitId }, cancellationToken);
             if (unit == null)
             {
                 throw new NotFoundException("Unit not found");
             }
 
-            mealIngredient.UpdateDetails(request.MealId, request.IngredientId, request.Quantity, request.UnitId);
+            mealIngredient.UpdateDetails(command.MealId, command.IngredientId, command.Quantity, command.UnitId);
 
             await _context.SaveChangesAsync(cancellationToken);
 

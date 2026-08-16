@@ -40,7 +40,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCategoryType([FromBody] CategoryTypeRequest categoryTypeRequest)
         {
-            var result = await _mediator.Send(new CreateCategoryTypeCommand(categoryTypeRequest));
+            var result = await _mediator.Send(new CreateCategoryTypeCommand(categoryTypeRequest.Name, categoryTypeRequest.Description));
             return Ok(result);
         }
 
@@ -48,7 +48,7 @@ namespace HomeTaste.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategoryType(Guid id, [FromBody] CategoryTypeRequest categoryTypeRequest)
         {
-            var result = await _mediator.Send(new UpdateCategoryTypeCommand(id, categoryTypeRequest));
+            var result = await _mediator.Send(new UpdateCategoryTypeCommand(id, categoryTypeRequest.Name, categoryTypeRequest.Description));
             return Ok(result);
         }
 

@@ -3,13 +3,6 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Auth.Commands.RefreshToken
 {
-    public class RefreshTokenCommand : IRequest<Result<AuthResponse>>
-    {
-        public string? BodyRefreshToken { get; set; }
-
-        public RefreshTokenCommand(string? bodyRefreshToken = null)
-        {
-            BodyRefreshToken = bodyRefreshToken;
-        }
-    }
+    public record RefreshTokenCommand(string? BodyRefreshToken = null)
+        : IRequest<Result<AuthResponse>>;
 }

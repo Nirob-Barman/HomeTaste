@@ -1,17 +1,8 @@
 using HomeTaste.Application.Wrappers;
+using HomeTaste.Domain.Enums;
 using MediatR;
 
 namespace HomeTaste.Application.Features.Delivery.Assignments.Commands.UpdateDeliveryStatus
 {
-    public class UpdateDeliveryStatusCommand : IRequest<Result<DeliveryAssignmentResponse>>
-    {
-        public Guid AssignmentId { get; set; }
-        public UpdateDeliveryStatusRequest Request { get; set; }
-
-        public UpdateDeliveryStatusCommand(Guid assignmentId, UpdateDeliveryStatusRequest request)
-        {
-            AssignmentId = assignmentId;
-            Request = request;
-        }
-    }
+    public record UpdateDeliveryStatusCommand(Guid AssignmentId, DeliveryStatus Status, string? Notes) : IRequest<Result<DeliveryAssignmentResponse>>;
 }

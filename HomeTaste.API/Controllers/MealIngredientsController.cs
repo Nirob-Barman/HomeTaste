@@ -41,7 +41,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateMealIngredient([FromBody] MealIngredientRequest mealIngredientRequest)
         {
-            var result = await _mediator.Send(new CreateMealIngredientCommand(mealIngredientRequest));
+            var result = await _mediator.Send(new CreateMealIngredientCommand(mealIngredientRequest.MealId, mealIngredientRequest.IngredientId, mealIngredientRequest.Quantity, mealIngredientRequest.UnitId));
             return Ok(result);
         }
 
@@ -49,7 +49,7 @@ namespace HomeTaste.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMealIngredient(Guid id, [FromBody] MealIngredientRequest mealIngredientRequest)
         {
-            var result = await _mediator.Send(new UpdateMealIngredientCommand(id, mealIngredientRequest));
+            var result = await _mediator.Send(new UpdateMealIngredientCommand(id, mealIngredientRequest.MealId, mealIngredientRequest.IngredientId, mealIngredientRequest.Quantity, mealIngredientRequest.UnitId));
             return Ok(result);
         }
 

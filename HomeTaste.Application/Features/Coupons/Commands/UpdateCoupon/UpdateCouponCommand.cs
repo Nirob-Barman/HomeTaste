@@ -1,17 +1,19 @@
 using HomeTaste.Application.Wrappers;
+using HomeTaste.Domain.Enums;
 using MediatR;
 
 namespace HomeTaste.Application.Features.Coupons.Commands.UpdateCoupon
 {
-    public class UpdateCouponCommand : IRequest<Result<CouponResponse>>
-    {
-        public Guid Id { get; set; }
-        public CouponRequest Request { get; set; }
-
-        public UpdateCouponCommand(Guid id, CouponRequest request)
-        {
-            Id = id;
-            Request = request;
-        }
-    }
+    public record UpdateCouponCommand(
+        Guid Id,
+        string? Code,
+        string? Description,
+        DiscountType DiscountType,
+        decimal DiscountValue,
+        decimal? MinOrderAmount,
+        decimal? MaxDiscountAmount,
+        int? UsageLimit,
+        DateTime? ExpiresAt,
+        bool IsActive,
+        bool IsFirstOrderOnly) : IRequest<Result<CouponResponse>>;
 }

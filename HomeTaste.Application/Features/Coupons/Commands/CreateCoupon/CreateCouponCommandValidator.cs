@@ -7,37 +7,37 @@ namespace HomeTaste.Application.Features.Coupons.Commands.CreateCoupon
     {
         public CreateCouponCommandValidator()
         {
-            RuleFor(x => x.Request.Code)
+            RuleFor(x => x.Code)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Coupon code is required.")
                 .Must(code => code!.Trim().Length <= 50).WithMessage("Coupon code cannot exceed 50 characters.");
 
-            RuleFor(x => x.Request.Description)
+            RuleFor(x => x.Description)
                 .MaximumLength(500).WithMessage("Description cannot exceed 500 characters.");
 
-            RuleFor(x => x.Request.DiscountType)
+            RuleFor(x => x.DiscountType)
                 .IsInEnum().WithMessage("Invalid discount type.");
 
-            RuleFor(x => x.Request.DiscountValue)
+            RuleFor(x => x.DiscountValue)
                 .GreaterThan(0).WithMessage("Discount value must be greater than zero.")
-                .Must((command, discountValue) => command.Request.DiscountType != DiscountType.Percentage || discountValue <= 100)
+                .Must((command, discountValue) => command.DiscountType != DiscountType.Percentage || discountValue <= 100)
                 .WithMessage("Percentage discount cannot exceed 100.");
 
-            RuleFor(x => x.Request.MinOrderAmount)
+            RuleFor(x => x.MinOrderAmount)
                 .GreaterThanOrEqualTo(0).WithMessage("Minimum order amount cannot be negative.")
-                .When(x => x.Request.MinOrderAmount.HasValue);
+                .When(x => x.MinOrderAmount.HasValue);
 
-            RuleFor(x => x.Request.MaxDiscountAmount)
+            RuleFor(x => x.MaxDiscountAmount)
                 .GreaterThan(0).WithMessage("Maximum discount amount must be greater than zero.")
-                .When(x => x.Request.MaxDiscountAmount.HasValue);
+                .When(x => x.MaxDiscountAmount.HasValue);
 
-            RuleFor(x => x.Request.UsageLimit)
+            RuleFor(x => x.UsageLimit)
                 .GreaterThan(0).WithMessage("Usage limit must be greater than zero.")
-                .When(x => x.Request.UsageLimit.HasValue);
+                .When(x => x.UsageLimit.HasValue);
 
-            RuleFor(x => x.Request.ExpiresAt)
+            RuleFor(x => x.ExpiresAt)
                 .GreaterThan(DateTime.UtcNow).WithMessage("Expiry date must be in the future.")
-                .When(x => x.Request.ExpiresAt.HasValue);
+                .When(x => x.ExpiresAt.HasValue);
         }
     }
 }

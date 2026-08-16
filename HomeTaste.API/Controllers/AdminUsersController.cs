@@ -48,7 +48,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost("{userId}/ban")]
         public async Task<IActionResult> BanUser(string userId, [FromBody] BanUserRequest request)
         {
-            var result = await _mediator.Send(new BanUserCommand(userId, request));
+            var result = await _mediator.Send(new BanUserCommand(userId, request.Reason));
             return Ok(result);
         }
 
@@ -64,7 +64,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost("assign-role")]
         public async Task<IActionResult> AssignRole([FromBody] AssignRoleRequest request)
         {
-            var result = await _mediator.Send(new AssignRoleCommand(request));
+            var result = await _mediator.Send(new AssignRoleCommand(request.UserId, request.RoleName));
             return Ok(result);
         }
 
@@ -72,7 +72,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost("remove-role")]
         public async Task<IActionResult> RemoveRole([FromBody] RemoveRoleRequest request)
         {
-            var result = await _mediator.Send(new RemoveRoleCommand(request));
+            var result = await _mediator.Send(new RemoveRoleCommand(request.UserId, request.RoleName));
             return Ok(result);
         }
     }

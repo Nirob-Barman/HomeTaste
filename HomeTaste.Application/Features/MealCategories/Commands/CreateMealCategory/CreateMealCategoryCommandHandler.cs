@@ -16,18 +16,16 @@ namespace HomeTaste.Application.Features.MealCategories.Commands.CreateMealCateg
             _context = context;
         }
 
-        public async Task<Result<MealCategoryResponse>> Handle(CreateMealCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<Result<MealCategoryResponse>> Handle(CreateMealCategoryCommand command, CancellationToken cancellationToken)
         {
-            var mealCategoryRequest = request.MealCategoryRequest;
-
-            var existingCategory = await _context.MealCategories.FirstOrDefaultAsync(c => c.Name == mealCategoryRequest.Name, cancellationToken);
+            var existingCategory = await _context.MealCategories.FirstOrDefaultAsync(c => c.Name == command.Name, cancellationToken);
 
             if (existingCategory != null)
             {
                 throw new ConflictException("Meal category with the same name already exists.");
             }
 
-            var mealCategory = MealCategory.Create(mealCategoryRequest.Name, mealCategoryRequest.Description);
+            var mealCategory = MealCategory.Create(command.Name, command.Description);
 
             _context.MealCategories.Add(mealCategory);
             await _context.SaveChangesAsync(cancellationToken);

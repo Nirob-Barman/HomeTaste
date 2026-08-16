@@ -3,7 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Notifications.Commands.MarkAllAsRead
 {
-    public class MarkAllAsReadCommand : IRequest<Result<bool>>
-    {
-    }
+    public record MarkAllAsReadCommand : IRequest<Result<bool>>;
 }

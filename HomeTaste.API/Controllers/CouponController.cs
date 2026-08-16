@@ -50,7 +50,17 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Create([FromBody] CouponRequest request)
         {
-            var result = await _mediator.Send(new CreateCouponCommand(request));
+            var result = await _mediator.Send(new CreateCouponCommand(
+                request.Code,
+                request.Description,
+                request.DiscountType,
+                request.DiscountValue,
+                request.MinOrderAmount,
+                request.MaxDiscountAmount,
+                request.UsageLimit,
+                request.ExpiresAt,
+                request.IsActive,
+                request.IsFirstOrderOnly));
             return StatusCode(201, result);
         }
 
@@ -59,7 +69,18 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Update(Guid id, [FromBody] CouponRequest request)
         {
-            var result = await _mediator.Send(new UpdateCouponCommand(id, request));
+            var result = await _mediator.Send(new UpdateCouponCommand(
+                id,
+                request.Code,
+                request.Description,
+                request.DiscountType,
+                request.DiscountValue,
+                request.MinOrderAmount,
+                request.MaxDiscountAmount,
+                request.UsageLimit,
+                request.ExpiresAt,
+                request.IsActive,
+                request.IsFirstOrderOnly));
             return Ok(result);
         }
 

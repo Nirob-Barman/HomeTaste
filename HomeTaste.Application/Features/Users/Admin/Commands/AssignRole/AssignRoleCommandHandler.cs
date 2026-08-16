@@ -16,18 +16,16 @@ namespace HomeTaste.Application.Features.Users.Admin.Commands.AssignRole
 
         public async Task<Result<RoleAssignmentResponse>> Handle(AssignRoleCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
-            var user = await _userManager.FindByIdAsync(request.UserId!);
+            var user = await _userManager.FindByIdAsync(command.UserId!);
             if (user == null)
                 throw new NotFoundException("User not found");
 
-            var (succeeded, errors) = await _userManager.AddToRoleAsync(user, request.RoleName!);
+            var (succeeded, errors) = await _userManager.AddToRoleAsync(user, command.RoleName!);
             if (!succeeded)
                 throw new ServerErrorException(string.Join(" ", errors));
 
             return Result<RoleAssignmentResponse>.Ok(
-                new RoleAssignmentResponse { UserId = request.UserId, RoleName = request.RoleName },
+                new RoleAssignmentResponse { UserId = command.UserId, RoleName = command.RoleName },
                 "Role assigned successfully");
         }
     }

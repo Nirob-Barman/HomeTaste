@@ -7,8 +7,8 @@ namespace HomeTaste.Application.Features.Delivery.Assignments.Commands.UpdateDel
     {
         public UpdateDeliveryStatusCommandValidator()
         {
-            RuleFor(x => x.Request.Status).IsInEnum().WithMessage("Invalid delivery status.");
-            RuleFor(x => x.Request.Notes).MaximumLength(500).WithMessage("Notes cannot exceed 500 characters.");
+            RuleFor(x => x.Status).IsInEnum().WithMessage("Invalid delivery status.");
+            RuleFor(x => x.Notes).MaximumLength(500).WithMessage("Notes cannot exceed 500 characters.");
         }
     }
 }

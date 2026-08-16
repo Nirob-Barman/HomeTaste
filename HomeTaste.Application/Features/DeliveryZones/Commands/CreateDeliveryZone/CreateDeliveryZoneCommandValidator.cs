@@ -6,7 +6,7 @@ namespace HomeTaste.Application.Features.DeliveryZones.Commands.CreateDeliveryZo
     {
         public CreateDeliveryZoneCommandValidator()
         {
-            RuleFor(x => x.Request.Name).NotEmpty().WithMessage("Name is required.");
+            RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required.");
         }
     }
 }

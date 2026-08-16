@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.Order;
+using HomeTaste.Application.Features.Orders;
 using HomeTaste.Domain.Enums;
 
 namespace HomeTaste.Application.Helpers.Email

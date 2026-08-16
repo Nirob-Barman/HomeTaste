@@ -90,7 +90,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Coupon.Coupon", b =>
@@ -158,7 +158,7 @@ namespace HomeTaste.Infrastructure.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Coupons");
+                    b.ToTable("Coupons", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Delivery.DeliveryAssignment", b =>
@@ -215,7 +215,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("Status");
 
-                    b.ToTable("DeliveryAssignments");
+                    b.ToTable("DeliveryAssignments", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Delivery.DeliveryPersonnel", b =>
@@ -281,7 +281,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DeliveryPersonnel");
+                    b.ToTable("DeliveryPersonnel", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Delivery.DeliveryZone", b =>
@@ -332,7 +332,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("IsActive");
 
-                    b.ToTable("DeliveryZones");
+                    b.ToTable("DeliveryZones", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.LoginAudit", b =>
@@ -373,7 +373,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LoginAudits");
+                    b.ToTable("LoginAudits", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Loyalty.LoyaltyAccount", b =>
@@ -419,7 +419,7 @@ namespace HomeTaste.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("LoyaltyAccounts");
+                    b.ToTable("LoyaltyAccounts", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Loyalty.LoyaltyTransaction", b =>
@@ -468,7 +468,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("ReferenceId");
 
-                    b.ToTable("LoyaltyTransactions");
+                    b.ToTable("LoyaltyTransactions", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.MealManagement.Ingredient", b =>
@@ -516,7 +516,7 @@ namespace HomeTaste.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[Name] IS NOT NULL");
 
-                    b.ToTable("Ingredients");
+                    b.ToTable("Ingredients", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.MealManagement.InventoryItem", b =>
@@ -554,7 +554,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InventoryItems");
+                    b.ToTable("InventoryItems", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.MealManagement.InventoryTransaction", b =>
@@ -603,7 +603,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("InventoryItemId");
 
-                    b.ToTable("InventoryTransactions");
+                    b.ToTable("InventoryTransactions", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.MealManagement.Meal", b =>
@@ -664,7 +664,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Meals");
+                    b.ToTable("Meals", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.MealManagement.MealCategory", b =>
@@ -709,7 +709,7 @@ namespace HomeTaste.Infrastructure.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("MealCategories");
+                    b.ToTable("MealCategories", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.MealManagement.MealCustomizationOption", b =>
@@ -756,7 +756,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("MealId");
 
-                    b.ToTable("MealCustomizationOptions");
+                    b.ToTable("MealCustomizationOptions", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.MealManagement.MealIngredient", b =>
@@ -803,7 +803,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("MealIngredients");
+                    b.ToTable("MealIngredients", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.MealManagement.MealReview", b =>
@@ -846,7 +846,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("MealId");
 
-                    b.ToTable("MealReviews");
+                    b.ToTable("MealReviews", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Notification.Notification", b =>
@@ -904,7 +904,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("UserId", "IsRead");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Order.Order", b =>
@@ -991,7 +991,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Order.OrderItem", b =>
@@ -1043,7 +1043,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Order.OrderItemCustomization", b =>
@@ -1087,7 +1087,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("OrderItemId");
 
-                    b.ToTable("OrderItemCustomizations");
+                    b.ToTable("OrderItemCustomizations", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.OrganizationDepartment.Department", b =>
@@ -1104,7 +1104,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Payment.PaymentGateway", b =>
@@ -1165,7 +1165,7 @@ namespace HomeTaste.Infrastructure.Migrations
                     b.HasIndex("Slug")
                         .IsUnique();
 
-                    b.ToTable("PaymentGateways");
+                    b.ToTable("PaymentGateways", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Payment.PaymentTransaction", b =>
@@ -1225,7 +1225,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasIndex("Status");
 
-                    b.ToTable("PaymentTransactions");
+                    b.ToTable("PaymentTransactions", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.RefreshToken", b =>
@@ -1266,7 +1266,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Support.CategoryType", b =>
@@ -1283,7 +1283,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CategoryTypes");
+                    b.ToTable("CategoryTypes", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Support.SupportTicket", b =>
@@ -1342,7 +1342,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SupportTickets");
+                    b.ToTable("SupportTickets", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Tasks.Tasks", b =>
@@ -1386,7 +1386,7 @@ namespace HomeTaste.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Domain.Entities.Units", b =>
@@ -1431,7 +1431,7 @@ namespace HomeTaste.Infrastructure.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Units");
+                    b.ToTable("Units", (string)null);
                 });
 
             modelBuilder.Entity("HomeTaste.Infrastructure.Identity.Entity.IdentityApplicationUser", b =>

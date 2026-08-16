@@ -18,8 +18,7 @@ namespace HomeTaste.Application.Features.Coupons.Commands.CreateCoupon
 
         public async Task<Result<CouponResponse>> Handle(CreateCouponCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-            var code = request.Code?.Trim().ToUpperInvariant();
+            var code = command.Code?.Trim().ToUpperInvariant();
 
             var exists = await _context.Coupons.AnyAsync(c => c.Code == code, cancellationToken);
             if (exists)
@@ -27,15 +26,15 @@ namespace HomeTaste.Application.Features.Coupons.Commands.CreateCoupon
 
             var coupon = CouponEntity.Create(
                 code,
-                request.Description,
-                request.DiscountType,
-                request.DiscountValue,
-                request.MinOrderAmount,
-                request.MaxDiscountAmount,
-                request.UsageLimit,
-                request.ExpiresAt,
-                request.IsActive,
-                request.IsFirstOrderOnly);
+                command.Description,
+                command.DiscountType,
+                command.DiscountValue,
+                command.MinOrderAmount,
+                command.MaxDiscountAmount,
+                command.UsageLimit,
+                command.ExpiresAt,
+                command.IsActive,
+                command.IsFirstOrderOnly);
 
             _context.Coupons.Add(coupon);
             await _context.SaveChangesAsync(cancellationToken);

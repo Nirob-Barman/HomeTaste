@@ -16,7 +16,7 @@ namespace HomeTaste.Application.Features.MealCategories.Commands.BulkInsertMealC
             _context = context;
         }
 
-        public async Task<Result<int>> Handle(BulkInsertMealCategoriesCommand request, CancellationToken cancellationToken)
+        public async Task<Result<int>> Handle(BulkInsertMealCategoriesCommand command, CancellationToken cancellationToken)
         {
             // Predefined Bengali Meal Categories
             var mealCategories = new List<(string Name, string Description, string ImageUrl)>

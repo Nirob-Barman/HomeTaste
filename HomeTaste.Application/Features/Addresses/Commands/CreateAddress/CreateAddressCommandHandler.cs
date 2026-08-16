@@ -20,26 +20,24 @@ namespace HomeTaste.Application.Features.Addresses.Commands.CreateAddress
 
         public async Task<Result<AddressResponse>> Handle(CreateAddressCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             if (!Guid.TryParse(_userContextService.UserId, out var userId))
                 throw new UnauthorizedException("Invalid user.");
 
-            if (request.IsDefault)
+            if (command.IsDefault)
                 await AddressDefaultHelper.ClearDefaultFlagAsync(_context, userId, cancellationToken);
 
             var address = AddressEntity.Create(
                 userId,
-                request.Label,
-                request.AddressLine1,
-                request.AddressLine2,
-                request.City,
-                request.State,
-                request.PostalCode,
-                request.Country,
-                request.Latitude,
-                request.Longitude,
-                request.IsDefault);
+                command.Label,
+                command.AddressLine1,
+                command.AddressLine2,
+                command.City,
+                command.State,
+                command.PostalCode,
+                command.Country,
+                command.Latitude,
+                command.Longitude,
+                command.IsDefault);
 
             _context.Addresses.Add(address);
             await _context.SaveChangesAsync(cancellationToken);

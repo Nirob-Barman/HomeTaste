@@ -16,17 +16,15 @@ namespace HomeTaste.Application.Features.MealCustomizations.Commands.UpdateOptio
 
         public async Task<Result<MealCustomizationOptionResponse>> Handle(UpdateOptionCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             var option = await _context.MealCustomizationOptions.FindAsync(new object?[] { command.Id }, cancellationToken);
             if (option == null)
                 throw new NotFoundException("Option not found.");
 
-            var meal = await _context.Meals.FindAsync(new object?[] { request.MealId }, cancellationToken);
+            var meal = await _context.Meals.FindAsync(new object?[] { command.MealId }, cancellationToken);
             if (meal == null)
                 throw new NotFoundException("Meal not found.");
 
-            option.UpdateDetails(request.MealId, request.Name, request.AdditionalPrice, request.IsAvailable, request.OptionType);
+            option.UpdateDetails(command.MealId, command.Name, command.AdditionalPrice, command.IsAvailable, command.OptionType);
 
             await _context.SaveChangesAsync(cancellationToken);
 

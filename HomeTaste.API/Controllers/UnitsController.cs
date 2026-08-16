@@ -42,7 +42,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUnit([FromBody] UnitRequest unitRequest)
         {
-            var result = await _mediator.Send(new CreateUnitCommand(unitRequest));
+            var result = await _mediator.Send(new CreateUnitCommand(unitRequest.Name, unitRequest.Abbreviation));
             return Ok(result);
         }
 
@@ -50,7 +50,7 @@ namespace HomeTaste.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUnit(Guid id, [FromBody] UnitRequest unitRequest)
         {
-            var result = await _mediator.Send(new UpdateUnitCommand(id, unitRequest));
+            var result = await _mediator.Send(new UpdateUnitCommand(id, unitRequest.Name, unitRequest.Abbreviation));
             return Ok(result);
         }
 

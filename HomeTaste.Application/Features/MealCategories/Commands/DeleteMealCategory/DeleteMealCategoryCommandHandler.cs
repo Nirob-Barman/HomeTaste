@@ -14,9 +14,9 @@ namespace HomeTaste.Application.Features.MealCategories.Commands.DeleteMealCateg
             _context = context;
         }
 
-        public async Task<Result<bool>> Handle(DeleteMealCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Handle(DeleteMealCategoryCommand command, CancellationToken cancellationToken)
         {
-            var mealCategory = await _context.MealCategories.FindAsync(new object?[] { request.Id }, cancellationToken);
+            var mealCategory = await _context.MealCategories.FindAsync(new object?[] { command.Id }, cancellationToken);
             if (mealCategory == null)
                 throw new NotFoundException("Meal category not found");
 

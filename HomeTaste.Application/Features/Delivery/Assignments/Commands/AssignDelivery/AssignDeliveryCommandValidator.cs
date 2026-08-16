@@ -6,8 +6,8 @@ namespace HomeTaste.Application.Features.Delivery.Assignments.Commands.AssignDel
     {
         public AssignDeliveryCommandValidator()
         {
-            RuleFor(x => x.Request.OrderId).NotEqual(Guid.Empty).WithMessage("OrderId is required.");
-            RuleFor(x => x.Request.DeliveryPersonnelId).NotEqual(Guid.Empty).WithMessage("DeliveryPersonnelId is required.");
+            RuleFor(x => x.OrderId).NotEqual(Guid.Empty).WithMessage("OrderId is required.");
+            RuleFor(x => x.DeliveryPersonnelId).NotEqual(Guid.Empty).WithMessage("DeliveryPersonnelId is required.");
         }
     }
 }

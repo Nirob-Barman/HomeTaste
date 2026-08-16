@@ -20,8 +20,6 @@ namespace HomeTaste.Application.Features.UserProfile.Commands.UpdateProfile
 
         public async Task<Result<UserProfileResponse>> Handle(UpdateProfileCommand command, CancellationToken cancellationToken)
         {
-            var request = command.Request;
-
             var userId = _userContextService.UserId;
             if (string.IsNullOrEmpty(userId))
                 throw new UnauthorizedException("Unauthorized");
@@ -30,10 +28,10 @@ namespace HomeTaste.Application.Features.UserProfile.Commands.UpdateProfile
             if (user == null)
                 throw new NotFoundException("User not found");
 
-            if (request.FirstName != null) user.FirstName = request.FirstName;
-            if (request.LastName != null) user.LastName = request.LastName;
-            if (request.DateOfBirth.HasValue) user.DateOfBirth = request.DateOfBirth;
-            if (request.PhoneNumber != null) user.PhoneNumber = request.PhoneNumber;
+            if (command.FirstName != null) user.FirstName = command.FirstName;
+            if (command.LastName != null) user.LastName = command.LastName;
+            if (command.DateOfBirth.HasValue) user.DateOfBirth = command.DateOfBirth;
+            if (command.PhoneNumber != null) user.PhoneNumber = command.PhoneNumber;
 
             var (succeeded, errors) = await _userManager.UpdateAsync(user);
             if (!succeeded)

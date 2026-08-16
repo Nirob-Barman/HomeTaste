@@ -3,13 +3,10 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Delivery.Personnel.Commands.CreateDeliveryPersonnel
 {
-    public class CreateDeliveryPersonnelCommand : IRequest<Result<DeliveryPersonnelResponse>>
-    {
-        public CreateDeliveryPersonnelRequest Request { get; set; }
-
-        public CreateDeliveryPersonnelCommand(CreateDeliveryPersonnelRequest request)
-        {
-            Request = request;
-        }
-    }
+    public record CreateDeliveryPersonnelCommand(
+        string? UserId,
+        string? FullName,
+        string? Phone,
+        string? VehicleType,
+        string? VehicleNumber) : IRequest<Result<DeliveryPersonnelResponse>>;
 }

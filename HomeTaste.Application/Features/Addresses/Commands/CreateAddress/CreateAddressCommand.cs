@@ -3,13 +3,15 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Addresses.Commands.CreateAddress
 {
-    public class CreateAddressCommand : IRequest<Result<AddressResponse>>
-    {
-        public AddressRequest Request { get; set; }
-
-        public CreateAddressCommand(AddressRequest request)
-        {
-            Request = request;
-        }
-    }
+    public record CreateAddressCommand(
+        string? Label,
+        string? AddressLine1,
+        string? AddressLine2,
+        string? City,
+        string? State,
+        string? PostalCode,
+        string? Country,
+        double? Latitude,
+        double? Longitude,
+        bool IsDefault) : IRequest<Result<AddressResponse>>;
 }

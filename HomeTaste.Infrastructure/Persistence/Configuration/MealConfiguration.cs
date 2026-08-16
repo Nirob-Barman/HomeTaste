@@ -20,6 +20,10 @@ namespace HomeTaste.Infrastructure.Persistence.Configuration
             builder.Property(m => m.DiscountPrice)
                 .HasColumnType("decimal(18,2)");
 
+            builder.HasOne(m => m.MealCategory)
+                .WithMany()
+                .HasForeignKey(m => m.CategoryId);
+
             // Add any additional configurations or indexes as necessary
 
             //builder.HasData(

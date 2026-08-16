@@ -1,13 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace HomeTaste.Domain.Entities.MealManagement
+﻿namespace HomeTaste.Domain.Entities.MealManagement
 {
     public class MealPreference
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
 
-        [MaxLength(100)]
         public string? DietaryRestrictions { get; set; } // Example: "Gluten-Free", "Vegan", "Vegetarian"
 
         public bool? IsVegetarian { get; set; } // Boolean flag for vegetarian preference
@@ -20,7 +17,6 @@ namespace HomeTaste.Domain.Entities.MealManagement
 
         public bool? IsLactoseIntolerant { get; set; } // Boolean flag for lactose intolerance
 
-        [MaxLength(500)]
         public string? OtherPreferences { get; set; } // Any other specific preferences (e.g., "No spicy food")
     }
 }

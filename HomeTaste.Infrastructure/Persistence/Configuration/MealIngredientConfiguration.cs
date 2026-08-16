@@ -13,6 +13,18 @@ namespace HomeTaste.Infrastructure.Persistence.Configuration
                 .IsRequired()
                 .HasColumnType("decimal(18,2)");  // Quantity of the ingredient, decimal type with 2 decimal places
 
+            builder.HasOne(mi => mi.Meal)
+                .WithMany()
+                .HasForeignKey(mi => mi.MealId);
+
+            builder.HasOne(mi => mi.Ingredient)
+                .WithMany()
+                .HasForeignKey(mi => mi.IngredientId);
+
+            builder.HasOne(mi => mi.Unit)
+                .WithMany()
+                .HasForeignKey(mi => mi.UnitId);
+
 
             // Seed data for MealIngredient (Meal, Ingredient, Unit and Quantity)
             //builder.HasData(

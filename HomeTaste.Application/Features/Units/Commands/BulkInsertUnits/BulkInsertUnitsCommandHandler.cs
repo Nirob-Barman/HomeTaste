@@ -22,17 +22,17 @@ namespace HomeTaste.Application.Features.Units.Commands.BulkInsertUnits
                 // Predefined units
                 var units = new List<UnitEntity>
                 {
-                    new UnitEntity { Name = "Kilogram", Abbreviation = "kg" },
-                    new UnitEntity { Name = "Gram", Abbreviation = "g" },
-                    new UnitEntity { Name = "Liter", Abbreviation = "l" },
-                    new UnitEntity { Name = "Milliliter", Abbreviation = "ml" },
-                    new UnitEntity { Name = "Piece", Abbreviation = "pcs" },
-                    new UnitEntity { Name = "Meter", Abbreviation = "m" },
-                    new UnitEntity { Name = "Centimeter", Abbreviation = "cm" },
-                    new UnitEntity { Name = "Millimeter", Abbreviation = "mm" },
-                    new UnitEntity { Name = "Kilometer", Abbreviation = "km" },
-                    new UnitEntity { Name = "Square Meter", Abbreviation = "m²" },
-                    new UnitEntity { Name = "Pinch", Abbreviation = "pinch" },
+                    UnitEntity.Create("Kilogram", "kg"),
+                    UnitEntity.Create("Gram", "g"),
+                    UnitEntity.Create("Liter", "l"),
+                    UnitEntity.Create("Milliliter", "ml"),
+                    UnitEntity.Create("Piece", "pcs"),
+                    UnitEntity.Create("Meter", "m"),
+                    UnitEntity.Create("Centimeter", "cm"),
+                    UnitEntity.Create("Millimeter", "mm"),
+                    UnitEntity.Create("Kilometer", "km"),
+                    UnitEntity.Create("Square Meter", "m²"),
+                    UnitEntity.Create("Pinch", "pinch"),
                 };
 
                 var newUnits = new List<UnitEntity>();

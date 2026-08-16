@@ -11,7 +11,9 @@ namespace HomeTaste.UnitTests.Application
             // Arrange
             using var context = TestApplicationDbContext.CreateInMemory();
             var unitId = Guid.NewGuid();
-            context.Units.Add(new Units { Id = unitId, Name = "Kilogram", Abbreviation = "kg" });
+            var unit = Units.Create("Kilogram", "kg");
+            unit.Id = unitId;
+            context.Units.Add(unit);
             await context.SaveChangesAsync();
 
             var handler = new GetUnitByIdQueryHandler(context);

@@ -35,11 +35,7 @@ namespace HomeTaste.Application.Features.Units.Commands.CreateUnit
                 return Result<UnitResponse>.Fail("Unit already exists with the same name or abbreviation.", "Duplicate unit", ResultType.Conflict);
             }
 
-            var unit = new UnitEntity
-            {
-                Name = unitRequest.Name,
-                Abbreviation = unitRequest.Abbreviation
-            };
+            var unit = UnitEntity.Create(unitRequest.Name, unitRequest.Abbreviation);
 
             _context.Units.Add(unit);
             await _context.SaveChangesAsync(cancellationToken);

@@ -63,8 +63,7 @@ namespace HomeTaste.Application.Features.Units.Commands.UpdateUnit
                     return Result<UnitResponse>.Fail("Unit not found", "Unit not found", ResultType.NotFound);
                 }
 
-                unitToUpdate.Name = unitRequest.Name ?? unitToUpdate.Name;
-                unitToUpdate.Abbreviation = unitRequest.Abbreviation ?? unitToUpdate.Abbreviation;
+                unitToUpdate.UpdateDetails(unitRequest.Name, unitRequest.Abbreviation);
 
                 await _context.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);

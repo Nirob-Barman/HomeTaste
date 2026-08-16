@@ -1,7 +1,17 @@
-using HomeTaste.API.Wrappers;
 using HomeTaste.Application.Authorization;
-using HomeTaste.Application.DTOs.Delivery;
-using HomeTaste.Application.Interfaces.Delivery;
+using HomeTaste.Application.Features.Delivery;
+using HomeTaste.Application.Features.Delivery.Assignments.Commands.AssignDelivery;
+using HomeTaste.Application.Features.Delivery.Assignments.Commands.UpdateDeliveryStatus;
+using HomeTaste.Application.Features.Delivery.Assignments.Queries.GetDeliveryByOrderId;
+using HomeTaste.Application.Features.Delivery.Assignments.Queries.GetMyAssignedDeliveries;
+using HomeTaste.Application.Features.Delivery.Personnel.Commands.CreateDeliveryPersonnel;
+using HomeTaste.Application.Features.Delivery.Personnel.Commands.DeleteDeliveryPersonnel;
+using HomeTaste.Application.Features.Delivery.Personnel.Commands.ToggleAvailability;
+using HomeTaste.Application.Features.Delivery.Personnel.Commands.UpdateDeliveryPersonnel;
+using HomeTaste.Application.Features.Delivery.Personnel.Commands.UpdateLocation;
+using HomeTaste.Application.Features.Delivery.Personnel.Queries.GetAllDeliveryPersonnel;
+using HomeTaste.Application.Features.Delivery.Personnel.Queries.GetDeliveryPersonnelById;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,11 +25,11 @@ namespace HomeTaste.API.Controllers
     [Authorize]
     public class DeliveryController : ControllerBase
     {
-        private readonly IDeliveryService _deliveryService;
+        private readonly IMediator _mediator;
 
-        public DeliveryController(IDeliveryService deliveryService)
+        public DeliveryController(IMediator mediator)
         {
-            _deliveryService = deliveryService;
+            _mediator = mediator;
         }
 
         // ── Personnel management (Admin) ──────────────────────────────
@@ -29,8 +39,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> GetAllPersonnel([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            var result = await _deliveryService.GetAllDeliveryPersonnelAsync(pageNumber, pageSize);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetAllDeliveryPersonnelQuery { PageNumber = pageNumber, PageSize = pageSize });
+            return Ok(result);
         }
 
         /// <summary>Gets a delivery personnel profile by ID. Admin only.</summary>
@@ -38,8 +48,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> GetPersonnelById(Guid id)
         {
-            var result = await _deliveryService.GetDeliveryPersonnelByIdAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetDeliveryPersonnelByIdQuery(id));
+            return Ok(result);
         }
 
         /// <summary>Creates a new delivery personnel profile. Admin only.</summary>
@@ -47,8 +57,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> CreatePersonnel([FromBody] CreateDeliveryPersonnelRequest request)
         {
-            var result = await _deliveryService.CreateDeliveryPersonnelAsync(request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new CreateDeliveryPersonnelCommand(request));
+            return StatusCode(201, result);
         }
 
         /// <summary>Updates a delivery personnel profile. Admin only.</summary>
@@ -56,8 +66,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> UpdatePersonnel(Guid id, [FromBody] UpdateDeliveryPersonnelRequest request)
         {
-            var result = await _deliveryService.UpdateDeliveryPersonnelAsync(id, request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new UpdateDeliveryPersonnelCommand(id, request));
+            return Ok(result);
         }
 
         /// <summary>Deletes a delivery personnel profile. Admin only.</summary>
@@ -65,8 +75,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> DeletePersonnel(Guid id)
         {
-            var result = await _deliveryService.DeleteDeliveryPersonnelAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new DeleteDeliveryPersonnelCommand(id));
+            return Ok(result);
         }
 
         /// <summary>Toggles a delivery personnel's availability. Admin only.</summary>
@@ -74,8 +84,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> ToggleAvailability(Guid id)
         {
-            var result = await _deliveryService.ToggleAvailabilityAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new ToggleAvailabilityCommand(id));
+            return Ok(result);
         }
 
         // ── Location update (DeliveryPersonnel) ──────────────────────
@@ -85,8 +95,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.DeliveryPersonnelOnly)]
         public async Task<IActionResult> UpdateLocation(Guid id, [FromBody] UpdateLocationRequest request)
         {
-            var result = await _deliveryService.UpdateLocationAsync(id, request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new UpdateLocationCommand(id, request));
+            return Ok(result);
         }
 
         // ── Assignment management (Admin) ─────────────────────────────
@@ -96,8 +106,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> Assign([FromBody] AssignDeliveryRequest request)
         {
-            var result = await _deliveryService.AssignDeliveryAsync(request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new AssignDeliveryCommand(request));
+            return StatusCode(201, result);
         }
 
         /// <summary>Advances a delivery assignment through its status workflow (PickedUp → Delivered).</summary>
@@ -105,16 +115,16 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOrDelivery)]
         public async Task<IActionResult> UpdateDeliveryStatus(Guid assignmentId, [FromBody] UpdateDeliveryStatusRequest request)
         {
-            var result = await _deliveryService.UpdateDeliveryStatusAsync(assignmentId, request);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new UpdateDeliveryStatusCommand(assignmentId, request));
+            return Ok(result);
         }
 
         /// <summary>Gets the delivery assignment for a specific order.</summary>
         [HttpGet("order/{orderId:guid}")]
         public async Task<IActionResult> GetByOrder(Guid orderId)
         {
-            var result = await _deliveryService.GetDeliveryByOrderIdAsync(orderId);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetDeliveryByOrderIdQuery(orderId));
+            return Ok(result);
         }
 
         // ── Delivery personnel self-service ───────────────────────────
@@ -124,8 +134,8 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.DeliveryPersonnelOnly)]
         public async Task<IActionResult> GetMyDeliveries()
         {
-            var result = await _deliveryService.GetMyAssignedDeliveriesAsync();
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetMyAssignedDeliveriesQuery());
+            return Ok(result);
         }
     }
 }

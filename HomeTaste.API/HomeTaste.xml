@@ -100,10 +100,10 @@
         <member name="M:HomeTaste.API.Controllers.DeliveryController.GetPersonnelById(System.Guid)">
             <summary>Gets a delivery personnel profile by ID. Admin only.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.DeliveryController.CreatePersonnel(HomeTaste.Application.DTOs.Delivery.CreateDeliveryPersonnelRequest)">
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.CreatePersonnel(HomeTaste.Application.Features.Delivery.CreateDeliveryPersonnelRequest)">
             <summary>Creates a new delivery personnel profile. Admin only.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.DeliveryController.UpdatePersonnel(System.Guid,HomeTaste.Application.DTOs.Delivery.UpdateDeliveryPersonnelRequest)">
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.UpdatePersonnel(System.Guid,HomeTaste.Application.Features.Delivery.UpdateDeliveryPersonnelRequest)">
             <summary>Updates a delivery personnel profile. Admin only.</summary>
         </member>
         <member name="M:HomeTaste.API.Controllers.DeliveryController.DeletePersonnel(System.Guid)">
@@ -112,13 +112,13 @@
         <member name="M:HomeTaste.API.Controllers.DeliveryController.ToggleAvailability(System.Guid)">
             <summary>Toggles a delivery personnel's availability. Admin only.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.DeliveryController.UpdateLocation(System.Guid,HomeTaste.Application.DTOs.Delivery.UpdateLocationRequest)">
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.UpdateLocation(System.Guid,HomeTaste.Application.Features.Delivery.UpdateLocationRequest)">
             <summary>Updates the real-time GPS location of a delivery personnel.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.DeliveryController.Assign(HomeTaste.Application.DTOs.Delivery.AssignDeliveryRequest)">
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.Assign(HomeTaste.Application.Features.Delivery.AssignDeliveryRequest)">
             <summary>Assigns a delivery personnel to an order. Admin only.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.DeliveryController.UpdateDeliveryStatus(System.Guid,HomeTaste.Application.DTOs.Delivery.UpdateDeliveryStatusRequest)">
+        <member name="M:HomeTaste.API.Controllers.DeliveryController.UpdateDeliveryStatus(System.Guid,HomeTaste.Application.Features.Delivery.UpdateDeliveryStatusRequest)">
             <summary>Advances a delivery assignment through its status workflow (PickedUp → Delivered).</summary>
         </member>
         <member name="M:HomeTaste.API.Controllers.DeliveryController.GetByOrder(System.Guid)">

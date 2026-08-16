@@ -14,6 +14,8 @@ A full-featured food delivery backend built with **ASP.NET Core 8** following Cl
 | Real-time | SignalR |
 | Documentation | Swagger / Swashbuckle |
 | Micro-queries | Dapper |
+| CQRS | MediatR |
+| Validation | FluentValidation |
 
 ## Architecture
 

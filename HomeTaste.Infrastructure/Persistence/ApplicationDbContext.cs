@@ -10,13 +10,14 @@ using HomeTaste.Domain.Entities.OrganizationDepartment;
 using HomeTaste.Domain.Entities.Payment;
 using HomeTaste.Domain.Entities.Support;
 using HomeTaste.Domain.Entities.Tasks;
+using HomeTaste.Application.Interfaces.Persistence;
 using HomeTaste.Infrastructure.Identity.Entity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeTaste.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<IdentityApplicationUser>, IApplicationDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<RefreshToken> RefreshTokens { get; set; }

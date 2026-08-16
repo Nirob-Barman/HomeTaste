@@ -31,6 +31,7 @@ namespace HomeTaste.Infrastructure.DependencyInjection
             services.Configure<JwtSettings>(config.GetSection("JwtSettings"));
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
             services.AddIdentityCore<IdentityApplicationUser>(options =>
             {

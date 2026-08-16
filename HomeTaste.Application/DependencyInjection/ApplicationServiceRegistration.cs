@@ -33,9 +33,12 @@ namespace HomeTaste.Application.DependencyInjection
             // Get the current assembly
             var assembly = Assembly.GetExecutingAssembly();
 
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(assembly);
+                cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            });
             services.AddValidatorsFromAssembly(assembly);
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             // Find all classes that implement interfaces ending in "Service"
             //var serviceTypes = assembly.GetTypes()
@@ -63,7 +66,9 @@ namespace HomeTaste.Application.DependencyInjection
             var types = assembly.GetTypes();
 
             // Find classes that implement interfaces and are not abstract
-            foreach (var type in types.Where(t => t.IsClass && !t.IsAbstract))
+            // (skip open generic type definitions like ValidationBehavior<,> - those are
+            // registered explicitly above via AddOpenBehavior/AddValidatorsFromAssembly)
+            foreach (var type in types.Where(t => t.IsClass && !t.IsAbstract && !t.IsGenericTypeDefinition))
             {
                 // Get all interfaces implemented by the class
                 var interfaces = type.GetInterfaces();

@@ -1,6 +1,11 @@
 ﻿using HomeTaste.API.Wrappers;
 using HomeTaste.Application.DTOs.Support;
-using HomeTaste.Application.Interfaces.Support;
+using HomeTaste.Application.Features.CategoryTypes.Commands.CreateCategoryType;
+using HomeTaste.Application.Features.CategoryTypes.Commands.DeleteCategoryType;
+using HomeTaste.Application.Features.CategoryTypes.Commands.UpdateCategoryType;
+using HomeTaste.Application.Features.CategoryTypes.Queries.GetAllCategoryTypes;
+using HomeTaste.Application.Features.CategoryTypes.Queries.GetCategoryTypeById;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeTaste.API.Controllers
@@ -9,18 +14,18 @@ namespace HomeTaste.API.Controllers
     [ApiController]
     public class CategoryTypesController : ControllerBase
     {
-        private readonly ICategoryTypeService _categoryTypeService;
+        private readonly IMediator _mediator;
 
-        public CategoryTypesController(ICategoryTypeService categoryTypeService)
+        public CategoryTypesController(IMediator mediator)
         {
-            _categoryTypeService = categoryTypeService;
+            _mediator = mediator;
         }
 
         // Get all category types with pagination and search
         [HttpGet]
         public async Task<IActionResult> GetAllCategoryTypes([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!)
         {
-            var result = await _categoryTypeService.GetAllCategoryTypesAsync(pageNumber, pageSize, searchTerm);
+            var result = await _mediator.Send(new GetAllCategoryTypesQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -28,7 +33,7 @@ namespace HomeTaste.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryTypeById(Guid id)
         {
-            var result = await _categoryTypeService.GetCategoryTypeByIdAsync(id);
+            var result = await _mediator.Send(new GetCategoryTypeByIdQuery(id));
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -36,7 +41,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCategoryType([FromBody] CategoryTypeRequest categoryTypeRequest)
         {
-            var result = await _categoryTypeService.CreateCategoryTypeAsync(categoryTypeRequest);
+            var result = await _mediator.Send(new CreateCategoryTypeCommand(categoryTypeRequest));
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -44,7 +49,7 @@ namespace HomeTaste.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategoryType(Guid id, [FromBody] CategoryTypeRequest categoryTypeRequest)
         {
-            var result = await _categoryTypeService.UpdateCategoryTypeAsync(id, categoryTypeRequest);
+            var result = await _mediator.Send(new UpdateCategoryTypeCommand(id, categoryTypeRequest));
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -52,7 +57,7 @@ namespace HomeTaste.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategoryType(Guid id)
         {
-            var result = await _categoryTypeService.DeleteCategoryTypeAsync(id);
+            var result = await _mediator.Send(new DeleteCategoryTypeCommand(id));
             return ApiResponseMapper.FromResult(this, result);
         }
     }

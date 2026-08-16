@@ -3,13 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Units.Queries.GetUnitById
 {
-    public class GetUnitByIdQuery : IRequest<Result<UnitResponse>>
-    {
-        public Guid Id { get; set; }
-
-        public GetUnitByIdQuery(Guid id)
-        {
-            Id = id;
-        }
-    }
+    public record GetUnitByIdQuery(Guid Id) : IRequest<Result<UnitResponse>>;
 }

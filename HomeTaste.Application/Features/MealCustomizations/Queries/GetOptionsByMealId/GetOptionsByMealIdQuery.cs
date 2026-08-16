@@ -3,13 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.MealCustomizations.Queries.GetOptionsByMealId
 {
-    public class GetOptionsByMealIdQuery : IRequest<Result<IEnumerable<MealCustomizationOptionResponse>>>
-    {
-        public Guid MealId { get; set; }
-
-        public GetOptionsByMealIdQuery(Guid mealId)
-        {
-            MealId = mealId;
-        }
-    }
+    public record GetOptionsByMealIdQuery(Guid MealId) : IRequest<Result<IEnumerable<MealCustomizationOptionResponse>>>;
 }

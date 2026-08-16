@@ -3,7 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Loyalty.Queries.GetMyAccount
 {
-    public class GetMyAccountQuery : IRequest<Result<LoyaltyAccountResponse>>
-    {
-    }
+    public record GetMyAccountQuery : IRequest<Result<LoyaltyAccountResponse>>;
 }

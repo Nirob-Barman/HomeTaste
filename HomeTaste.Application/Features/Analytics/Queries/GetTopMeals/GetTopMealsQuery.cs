@@ -3,8 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Analytics.Queries.GetTopMeals
 {
-    public class GetTopMealsQuery : IRequest<Result<List<TopMealItem>>>
-    {
-        public int Top { get; set; } = 10;
-    }
+    public record GetTopMealsQuery(int Top = 10) : IRequest<Result<List<TopMealItem>>>;
 }

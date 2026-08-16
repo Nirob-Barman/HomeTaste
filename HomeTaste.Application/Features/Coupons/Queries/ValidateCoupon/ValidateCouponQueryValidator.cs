@@ -6,10 +6,10 @@ namespace HomeTaste.Application.Features.Coupons.Queries.ValidateCoupon
     {
         public ValidateCouponQueryValidator()
         {
-            RuleFor(x => x.Request.Code)
+            RuleFor(x => x.Code)
                 .NotEmpty().WithMessage("Coupon code is required.");
 
-            RuleFor(x => x.Request.OrderAmount)
+            RuleFor(x => x.OrderAmount)
                 .GreaterThan(0).WithMessage("Order amount must be greater than zero.");
         }
     }

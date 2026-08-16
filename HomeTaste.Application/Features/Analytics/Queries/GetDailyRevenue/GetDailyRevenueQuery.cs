@@ -3,8 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Analytics.Queries.GetDailyRevenue
 {
-    public class GetDailyRevenueQuery : IRequest<Result<List<DailyRevenuePoint>>>
-    {
-        public int Days { get; set; } = 30;
-    }
+    public record GetDailyRevenueQuery(int Days = 30) : IRequest<Result<List<DailyRevenuePoint>>>;
 }

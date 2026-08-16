@@ -3,10 +3,6 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Coupons.Queries.GetAllCoupons
 {
-    public class GetAllCouponsQuery : IRequest<Result<PaginatedResponse<IEnumerable<CouponResponse>>>>
-    {
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
-        public string SearchTerm { get; set; } = null!;
-    }
+    public record GetAllCouponsQuery(int PageNumber = 1, int PageSize = 10, string? SearchTerm = null)
+        : IRequest<Result<PaginatedResponse<IEnumerable<CouponResponse>>>>;
 }

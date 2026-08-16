@@ -4,7 +4,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.UserProfile.Queries.GetProfile
 {
-    public class GetProfileQuery : IRequest<Result<UserProfileResponse>>
-    {
-    }
+    public record GetProfileQuery : IRequest<Result<UserProfileResponse>>;
 }

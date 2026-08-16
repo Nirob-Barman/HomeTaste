@@ -3,13 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.SupportTickets.Queries.GetTicketsByUserId
 {
-    public class GetTicketsByUserIdQuery : IRequest<Result<IEnumerable<SupportTicketResponse>>>
-    {
-        public Guid UserId { get; set; }
-
-        public GetTicketsByUserIdQuery(Guid userId)
-        {
-            UserId = userId;
-        }
-    }
+    public record GetTicketsByUserIdQuery(Guid UserId) : IRequest<Result<IEnumerable<SupportTicketResponse>>>;
 }

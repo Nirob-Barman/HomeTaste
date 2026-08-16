@@ -3,7 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Addresses.Queries.GetMyAddresses
 {
-    public class GetMyAddressesQuery : IRequest<Result<IEnumerable<AddressResponse>>>
-    {
-    }
+    public record GetMyAddressesQuery : IRequest<Result<IEnumerable<AddressResponse>>>;
 }

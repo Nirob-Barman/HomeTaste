@@ -23,7 +23,7 @@ namespace HomeTaste.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllDepartments([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!)
         {
-            var result = await _mediator.Send(new GetAllDepartmentsQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
+            var result = await _mediator.Send(new GetAllDepartmentsQuery(pageNumber, pageSize, searchTerm));
             return Ok(result);
         }
 

@@ -34,7 +34,7 @@ namespace HomeTaste.API.Controllers
         [HttpGet("daily-revenue")]
         public async Task<IActionResult> GetDailyRevenue([FromQuery] int days = 30)
         {
-            var result = await _mediator.Send(new GetDailyRevenueQuery { Days = days });
+            var result = await _mediator.Send(new GetDailyRevenueQuery(days));
             return Ok(result);
         }
 
@@ -42,7 +42,7 @@ namespace HomeTaste.API.Controllers
         [HttpGet("top-meals")]
         public async Task<IActionResult> GetTopMeals([FromQuery] int top = 10)
         {
-            var result = await _mediator.Send(new GetTopMealsQuery { Top = top });
+            var result = await _mediator.Send(new GetTopMealsQuery(top));
             return Ok(result);
         }
 
@@ -50,7 +50,7 @@ namespace HomeTaste.API.Controllers
         [HttpGet("top-customers")]
         public async Task<IActionResult> GetTopCustomers([FromQuery] int top = 10)
         {
-            var result = await _mediator.Send(new GetTopCustomersQuery { Top = top });
+            var result = await _mediator.Send(new GetTopCustomersQuery(top));
             return Ok(result);
         }
     }

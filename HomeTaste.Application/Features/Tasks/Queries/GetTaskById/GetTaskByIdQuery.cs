@@ -3,13 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Tasks.Queries.GetTaskById
 {
-    public class GetTaskByIdQuery : IRequest<Result<TaskResponse>>
-    {
-        public Guid Id { get; set; }
-
-        public GetTaskByIdQuery(Guid id)
-        {
-            Id = id;
-        }
-    }
+    public record GetTaskByIdQuery(Guid Id) : IRequest<Result<TaskResponse>>;
 }

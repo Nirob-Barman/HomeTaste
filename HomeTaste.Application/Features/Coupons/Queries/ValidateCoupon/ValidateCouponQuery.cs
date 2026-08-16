@@ -3,13 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Coupons.Queries.ValidateCoupon
 {
-    public class ValidateCouponQuery : IRequest<Result<CouponValidationResponse>>
-    {
-        public ValidateCouponRequest Request { get; set; }
-
-        public ValidateCouponQuery(ValidateCouponRequest request)
-        {
-            Request = request;
-        }
-    }
+    public record ValidateCouponQuery(string? Code, decimal OrderAmount) : IRequest<Result<CouponValidationResponse>>;
 }

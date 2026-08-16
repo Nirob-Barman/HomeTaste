@@ -4,7 +4,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Auth.Queries.GetCurrentUser
 {
-    public class GetCurrentUserQuery : IRequest<Result<UserProfileResponse>>
-    {
-    }
+    public record GetCurrentUserQuery : IRequest<Result<UserProfileResponse>>;
 }

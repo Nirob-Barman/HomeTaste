@@ -24,7 +24,7 @@ namespace HomeTaste.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCategoryTypes([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!)
         {
-            var result = await _mediator.Send(new GetAllCategoryTypesQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
+            var result = await _mediator.Send(new GetAllCategoryTypesQuery(pageNumber, pageSize, searchTerm));
             return Ok(result);
         }
 

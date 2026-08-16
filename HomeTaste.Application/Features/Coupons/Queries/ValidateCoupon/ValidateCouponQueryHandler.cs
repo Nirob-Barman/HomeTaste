@@ -17,8 +17,8 @@ namespace HomeTaste.Application.Features.Coupons.Queries.ValidateCoupon
 
         public async Task<Result<CouponValidationResponse>> Handle(ValidateCouponQuery request, CancellationToken cancellationToken)
         {
-            var code = request.Request.Code?.Trim().ToUpperInvariant();
-            var orderAmount = request.Request.OrderAmount;
+            var code = request.Code?.Trim().ToUpperInvariant();
+            var orderAmount = request.OrderAmount;
 
             var coupon = await _context.Coupons.FirstOrDefaultAsync(c => c.Code == code, cancellationToken);
 

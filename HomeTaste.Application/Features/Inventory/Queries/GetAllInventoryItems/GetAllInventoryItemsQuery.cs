@@ -3,10 +3,9 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Inventory.Queries.GetAllInventoryItems
 {
-    public class GetAllInventoryItemsQuery : IRequest<Result<PaginatedResponse<IEnumerable<InventoryItemResponse>>>>
-    {
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
-        public string SearchTerm { get; set; } = null!;
-    }
+    public record GetAllInventoryItemsQuery(
+        int PageNumber = 1,
+        int PageSize = 10,
+        string? SearchTerm = null)
+        : IRequest<Result<PaginatedResponse<IEnumerable<InventoryItemResponse>>>>;
 }

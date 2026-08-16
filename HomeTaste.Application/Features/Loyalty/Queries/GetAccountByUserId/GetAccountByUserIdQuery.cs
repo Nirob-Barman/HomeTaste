@@ -3,13 +3,5 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Loyalty.Queries.GetAccountByUserId
 {
-    public class GetAccountByUserIdQuery : IRequest<Result<LoyaltyAccountResponse>>
-    {
-        public string UserId { get; set; }
-
-        public GetAccountByUserIdQuery(string userId)
-        {
-            UserId = userId;
-        }
-    }
+    public record GetAccountByUserIdQuery(string UserId) : IRequest<Result<LoyaltyAccountResponse>>;
 }

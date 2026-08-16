@@ -28,7 +28,7 @@ namespace HomeTaste.API.Controllers
             int pageSize = 10,
             string searchTerm = null!)
         {
-            var result = await _mediator.Send(new GetAllInventoryItemsQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
+            var result = await _mediator.Send(new GetAllInventoryItemsQuery(pageNumber, pageSize, searchTerm));
             return Ok(result);
         }
 

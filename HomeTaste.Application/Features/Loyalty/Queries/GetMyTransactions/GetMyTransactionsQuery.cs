@@ -3,9 +3,6 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.Loyalty.Queries.GetMyTransactions
 {
-    public class GetMyTransactionsQuery : IRequest<Result<PaginatedResponse<IEnumerable<LoyaltyTransactionResponse>>>>
-    {
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 20;
-    }
+    public record GetMyTransactionsQuery(int PageNumber = 1, int PageSize = 20)
+        : IRequest<Result<PaginatedResponse<IEnumerable<LoyaltyTransactionResponse>>>>;
 }

@@ -25,7 +25,7 @@ namespace HomeTaste.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllMealIngredients([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!)
         {
-            var result = await _mediator.Send(new GetAllMealIngredientsQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
+            var result = await _mediator.Send(new GetAllMealIngredientsQuery(pageNumber, pageSize, searchTerm));
             return Ok(result);
         }
 

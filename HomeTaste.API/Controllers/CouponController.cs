@@ -32,7 +32,7 @@ namespace HomeTaste.API.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!)
         {
-            var result = await _mediator.Send(new GetAllCouponsQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
+            var result = await _mediator.Send(new GetAllCouponsQuery(pageNumber, pageSize, searchTerm));
             return Ok(result);
         }
 
@@ -106,7 +106,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost("validate")]
         public async Task<IActionResult> Validate([FromBody] ValidateCouponRequest request)
         {
-            var result = await _mediator.Send(new ValidateCouponQuery(request));
+            var result = await _mediator.Send(new ValidateCouponQuery(request.Code, request.OrderAmount));
             return Ok(result);
         }
     }

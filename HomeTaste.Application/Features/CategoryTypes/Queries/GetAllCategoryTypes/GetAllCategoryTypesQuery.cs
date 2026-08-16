@@ -3,10 +3,6 @@ using MediatR;
 
 namespace HomeTaste.Application.Features.CategoryTypes.Queries.GetAllCategoryTypes
 {
-    public class GetAllCategoryTypesQuery : IRequest<Result<PaginatedResponse<IEnumerable<CategoryTypeResponse>>>>
-    {
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
-        public string SearchTerm { get; set; } = null!;
-    }
+    public record GetAllCategoryTypesQuery(int PageNumber = 1, int PageSize = 10, string? SearchTerm = null)
+        : IRequest<Result<PaginatedResponse<IEnumerable<CategoryTypeResponse>>>>;
 }

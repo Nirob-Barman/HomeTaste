@@ -38,7 +38,7 @@ namespace HomeTaste.API.Controllers
             [FromQuery] string sortBy = "Id",
             [FromQuery] string sortOrder = "ASC")
         {
-            var result = await _mediator.Send(new GetAllIngredientsQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm, SortBy = sortBy, SortOrder = sortOrder });
+            var result = await _mediator.Send(new GetAllIngredientsQuery(pageNumber, pageSize, searchTerm, sortBy, sortOrder));
             return Ok(result);
         }
 

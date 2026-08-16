@@ -81,7 +81,8 @@ namespace HomeTaste.Infrastructure.Middleware
             BadRequestException or
             UnprocessableEntityException or
             TooManyRequestsException or
-            ServiceUnavailableException;
+            ServiceUnavailableException or
+            ServerErrorException;
 
         private static int GetStatusCode(Exception exception) => exception switch
         {
@@ -95,6 +96,7 @@ namespace HomeTaste.Infrastructure.Middleware
             UnprocessableEntityException => 422, // matches old (unused) ResultType.ValidationFailed
             TooManyRequestsException => 429,
             ServiceUnavailableException => 503,
+            ServerErrorException => (int)HttpStatusCode.InternalServerError, // matches old ResultType.Failure -> 500, but message still reaches the client (that path was always deliberate, not an unhandled crash)
 
             // 400 Bad Request - Client-side input problems
             ArgumentNullException => (int)HttpStatusCode.BadRequest,

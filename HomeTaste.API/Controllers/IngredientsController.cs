@@ -1,9 +1,13 @@
-﻿using HomeTaste.API.Wrappers;
-using HomeTaste.Application.DTOs.File;
-using HomeTaste.Application.DTOs.MealManagement;
-using HomeTaste.Application.Interfaces.MealManagement;
+﻿using HomeTaste.Application.DTOs.File;
+using HomeTaste.Application.Features.Ingredients;
+using HomeTaste.Application.Features.Ingredients.Commands.BulkInsertIngredients;
+using HomeTaste.Application.Features.Ingredients.Commands.CreateIngredient;
+using HomeTaste.Application.Features.Ingredients.Commands.DeleteIngredient;
+using HomeTaste.Application.Features.Ingredients.Commands.UpdateIngredient;
+using HomeTaste.Application.Features.Ingredients.Queries.GetAllIngredients;
+using HomeTaste.Application.Features.Ingredients.Queries.GetIngredientById;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace HomeTaste.API.Controllers
 {
@@ -11,11 +15,11 @@ namespace HomeTaste.API.Controllers
     [ApiController]
     public class IngredientsController : ControllerBase
     {
-        private readonly IIngredientService _ingredientService;
+        private readonly IMediator _mediator;
 
-        public IngredientsController(IIngredientService ingredientService)
+        public IngredientsController(IMediator mediator)
         {
-            _ingredientService = ingredientService;
+            _mediator = mediator;
         }
 
         /// <summary>
@@ -34,16 +38,16 @@ namespace HomeTaste.API.Controllers
             [FromQuery] string sortBy = "Id",
             [FromQuery] string sortOrder = "ASC")
         {
-            var result = await _ingredientService.GetAllIngredientsAsync(pageNumber, pageSize, searchTerm, sortBy, sortOrder);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetAllIngredientsQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm, SortBy = sortBy, SortOrder = sortOrder });
+            return Ok(result);
         }
 
         // Get ingredient by Id
         [HttpGet("{id}")]
         public async Task<IActionResult> GetIngredientById(Guid id)
         {
-            var result = await _ingredientService.GetIngredientByIdAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetIngredientByIdQuery(id));
+            return Ok(result);
         }
 
         // Create a new ingredient
@@ -61,31 +65,31 @@ namespace HomeTaste.API.Controllers
                     Size = image.Length
                 };
             }
-            var result = await _ingredientService.CreateIngredientAsync(ingredientRequest, fileDto);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new CreateIngredientCommand(ingredientRequest, fileDto));
+            return Ok(result);
         }
 
         // Update an existing ingredient
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateIngredient(Guid id, [FromBody] IngredientRequest ingredientRequest)
         {
-            var result = await _ingredientService.UpdateIngredientAsync(id, ingredientRequest);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new UpdateIngredientCommand(id, ingredientRequest));
+            return Ok(result);
         }
 
         // Delete an ingredient
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteIngredient(Guid id)
         {
-            var result = await _ingredientService.DeleteIngredientAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new DeleteIngredientCommand(id));
+            return Ok(result);
         }
 
         [HttpPost("bulk-insert")]
         public async Task<IActionResult> BulkInsertPredefinedIngredients()
         {
-            var result = await _ingredientService.BulkInsertPredefinedIngredientsAsync();
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new BulkInsertIngredientsCommand());
+            return Ok(result);
         }
     }
 }

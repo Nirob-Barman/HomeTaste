@@ -1,6 +1,11 @@
-﻿using HomeTaste.API.Wrappers;
-using HomeTaste.Application.DTOs.TaskManagement;
-using HomeTaste.Application.Interfaces.TaskManagement;
+using HomeTaste.Application.Features.Tasks;
+using HomeTaste.Application.Features.Tasks.Commands.BulkInsertTasks;
+using HomeTaste.Application.Features.Tasks.Commands.CreateTask;
+using HomeTaste.Application.Features.Tasks.Commands.DeleteTask;
+using HomeTaste.Application.Features.Tasks.Commands.UpdateTask;
+using HomeTaste.Application.Features.Tasks.Queries.GetAllTasks;
+using HomeTaste.Application.Features.Tasks.Queries.GetTaskById;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeTaste.API.Controllers
@@ -9,60 +14,60 @@ namespace HomeTaste.API.Controllers
     [ApiController]
     public class TasksController : ControllerBase
     {
-        private readonly ITaskService _taskService;
+        private readonly IMediator _mediator;
 
-        public TasksController(ITaskService taskService)
+        public TasksController(IMediator mediator)
         {
-            _taskService = taskService;
+            _mediator = mediator;
         }
 
         // Get all tasks
         [HttpGet]
         public async Task<IActionResult> GetAllTasks([FromQuery] int pageNumber = 1,
-            int pageSize = 10, 
+            int pageSize = 10,
             string searchTerm = null!)
         {
-            var result = await _taskService.GetAllTasksAsync(pageNumber, pageSize, searchTerm);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetAllTasksQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm });
+            return Ok(result);
         }
 
         // Get task by Id
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTaskById(Guid id)
         {
-            var result = await _taskService.GetTaskByIdAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetTaskByIdQuery(id));
+            return Ok(result);
         }
 
         // Create a new task
         [HttpPost]
         public async Task<IActionResult> CreateTask([FromBody] TaskRequest taskRequest)
         {
-            var result = await _taskService.CreateTaskAsync(taskRequest);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new CreateTaskCommand(taskRequest));
+            return Ok(result);
         }
 
         // Update an existing task
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(Guid id, [FromBody] TaskRequest taskRequest)
         {
-            var result = await _taskService.UpdateTaskAsync(id, taskRequest);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new UpdateTaskCommand(id, taskRequest));
+            return Ok(result);
         }
 
         // Delete a task
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(Guid id)
         {
-            var result = await _taskService.DeleteTaskAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new DeleteTaskCommand(id));
+            return Ok(result);
         }
 
         [HttpPost("bulk-insert")]
         public async Task<IActionResult> BulkInsertPredefinedTasks()
         {
-            var result = await _taskService.BulkInsertPredefinedTasksAsync();
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new BulkInsertTasksCommand());
+            return Ok(result);
         }
     }
 }

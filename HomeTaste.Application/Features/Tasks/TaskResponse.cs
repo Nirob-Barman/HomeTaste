@@ -1,9 +1,10 @@
-﻿using HomeTaste.Domain.Enums;
+using HomeTaste.Domain.Enums;
 
-namespace HomeTaste.Application.DTOs.TaskManagement
+namespace HomeTaste.Application.Features.Tasks
 {
-    public class TaskRequest
+    public class TaskResponse
     {
+        public Guid Id { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }
         public DateTime DueDate { get; set; }

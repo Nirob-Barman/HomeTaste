@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HomeTaste.Application.Common.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security;
 using System.Text.Json;
+using DataAnnotationsValidationException = System.ComponentModel.DataAnnotations.ValidationException;
+using ApplicationValidationException = HomeTaste.Application.Common.Exceptions.ValidationException;
 
 namespace HomeTaste.Infrastructure.Middleware
 {
@@ -38,21 +40,62 @@ namespace HomeTaste.Infrastructure.Middleware
             context.Response.StatusCode = statusCode;
             context.Response.ContentType = "application/json";
 
+            var (message, errors) = GetResponseBody(exception);
+
             var response = new
             {
                 statusCode,
-                message = "An unexpected error occurred.",
+                message,
                 success = false,
                 data = (object?)null,
-                errors = exception.Message
+                errors
             };
 
             return context.Response.WriteAsJsonAsync(response);
         }
 
+        // Known Application exceptions carry a client-facing message on purpose (they replace
+        // the old ResultType.Fail(errorMessage, ...) path) - surface it as-is. Anything else is
+        // an unexpected/unhandled error, so keep the generic message and put the exception's
+        // detail in errors instead of leaking internals as the headline message.
+        private static (string Message, object? Errors) GetResponseBody(Exception exception)
+        {
+            if (exception is ApplicationValidationException validationException)
+            {
+                return (validationException.Message, validationException.Errors);
+            }
+
+            if (IsKnownApplicationException(exception))
+            {
+                return (exception.Message, new List<string> { exception.Message });
+            }
+
+            return ("An unexpected error occurred.", new List<string> { exception.Message });
+        }
+
+        private static bool IsKnownApplicationException(Exception exception) => exception is
+            NotFoundException or
+            ConflictException or
+            ForbiddenAccessException or
+            UnauthorizedException or
+            BadRequestException or
+            UnprocessableEntityException or
+            TooManyRequestsException or
+            ServiceUnavailableException;
 
         private static int GetStatusCode(Exception exception) => exception switch
         {
+            // Application exceptions - the replacement for the old ResultType-driven mapping
+            NotFoundException => (int)HttpStatusCode.NotFound,
+            ConflictException => (int)HttpStatusCode.Conflict,
+            ForbiddenAccessException => (int)HttpStatusCode.Forbidden,
+            UnauthorizedException => (int)HttpStatusCode.Unauthorized,
+            BadRequestException => (int)HttpStatusCode.BadRequest,
+            ApplicationValidationException => (int)HttpStatusCode.BadRequest, // matches old ResultType.ValidationError -> 400
+            UnprocessableEntityException => 422, // matches old (unused) ResultType.ValidationFailed
+            TooManyRequestsException => 429,
+            ServiceUnavailableException => 503,
+
             // 400 Bad Request - Client-side input problems
             ArgumentNullException => (int)HttpStatusCode.BadRequest,
             ArgumentException => (int)HttpStatusCode.BadRequest,
@@ -94,9 +137,8 @@ namespace HomeTaste.Infrastructure.Middleware
             // Concurrency conflict (e.g., EF Core)
             DbUpdateConcurrencyException => (int)HttpStatusCode.Conflict,
 
-
             // 422 Unprocessable Entity (common for validation) - Validation errors
-            ValidationException => 422, // FluentValidation, for example
+            DataAnnotationsValidationException => 422,
 
             // 429 Too Many Requests - Rate limiting or cancellation
             OperationCanceledException => 429, // Optional, e.g. cancellation token use

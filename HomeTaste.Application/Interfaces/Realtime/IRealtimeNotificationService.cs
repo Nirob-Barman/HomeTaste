@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.Notification;
+using HomeTaste.Application.Features.Notifications;
 
 namespace HomeTaste.Application.Interfaces.Realtime
 {

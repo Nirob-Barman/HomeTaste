@@ -1,4 +1,4 @@
-using HomeTaste.Application.DTOs.Notification;
+using HomeTaste.Application.Features.Notifications;
 using HomeTaste.Application.Interfaces.Realtime;
 using HomeTaste.Infrastructure.Hubs;
 using Microsoft.AspNetCore.SignalR;

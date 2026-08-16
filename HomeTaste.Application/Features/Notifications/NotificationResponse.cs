@@ -1,8 +1,8 @@
 using HomeTaste.Domain.Enums;
 
-namespace HomeTaste.Application.DTOs.Notification
+namespace HomeTaste.Application.Features.Notifications
 {
-    public class NotificationResponse
+    public record NotificationResponse
     {
         public Guid Id { get; set; }
         public string? UserId { get; set; }
@@ -14,10 +14,5 @@ namespace HomeTaste.Application.DTOs.Notification
         public Guid? ReferenceId { get; set; }
         public string? ReferenceType { get; set; }
         public DateTime? CreatedAt { get; set; }
-    }
-
-    public class UnreadCountResponse
-    {
-        public int Count { get; set; }
     }
 }

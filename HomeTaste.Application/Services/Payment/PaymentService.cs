@@ -19,7 +19,7 @@ namespace HomeTaste.Application.Services.Payment
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserContextService _userContextService;
-        private readonly ILoyaltyService _loyaltyService;
+        private readonly ILoyaltyPointsService _loyaltyPointsService;
         private readonly INotificationService _notificationService;
         private readonly IPaymentProcessorFactory _processorFactory;
         private readonly IConfigEncryptor _encryptor;
@@ -27,14 +27,14 @@ namespace HomeTaste.Application.Services.Payment
         public PaymentService(
             IUnitOfWork unitOfWork,
             IUserContextService userContextService,
-            ILoyaltyService loyaltyService,
+            ILoyaltyPointsService loyaltyPointsService,
             INotificationService notificationService,
             IPaymentProcessorFactory processorFactory,
             IConfigEncryptor encryptor)
         {
             _unitOfWork = unitOfWork;
             _userContextService = userContextService;
-            _loyaltyService = loyaltyService;
+            _loyaltyPointsService = loyaltyPointsService;
             _notificationService = notificationService;
             _processorFactory = processorFactory;
             _encryptor = encryptor;
@@ -239,7 +239,7 @@ namespace HomeTaste.Application.Services.Payment
                 return Result<PaymentTransactionResponse>.Fail("Failed to confirm payment. Please try again.", "Error", ResultType.Failure);
             }
 
-            _ = _loyaltyService.EarnPointsAsync(order.UserId.ToString(), order.Id, order.TotalAmount);
+            _ = _loyaltyPointsService.EarnPointsAsync(order.UserId.ToString(), order.Id, order.TotalAmount);
             _ = _notificationService.CreateNotificationAsync(
                 order.UserId.ToString(),
                 "Payment Confirmed",
@@ -325,7 +325,7 @@ namespace HomeTaste.Application.Services.Payment
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();
 
-                _ = _loyaltyService.EarnPointsAsync(order.UserId.ToString(), order.Id, order.TotalAmount);
+                _ = _loyaltyPointsService.EarnPointsAsync(order.UserId.ToString(), order.Id, order.TotalAmount);
                 _ = _notificationService.CreateNotificationAsync(
                     order.UserId.ToString(),
                     "Payment Confirmed",

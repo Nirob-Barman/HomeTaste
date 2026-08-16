@@ -4,7 +4,6 @@ using HomeTaste.Application.Helpers.Pagination;
 using HomeTaste.Application.Interfaces;
 using HomeTaste.Application.Interfaces.Auth;
 using HomeTaste.Application.Interfaces.Email;
-using HomeTaste.Application.Interfaces.Loyalty;
 using HomeTaste.Application.Interfaces.Notification;
 using HomeTaste.Application.Interfaces.Order;
 using HomeTaste.Application.Interfaces.Persistence;
@@ -22,7 +21,6 @@ namespace HomeTaste.Application.Services.Order
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserContextService _userContextService;
         private readonly INotificationService _notificationService;
-        private readonly ILoyaltyService _loyaltyService;
         private readonly IEmailService _emailService;
         private readonly IUserManager _userManager;
         private readonly IDeliveryFeeService _deliveryFeeService;
@@ -34,7 +32,6 @@ namespace HomeTaste.Application.Services.Order
             IUnitOfWork unitOfWork,
             IUserContextService userContextService,
             INotificationService notificationService,
-            ILoyaltyService loyaltyService,
             IEmailService emailService,
             IUserManager userManager,
             IDeliveryFeeService deliveryFeeService)
@@ -42,7 +39,6 @@ namespace HomeTaste.Application.Services.Order
             _unitOfWork = unitOfWork;
             _userContextService = userContextService;
             _notificationService = notificationService;
-            _loyaltyService = loyaltyService;
             _emailService = emailService;
             _userManager = userManager;
             _deliveryFeeService = deliveryFeeService;
@@ -304,20 +300,15 @@ namespace HomeTaste.Application.Services.Order
 
                     if (loyaltyAccount != null)
                     {
-                        loyaltyAccount.CurrentPoints -= loyaltyPointsUsed;
-                        loyaltyAccount.UpdatedAt = DateTime.UtcNow;
+                        loyaltyAccount.DeductPoints(loyaltyPointsUsed);
                         _unitOfWork.Repository<LoyaltyAccount>().Update(loyaltyAccount);
 
-                        var loyaltyTx = new LoyaltyTransaction
-                        {
-                            Id = Guid.NewGuid(),
-                            LoyaltyAccountId = loyaltyAccount.Id,
-                            Points = -loyaltyPointsUsed,
-                            TransactionType = LoyaltyTransactionType.Redeemed,
-                            ReferenceId = order.Id,
-                            Description = $"Redeemed {loyaltyPointsUsed} points for order discount.",
-                            CreatedAt = DateTime.UtcNow
-                        };
+                        var loyaltyTx = LoyaltyTransaction.Create(
+                            loyaltyAccount.Id,
+                            -loyaltyPointsUsed,
+                            LoyaltyTransactionType.Redeemed,
+                            order.Id,
+                            $"Redeemed {loyaltyPointsUsed} points for order discount.");
                         await _unitOfWork.Repository<LoyaltyTransaction>().AddAsync(loyaltyTx);
                     }
                 }

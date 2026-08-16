@@ -173,7 +173,7 @@
         <member name="M:HomeTaste.API.Controllers.LoyaltyController.GetAccountByUserId(System.String)">
             <summary>Returns the loyalty account for a specific user. Admin only.</summary>
         </member>
-        <member name="M:HomeTaste.API.Controllers.LoyaltyController.AdjustPoints(HomeTaste.Application.DTOs.Loyalty.AdjustPointsRequest)">
+        <member name="M:HomeTaste.API.Controllers.LoyaltyController.AdjustPoints(HomeTaste.Application.Features.Loyalty.AdjustPointsRequest)">
             <summary>Admin: manually add or deduct points from a user's loyalty account.</summary>
         </member>
         <member name="M:HomeTaste.API.Controllers.MealCategoriesController.GetAllMealCategories(System.Int32,System.Int32,System.String,System.String,System.String)">

@@ -1,7 +1,11 @@
-﻿using HomeTaste.API.Wrappers;
-using HomeTaste.Application.DTOs.File;
-using HomeTaste.Application.DTOs.MealManagement;
-using HomeTaste.Application.Interfaces.MealManagement;
+using HomeTaste.Application.Features.Meals;
+using HomeTaste.Application.Features.Meals.Commands.BulkInsertMeals;
+using HomeTaste.Application.Features.Meals.Commands.CreateMeal;
+using HomeTaste.Application.Features.Meals.Commands.DeleteMeal;
+using HomeTaste.Application.Features.Meals.Commands.UpdateMeal;
+using HomeTaste.Application.Features.Meals.Queries.GetAllMeals;
+using HomeTaste.Application.Features.Meals.Queries.GetMealById;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeTaste.API.Controllers
@@ -10,69 +14,58 @@ namespace HomeTaste.API.Controllers
     [ApiController]
     public class MealsController : ControllerBase
     {
-        private readonly IMealService _mealService;
+        private readonly IMediator _mediator;
 
-        public MealsController(IMealService mealService)
+        public MealsController(IMediator mediator)
         {
-            _mealService = mealService;
+            _mediator = mediator;
         }
 
         // Get all meals
         [HttpGet]
         public async Task<IActionResult> GetAllMeals([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string searchTerm = null!, [FromQuery] Guid? categoryId = null)
         {
-            var result = await _mealService.GetAllMealsAsync(pageNumber, pageSize, searchTerm, categoryId);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetAllMealsQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm, CategoryId = categoryId });
+            return Ok(result);
         }
 
         // Get meal by Id
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMealById(Guid id)
         {
-            var result = await _mealService.GetMealByIdAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new GetMealByIdQuery(id));
+            return Ok(result);
         }
 
         // Create a new meal
         [HttpPost]
-        public async Task<IActionResult> CreateMeal([FromForm] MealRequest mealRequest, IFormFile? image)
+        public async Task<IActionResult> CreateMeal([FromForm] MealRequest mealRequest)
         {
-            FileUploadDto? fileDto = null;
-            if (image != null && image.Length > 0)
-            {
-                fileDto = new FileUploadDto
-                {
-                    Content = image.OpenReadStream(),
-                    FileName = image.FileName,
-                    ContentType = image.ContentType,
-                    Size = image.Length
-                };
-            }
-            var result = await _mealService.CreateMealAsync(mealRequest, fileDto);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new CreateMealCommand(mealRequest));
+            return Ok(result);
         }
 
         // Update an existing meal
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMeal(Guid id, [FromBody] MealRequest mealRequest)
         {
-            var result = await _mealService.UpdateMealAsync(id, mealRequest);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new UpdateMealCommand(id, mealRequest));
+            return Ok(result);
         }
 
         // Delete a meal
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMeal(Guid id)
         {
-            var result = await _mealService.DeleteMealAsync(id);
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new DeleteMealCommand(id));
+            return Ok(result);
         }
 
         [HttpPost("bulk-insert")]
         public async Task<IActionResult> BulkInsertMeals()
         {
-            var result = await _mealService.BulkInsertPredefinedMealsAsync();
-            return ApiResponseMapper.FromResult(this, result);
+            var result = await _mediator.Send(new BulkInsertMealsCommand());
+            return Ok(result);
         }
     }
 }

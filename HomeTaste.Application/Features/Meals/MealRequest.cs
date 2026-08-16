@@ -1,7 +1,6 @@
-﻿
-namespace HomeTaste.Application.DTOs.MealManagement
+namespace HomeTaste.Application.Features.Meals
 {
-    public class MealRequest
+    public record MealRequest
     {
         public string? Name { get; set; }
         public string? Description { get; set; }
@@ -14,7 +13,7 @@ namespace HomeTaste.Application.DTOs.MealManagement
         public int? Calories { get; set; }
     }
 
-    public class MealRequestWithCategoryName
+    public record MealRequestWithCategoryName
     {
         public string? Name { get; set; }
         public string? Description { get; set; }

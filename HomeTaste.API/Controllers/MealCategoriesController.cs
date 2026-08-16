@@ -1,6 +1,12 @@
 ﻿using HomeTaste.API.Wrappers;
 using HomeTaste.Application.DTOs.MealCategories;
-using HomeTaste.Application.Interfaces.MealManagement;
+using HomeTaste.Application.Features.MealCategories.Commands.BulkInsertMealCategories;
+using HomeTaste.Application.Features.MealCategories.Commands.CreateMealCategory;
+using HomeTaste.Application.Features.MealCategories.Commands.DeleteMealCategory;
+using HomeTaste.Application.Features.MealCategories.Commands.UpdateMealCategory;
+using HomeTaste.Application.Features.MealCategories.Queries.GetAllMealCategories;
+using HomeTaste.Application.Features.MealCategories.Queries.GetMealCategoryById;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeTaste.API.Controllers
@@ -9,11 +15,11 @@ namespace HomeTaste.API.Controllers
     [ApiController]
     public class MealCategoriesController : ControllerBase
     {
-        private readonly IMealCategoryService _mealCategoryService;
+        private readonly IMediator _mediator;
 
-        public MealCategoriesController(IMealCategoryService mealCategoryService)
+        public MealCategoriesController(IMediator mediator)
         {
-            _mealCategoryService = mealCategoryService;
+            _mediator = mediator;
         }
 
         // Get all meal categories
@@ -34,7 +40,7 @@ namespace HomeTaste.API.Controllers
             [FromQuery] string sortBy = "Id",
             [FromQuery] string sortOrder = "ASC")
         {
-            var result = await _mealCategoryService.GetAllMealCategoriesAsync(pageNumber, pageSize, searchTerm, sortBy, sortOrder);
+            var result = await _mediator.Send(new GetAllMealCategoriesQuery { PageNumber = pageNumber, PageSize = pageSize, SearchTerm = searchTerm, SortBy = sortBy, SortOrder = sortOrder });
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -42,7 +48,7 @@ namespace HomeTaste.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMealCategoryById(Guid id)
         {
-            var result = await _mealCategoryService.GetMealCategoryByIdAsync(id);
+            var result = await _mediator.Send(new GetMealCategoryByIdQuery(id));
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -50,7 +56,7 @@ namespace HomeTaste.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateMealCategory([FromBody] MealCategoryRequest mealCategoryRequest)
         {
-            var result = await _mealCategoryService.CreateMealCategoryAsync(mealCategoryRequest);
+            var result = await _mediator.Send(new CreateMealCategoryCommand(mealCategoryRequest));
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -58,7 +64,7 @@ namespace HomeTaste.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMealCategory(Guid id, [FromBody] MealCategoryRequest mealCategoryRequest)
         {
-            var result = await _mealCategoryService.UpdateMealCategoryAsync(id, mealCategoryRequest);
+            var result = await _mediator.Send(new UpdateMealCategoryCommand(id, mealCategoryRequest));
             return ApiResponseMapper.FromResult(this, result);
         }
 
@@ -66,14 +72,14 @@ namespace HomeTaste.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMealCategory(Guid id)
         {
-            var result = await _mealCategoryService.DeleteMealCategoryAsync(id);
+            var result = await _mediator.Send(new DeleteMealCategoryCommand(id));
             return ApiResponseMapper.FromResult(this, result);
         }
 
         [HttpPost("bulk-insert")]
         public async Task<IActionResult> BulkInsertPredefinedMealCategories()
         {
-            var result = await _mealCategoryService.BulkInsertPredefinedMealCategoriesAsync();
+            var result = await _mediator.Send(new BulkInsertMealCategoriesCommand());
             return ApiResponseMapper.FromResult(this, result);
         }
     }

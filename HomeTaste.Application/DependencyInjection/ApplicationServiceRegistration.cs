@@ -40,43 +40,27 @@ namespace HomeTaste.Application.DependencyInjection
             });
             services.AddValidatorsFromAssembly(assembly);
 
-            // Find all classes that implement interfaces ending in "Service"
-            //var serviceTypes = assembly.GetTypes()
-            //    .Where(t => t.Name.EndsWith("Service") && t.IsClass && !t.IsAbstract)
-            //    .ToList();
-
-
-            // Register each service and its interface
-            //foreach (var serviceType in serviceTypes)
-            //{
-            //    // Find the corresponding interface
-            //    var interfaces = serviceType.GetInterfaces()
-            //        .Where(i => i.Name == "I" + serviceType.Name) // Matching convention: I<ServiceName> interface
-            //        .ToList();
-
-            //    foreach (var @interface in interfaces)
-            //    {
-            //        // Register with scoped lifetime
-            //        services.AddScoped(@interface, serviceType);
-            //    }
-            //}
-
-
             // Get all the types in the current assembly
             var types = assembly.GetTypes();
 
             // Find classes that implement interfaces and are not abstract
             // (skip open generic type definitions like ValidationBehavior<,> - those are
             // registered explicitly above via AddOpenBehavior/AddValidatorsFromAssembly)
+            //
+            // Only register a type against an interface following the I<ClassName> naming
+            // convention (e.g. UnitService -> IUnitService). A blanket "register every
+            // interface a class implements" swept up MediatR Commands/Queries (via
+            // IRequest<T>/IBaseRequest) and Exception types (via ISerializable) as if they
+            // were injectable services - their constructors take plain values (Guid, string,
+            // DTOs), which the container can't resolve, and ASP.NET Core validates this
+            // eagerly at startup when ValidateOnBuild is on (the Development-environment
+            // default), crashing WebApplicationBuilder.Build().
             foreach (var type in types.Where(t => t.IsClass && !t.IsAbstract && !t.IsGenericTypeDefinition))
             {
-                // Get all interfaces implemented by the class
-                var interfaces = type.GetInterfaces();
+                var interfaces = type.GetInterfaces().Where(i => i.Name == "I" + type.Name);
 
-                // Register each service with its corresponding interface(s)
                 foreach (var @interface in interfaces)
                 {
-                    // Register the service for each matching interface
                     services.AddScoped(@interface, type);
                 }
             }
